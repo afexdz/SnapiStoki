@@ -16,12 +16,12 @@ export default function Hero() {
   const [query, setQuery] = useState("");
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-violet-700 via-violet-600 to-indigo-700 dark:from-violet-900 dark:via-violet-800 dark:to-indigo-900">
-      {/* Background blobs */}
+    <section className="relative overflow-hidden bg-gradient-to-br from-violet-700 via-violet-600 to-indigo-700 dark:from-violet-950 dark:via-violet-900 dark:to-indigo-950">
+      {/* Animated background blobs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-32 -right-32 w-96 h-96 bg-violet-400/20 rounded-full blur-3xl" />
-        <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-indigo-400/20 rounded-full blur-3xl" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-white/5 rounded-full blur-3xl" />
+        <div className="absolute -top-32 -right-32 w-[500px] h-[500px] bg-violet-400/20 rounded-full blur-3xl animate-float" />
+        <div className="absolute -bottom-48 -left-32 w-[500px] h-[500px] bg-indigo-400/20 rounded-full blur-3xl animate-float-delay" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-white/5 rounded-full blur-3xl" />
       </div>
 
       <div className="relative max-w-4xl mx-auto px-4 py-24 sm:py-32 text-center">
@@ -37,7 +37,7 @@ export default function Hero() {
           <br />
           <span className="text-yellow-300">qu'il vous faut,</span> maintenant.
         </h1>
-        <p className="text-lg sm:text-xl text-white/80 mb-10 max-w-xl mx-auto">
+        <p className="text-lg sm:text-xl text-white/80 mb-8 max-w-xl mx-auto">
           La marketplace numérique algérienne — services, ressources et
           freelances de qualité.
         </p>
@@ -62,7 +62,7 @@ export default function Hero() {
         </div>
 
         {/* Popular tags */}
-        <div className="mt-6 flex flex-wrap justify-center gap-2">
+        <div className="mt-5 flex flex-wrap justify-center gap-2">
           <span className="text-white/70 text-sm mr-1 self-center">Populaire :</span>
           {popularTags.map((tag) => (
             <button

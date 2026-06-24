@@ -53,7 +53,7 @@ export default function HowItWorks() {
             Comment ça marche ?
           </h2>
           <p className="text-gray-500 dark:text-gray-400 max-w-lg mx-auto">
-            De la recherche à la livraison, SnapiStoki simplifie chaque étape
+            De la recherche à la livraison, PixRaise simplifie chaque étape
             de votre collaboration avec les meilleurs talents.
           </p>
         </div>

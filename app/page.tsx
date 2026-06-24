@@ -1,5 +1,6 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
+import GetStarted from "@/components/GetStarted";
 import Categories from "@/components/Categories";
 import TopFreelancers from "@/components/TopFreelancers";
 import Marketplace from "@/components/Marketplace";
@@ -12,6 +13,7 @@ export default function Home() {
       <Navbar />
       <main className="flex-1">
         <Hero />
+        <GetStarted />
         <Categories />
         <TopFreelancers />
         <Marketplace />

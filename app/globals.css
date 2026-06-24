@@ -22,11 +22,44 @@ html.dark {
   scroll-behavior: smooth;
 }
 
-/* Custom scrollbar for horizontal scrolls */
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
 .scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+/* Premium button glow animation */
+@keyframes glowPulse {
+  0%, 100% {
+    box-shadow: 0 8px 30px rgba(124, 58, 237, 0.45), 0 0 0 0 rgba(124, 58, 237, 0);
+  }
+  50% {
+    box-shadow: 0 12px 50px rgba(124, 58, 237, 0.75), 0 0 30px rgba(124, 58, 237, 0.3);
+  }
+}
+
+.btn-glow:hover {
+  animation: glowPulse 1.8s ease-in-out infinite;
+}
+
+/* Smooth float animation for hero blobs */
+@keyframes floatBlob {
+  0%, 100% { transform: translateY(0px) scale(1); }
+  50% { transform: translateY(-20px) scale(1.05); }
+}
+
+.animate-float {
+  animation: floatBlob 6s ease-in-out infinite;
+}
+
+.animate-float-delay {
+  animation: floatBlob 8s ease-in-out infinite 2s;
+}
+
+/* Shimmer for skeleton loading */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
 }

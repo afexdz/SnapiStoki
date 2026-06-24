@@ -40,8 +40,8 @@ export default function Footer() {
           {/* Brand */}
           <div className="lg:col-span-1">
             <a href="#" className="flex items-center gap-0.5 mb-4">
-              <span className="text-2xl font-extrabold text-violet-500">Snapi</span>
-              <span className="text-2xl font-extrabold text-white">Stoki</span>
+              <span className="text-2xl font-extrabold text-violet-500">Pix</span>
+              <span className="text-2xl font-extrabold text-white">Raise</span>
             </a>
             <p className="text-sm leading-relaxed mb-6">
               La marketplace des freelances et ressources numériques en Algérie.
@@ -85,7 +85,7 @@ export default function Footer() {
         {/* Bottom bar */}
         <div className="border-t border-gray-800 py-6 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-xs text-gray-600">
-            © {new Date().getFullYear()} SnapiStoki. Tous droits réservés.
+            © {new Date().getFullYear()} PixRaise. Tous droits réservés.
           </p>
           <div className="flex items-center gap-4 text-xs">
             {["Confidentialité", "Conditions", "Cookies"].map((l) => (

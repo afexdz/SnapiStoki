@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "SnapiStoki – Marketplace des freelances algériens",
-  description: "Trouvez les meilleurs freelances et services numériques en Algérie.",
+  title: "PixRaise — La marketplace créative algérienne",
+  description: "Trouvez des freelances et achetez des produits digitaux en Algérie",
 };
 
 export default function RootLayout({
@@ -28,6 +28,14 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
       suppressHydrationWarning
     >
+      <head>
+        {/* Prevent flash of wrong theme */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem('theme');if(t==='dark')document.documentElement.classList.add('dark');}catch(e){}})();`,
+          }}
+        />
+      </head>
       <body className="min-h-full flex flex-col bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 transition-colors duration-300">
         {children}
       </body>
