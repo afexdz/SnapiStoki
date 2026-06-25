@@ -6,25 +6,6 @@ import { createClient } from "@/lib/supabase/client";
 
 type AccountType = "buyer" | "seller";
 
-const FR_ERRORS: Record<string, string> = {
-  "User already registered":        "Cet email est déjà utilisé.",
-  "Email already registered":       "Cet email est déjà utilisé.",
-  "already been registered":        "Cet email est déjà utilisé.",
-  "Password should be at least":    "Mot de passe trop court (8 caractères minimum).",
-  "Password too short":             "Mot de passe trop court.",
-  "Unable to validate email":       "Email invalide.",
-  "Invalid email":                  "Email invalide.",
-  "Signup is disabled":             "Les inscriptions sont temporairement désactivées.",
-  "Email rate limit exceeded":      "Trop de tentatives. Veuillez réessayer plus tard.",
-};
-
-function translateError(msg: string): string {
-  for (const [key, val] of Object.entries(FR_ERRORS)) {
-    if (msg.toLowerCase().includes(key.toLowerCase())) return val;
-  }
-  // Show the raw message so nothing is hidden during development
-  return msg;
-}
 
 function PasswordRule({ met, label }: { met: boolean; label: string }) {
   return (
@@ -81,38 +62,43 @@ export default function RegisterPage() {
     setLoading(true);
     setError(null);
 
-    const supabase = createClient();
-    const { data, error: authError } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          full_name: fullName,
-          role: accountType,
+    try {
+      const supabase = createClient();
+      const result = await supabase.auth.signUp({
+        email: email.trim(),
+        password: password,
+        options: {
+          data: {
+            full_name: fullName.trim(),
+            role: accountType,
+          },
+          emailRedirectTo: "https://pixraise.com/auth/callback",
         },
-        emailRedirectTo: "https://pixraise.com/auth/callback",
-      },
-    });
+      });
 
-    console.log("signUp result:", { data, error: authError });
+      console.log("Full result:", JSON.stringify(result, null, 2));
 
-    if (authError) {
-      const msg = authError?.message || authError?.name || JSON.stringify(authError) || "Une erreur est survenue";
-      setError(translateError(msg));
+      if (result.error) {
+        setError(result.error.message || "Erreur: " + JSON.stringify(result.error));
+        return;
+      }
+
+      if (result.data?.user) {
+        setSuccess(true);
+        return;
+      }
+
+      setError("Réponse inattendue de Supabase");
+    } catch (err: unknown) {
+      console.error("Caught error:", err);
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("Une erreur inattendue est survenue: " + JSON.stringify(err));
+      }
+    } finally {
       setLoading(false);
-      return;
     }
-
-    // User created but email confirmation required (no session yet)
-    if (data?.user && !data?.session) {
-      setSuccess(true);
-      setLoading(false);
-      return;
-    }
-
-    // Fully signed in (e.g. email confirmation disabled)
-    setSuccess(true);
-    setLoading(false);
   };
 
   const handleGoogle = async () => {
