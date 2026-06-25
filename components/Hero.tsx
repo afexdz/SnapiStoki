@@ -3,61 +3,82 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 
-const popularTags = [
-  "Logo Design",
-  "Développement Web",
-  "Montage Vidéo",
-  "SEO",
-  "Traduction",
-  "Motion Design",
-  "Application Mobile",
+const popularTags = ["Logo Design", "Développement Web", "Montage Vidéo", "SEO", "Motion Design", "Application Mobile"];
+
+const stats = [
+  { value: "5 000+", label: "Freelances" },
+  { value: "12 000+", label: "Projets livrés" },
+  { value: "98%", label: "Satisfaction" },
 ];
 
 export default function Hero() {
   const [query, setQuery] = useState("");
+  const [focused, setFocused] = useState(false);
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-violet-700 via-violet-600 to-indigo-700 dark:from-violet-950 dark:via-violet-900 dark:to-indigo-950">
-      {/* Animated background blobs */}
+    <section className="relative overflow-hidden bg-[#0d0618] min-h-[88vh] flex items-center">
+
+      {/* Dot grid */}
+      <div className="absolute inset-0 dot-grid opacity-60" />
+
+      {/* Ambient orbs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-32 -right-32 w-[500px] h-[500px] bg-violet-400/20 rounded-full blur-3xl animate-float" />
-        <div className="absolute -bottom-48 -left-32 w-[500px] h-[500px] bg-indigo-400/20 rounded-full blur-3xl animate-float-delay" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-white/5 rounded-full blur-3xl" />
+        <div className="absolute -top-40 left-1/4 w-[600px] h-[600px] bg-violet-600/25 rounded-full blur-[120px] animate-float" />
+        <div className="absolute -bottom-40 right-1/4 w-[500px] h-[500px] bg-purple-700/20 rounded-full blur-[100px] animate-float-delay" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-indigo-800/15 rounded-full blur-[140px]" />
       </div>
 
-      <div className="relative max-w-4xl mx-auto px-4 py-24 sm:py-32 text-center">
-        {/* Badge */}
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/15 backdrop-blur-sm rounded-full text-white/90 text-sm font-medium mb-6 border border-white/20">
-          <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-          +5,000 freelances actifs en Algérie
+      {/* Spinning ring accent */}
+      <div className="absolute top-16 right-16 w-32 h-32 opacity-20 hidden lg:block">
+        <div className="w-full h-full rounded-full border-2 border-dashed border-violet-400/50 animate-spin-slow" />
+      </div>
+      <div className="absolute bottom-24 left-12 w-16 h-16 opacity-15 hidden lg:block">
+        <div className="w-full h-full rounded-full border border-dashed border-purple-400/50 animate-spin-slow" style={{ animationDirection: "reverse" }} />
+      </div>
+
+      <div className="relative w-full max-w-5xl mx-auto px-4 py-24 sm:py-32 text-center">
+
+        {/* Top badge */}
+        <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full glass border border-white/15 text-white/80 text-xs font-semibold mb-10 tracking-wide uppercase">
+          <span className="relative flex w-2 h-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+            <span className="relative inline-flex rounded-full w-2 h-2 bg-emerald-400" />
+          </span>
+          Lancé en Algérie · Rejoignez 5 000+ créatifs
         </div>
 
         {/* Headline */}
-        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white leading-tight mb-4 tracking-tight">
-          Trouvez le talent
+        <h1 className="text-5xl sm:text-6xl lg:text-[5.5rem] font-black tracking-tighter text-white leading-[1.02] mb-6">
+          Le talent algérien,
           <br />
-          <span className="text-yellow-300">qu'il vous faut,</span> maintenant.
+          <span className="gradient-text">à portée de clic.</span>
         </h1>
-        <p className="text-lg sm:text-xl text-white/80 mb-8 max-w-xl mx-auto">
-          La marketplace numérique algérienne — services, ressources et
-          freelances de qualité.
+
+        <p className="text-lg sm:text-xl text-white/55 mb-10 max-w-xl mx-auto font-medium leading-relaxed">
+          Designers, développeurs, créatifs — trouvez votre prochain talent ou vendez votre expertise sur la marketplace numérique algérienne.
         </p>
 
-        {/* Search bar */}
-        <div className="flex items-center bg-white dark:bg-gray-900 rounded-xl shadow-2xl overflow-hidden max-w-2xl mx-auto ring-4 ring-white/20">
-          <div className="flex items-center gap-2 pl-4 text-gray-400">
-            <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        {/* Glass search bar */}
+        <div className={`relative flex items-center max-w-2xl mx-auto rounded-2xl transition-all duration-300 ${
+          focused
+            ? "glass border-2 border-violet-500/60 shadow-2xl shadow-violet-500/25"
+            : "glass border border-white/20 shadow-xl shadow-black/30"
+        }`}>
+          <div className="pl-5 text-white/40 shrink-0">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
           </div>
           <input
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Rechercher un service… ex: création de logo"
-            className="flex-1 px-3 py-4 text-gray-900 dark:text-gray-100 bg-transparent outline-none text-sm sm:text-base placeholder-gray-400 dark:placeholder-gray-500"
+            onFocus={() => setFocused(true)}
+            onBlur={() => setFocused(false)}
+            placeholder="Rechercher un service ou un talent…"
+            className="flex-1 px-4 py-4 bg-transparent text-white placeholder-white/35 outline-none text-base font-medium"
           />
-          <button className="m-1.5 px-6 py-3 bg-violet-600 hover:bg-violet-700 active:bg-violet-800 text-white font-semibold rounded-lg transition-colors text-sm sm:text-base shrink-0">
+          <button className="btn-shimmer btn-glow m-2 px-6 py-3 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white font-semibold rounded-xl transition-all duration-200 text-sm shrink-0 shadow-lg shadow-violet-500/30">
             Rechercher
           </button>
         </div>
@@ -129,15 +150,23 @@ export default function Hero() {
 
         {/* Popular tags */}
         <div className="mt-5 flex flex-wrap justify-center gap-2">
-          <span className="text-white/70 text-sm mr-1 self-center">Populaire :</span>
+          <span className="text-white/35 text-xs font-medium self-center tracking-wide uppercase">Tendance :</span>
           {popularTags.map((tag) => (
-            <button
-              key={tag}
-              onClick={() => setQuery(tag)}
-              className="px-3 py-1.5 bg-white/10 hover:bg-white/20 text-white text-xs sm:text-sm rounded-full border border-white/20 hover:border-white/40 transition-all"
+            <button key={tag} onClick={() => setQuery(tag)}
+              className="px-3 py-1.5 rounded-full bg-white/8 hover:bg-white/16 text-white/65 hover:text-white text-xs font-medium border border-white/10 hover:border-white/25 transition-all duration-200 hover:-translate-y-0.5"
             >
               {tag}
             </button>
+          ))}
+        </div>
+
+        {/* Stats row */}
+        <div className="mt-14 flex items-center justify-center gap-0 sm:gap-0">
+          {stats.map((stat, i) => (
+            <div key={stat.label} className={`flex flex-col items-center px-8 sm:px-12 ${i < stats.length - 1 ? "border-r border-white/10" : ""}`}>
+              <span className="text-2xl sm:text-3xl font-black text-white tracking-tight">{stat.value}</span>
+              <span className="text-xs text-white/45 font-medium mt-0.5 tracking-wide">{stat.label}</span>
+            </div>
           ))}
         </div>
       </div>
