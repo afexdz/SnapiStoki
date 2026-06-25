@@ -1,9 +1,41 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import Link from "next/link";
+import { createClient } from "@/lib/supabase/client";
 
 type AccountType = "buyer" | "seller";
+
+const FR_ERRORS: Record<string, string> = {
+  "User already registered": "Un compte existe déjà avec cet email.",
+  "Password should be at least": "Le mot de passe doit contenir au moins 8 caractères.",
+  "Unable to validate email": "Adresse email invalide.",
+  "Signup is disabled": "Les inscriptions sont temporairement désactivées.",
+};
+
+function translateError(msg: string): string {
+  for (const [key, val] of Object.entries(FR_ERRORS)) {
+    if (msg.includes(key)) return val;
+  }
+  return "Une erreur est survenue. Veuillez réessayer.";
+}
+
+function PasswordRule({ met, label }: { met: boolean; label: string }) {
+  return (
+    <li className={`flex items-center gap-2 text-xs transition-colors duration-200 ${met ? "text-emerald-600 dark:text-emerald-400" : "text-gray-400 dark:text-gray-500"}`}>
+      <span className={`w-4 h-4 rounded-full flex items-center justify-center shrink-0 transition-all duration-200 ${met ? "bg-emerald-100 dark:bg-emerald-900/40" : "bg-gray-100 dark:bg-gray-700"}`}>
+        {met ? (
+          <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+          </svg>
+        ) : (
+          <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-600" />
+        )}
+      </span>
+      {label}
+    </li>
+  );
+}
 
 export default function RegisterPage() {
   const [fullName, setFullName] = useState("");
@@ -13,20 +45,93 @@ export default function RegisterPage() {
   const [accountType, setAccountType] = useState<AccountType>("buyer");
   const [terms, setTerms] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (password !== confirmPassword) return;
-    setLoading(true);
-    setTimeout(() => setLoading(false), 1500);
-  };
+  const rules = useMemo(() => ({
+    length: password.length >= 8,
+    uppercase: /[A-Z]/.test(password),
+    number: /[0-9]/.test(password),
+    special: /[^A-Za-z0-9]/.test(password),
+  }), [password]);
+
+  const strengthCount = Object.values(rules).filter(Boolean).length;
+  const strengthPercent = (strengthCount / 4) * 100;
+  const strengthColor =
+    strengthCount <= 1 ? "bg-red-500" :
+    strengthCount === 2 ? "bg-amber-500" :
+    strengthCount === 3 ? "bg-yellow-400" :
+    "bg-emerald-500";
 
   const passwordMatch = confirmPassword === "" || password === confirmPassword;
+  const canSubmit = terms && passwordMatch && password === confirmPassword && confirmPassword !== "" && strengthCount >= 3;
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!canSubmit) return;
+    setLoading(true);
+    setError("");
+
+    const supabase = createClient();
+    const { error: authError } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          full_name: fullName,
+          account_type: accountType,
+        },
+        emailRedirectTo: `${window.location.origin}/auth/callback`,
+      },
+    });
+
+    if (authError) {
+      setError(translateError(authError.message));
+      setLoading(false);
+      return;
+    }
+
+    setSuccess(true);
+    setLoading(false);
+  };
+
+  const handleGoogle = async () => {
+    setGoogleLoading(true);
+    setError("");
+    const supabase = createClient();
+    await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: { redirectTo: `${window.location.origin}/auth/callback` },
+    });
+  };
+
+  if (success) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-indigo-50 dark:from-gray-950 dark:via-gray-900 dark:to-indigo-950 flex items-center justify-center px-4">
+        <div className="w-full max-w-md bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-2xl shadow-violet-100/60 p-10 text-center">
+          <div className="w-16 h-16 bg-emerald-100 dark:bg-emerald-900/40 rounded-2xl flex items-center justify-center mx-auto mb-5">
+            <svg className="w-8 h-8 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
+          </div>
+          <h2 className="text-2xl font-black text-gray-900 dark:text-white mb-2">Vérifiez votre email !</h2>
+          <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed mb-6">
+            Un lien de confirmation a été envoyé à <strong className="text-gray-700 dark:text-gray-300">{email}</strong>. Cliquez dessus pour activer votre compte.
+          </p>
+          <Link href="/login" className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-violet-600 to-indigo-600 text-white font-bold rounded-xl text-sm shadow-lg shadow-violet-200 dark:shadow-violet-900/40 hover:from-violet-500 hover:to-indigo-500 transition-all">
+            Aller à la connexion →
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-indigo-50 dark:from-gray-950 dark:via-gray-900 dark:to-indigo-950 flex flex-col">
-      {/* Minimal header */}
+      {/* Header */}
       <header className="px-6 py-4 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-0.5">
           <span className="text-xl font-extrabold text-violet-600">Pix</span>
@@ -37,17 +142,15 @@ export default function RegisterPage() {
         </Link>
       </header>
 
-      {/* Decorative blobs */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         <div className="absolute -top-40 -right-40 w-96 h-96 bg-violet-200/40 dark:bg-violet-900/20 rounded-full blur-3xl" />
         <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-indigo-200/40 dark:bg-indigo-900/20 rounded-full blur-3xl" />
       </div>
 
-      {/* Card */}
       <div className="flex-1 flex items-center justify-center px-4 py-8">
         <div className="relative w-full max-w-lg">
           <div className="bg-white dark:bg-gray-800/90 rounded-3xl shadow-2xl shadow-violet-100/60 dark:shadow-violet-950/50 border border-gray-100 dark:border-gray-700 p-8 sm:p-10">
-            {/* Header */}
+
             <div className="text-center mb-8">
               <div className="w-14 h-14 bg-gradient-to-br from-violet-500 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-violet-200 dark:shadow-violet-900/50">
                 <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -58,14 +161,34 @@ export default function RegisterPage() {
               <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">Rejoignez la communauté PixRaise</p>
             </div>
 
-            {/* Google button */}
-            <button className="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 text-sm font-semibold hover:border-gray-300 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-600 transition-all mb-6">
-              <svg className="w-5 h-5" viewBox="0 0 24 24">
-                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
-                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
-              </svg>
+            {error && (
+              <div className="mb-5 flex items-start gap-3 p-3.5 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl">
+                <svg className="w-4 h-4 text-red-500 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+              </div>
+            )}
+
+            {/* Google */}
+            <button
+              onClick={handleGoogle}
+              disabled={googleLoading}
+              className="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 text-sm font-semibold hover:border-gray-300 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-600 transition-all mb-6 disabled:opacity-60 disabled:cursor-not-allowed"
+            >
+              {googleLoading ? (
+                <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                </svg>
+              ) : (
+                <svg className="w-5 h-5" viewBox="0 0 24 24">
+                  <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                  <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                  <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+                  <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+                </svg>
+              )}
               Continuer avec Google
             </button>
 
@@ -99,7 +222,7 @@ export default function RegisterPage() {
                 <div className="relative">
                   <div className="absolute inset-y-0 left-3.5 flex items-center pointer-events-none text-gray-400">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                     </svg>
                   </div>
                   <input
@@ -110,48 +233,86 @@ export default function RegisterPage() {
                 </div>
               </div>
 
-              {/* Password row */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Mot de passe</label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-3.5 flex items-center pointer-events-none text-gray-400">
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                      </svg>
-                    </div>
-                    <input
-                      type={showPassword ? "text" : "password"} value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      placeholder="••••••••" required minLength={8}
-                      className="w-full pl-10 pr-10 py-3 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/60 text-gray-900 dark:text-white placeholder-gray-400 outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 transition-all text-sm"
-                    />
-                    <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute inset-y-0 right-3 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        {showPassword
-                          ? <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
-                          : <><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></>
-                        }
-                      </svg>
-                    </button>
+              {/* Password */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Mot de passe</label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-3.5 flex items-center pointer-events-none text-gray-400">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
                   </div>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Confirmer</label>
                   <input
-                    type="password" value={confirmPassword}
+                    type={showPassword ? "text" : "password"} value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="••••••••" required minLength={8}
+                    className="w-full pl-10 pr-12 py-3 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/60 text-gray-900 dark:text-white placeholder-gray-400 outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 transition-all text-sm"
+                  />
+                  <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute inset-y-0 right-3.5 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      {showPassword
+                        ? <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                        : <><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></>
+                      }
+                    </svg>
+                  </button>
+                </div>
+
+                {/* Strength bar */}
+                {password.length > 0 && (
+                  <div className="mt-2.5">
+                    <div className="flex items-center justify-between mb-1.5">
+                      <span className="text-xs text-gray-400">Force du mot de passe</span>
+                      <span className={`text-xs font-semibold ${strengthCount <= 1 ? "text-red-500" : strengthCount === 2 ? "text-amber-500" : strengthCount === 3 ? "text-yellow-500" : "text-emerald-500"}`}>
+                        {strengthCount <= 1 ? "Faible" : strengthCount === 2 ? "Moyen" : strengthCount === 3 ? "Bon" : "Excellent"}
+                      </span>
+                    </div>
+                    <div className="h-1.5 w-full bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
+                      <div
+                        className={`h-full rounded-full transition-all duration-300 ${strengthColor}`}
+                        style={{ width: `${strengthPercent}%` }}
+                      />
+                    </div>
+                    <ul className="mt-2.5 grid grid-cols-2 gap-1">
+                      <PasswordRule met={rules.length} label="8 caractères min." />
+                      <PasswordRule met={rules.uppercase} label="1 majuscule" />
+                      <PasswordRule met={rules.number} label="1 chiffre" />
+                      <PasswordRule met={rules.special} label="1 caractère spécial" />
+                    </ul>
+                  </div>
+                )}
+              </div>
+
+              {/* Confirm password */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Confirmer le mot de passe</label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-3.5 flex items-center pointer-events-none text-gray-400">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    </svg>
+                  </div>
+                  <input
+                    type={showConfirm ? "text" : "password"}
+                    value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     placeholder="••••••••" required
-                    className={`w-full px-4 py-3 rounded-xl border bg-gray-50 dark:bg-gray-700/60 text-gray-900 dark:text-white placeholder-gray-400 outline-none focus:ring-2 transition-all text-sm ${
+                    className={`w-full pl-10 pr-12 py-3 rounded-xl border bg-gray-50 dark:bg-gray-700/60 text-gray-900 dark:text-white placeholder-gray-400 outline-none focus:ring-2 transition-all text-sm ${
                       passwordMatch
                         ? "border-gray-200 dark:border-gray-600 focus:border-violet-500 focus:ring-violet-500/20"
                         : "border-red-400 focus:border-red-400 focus:ring-red-400/20"
                     }`}
                   />
-                  {!passwordMatch && (
-                    <p className="text-xs text-red-500 mt-1">Les mots de passe ne correspondent pas</p>
-                  )}
+                  <button type="button" onClick={() => setShowConfirm(!showConfirm)} className="absolute inset-y-0 right-3.5 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      {showConfirm
+                        ? <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                        : <><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></>
+                      }
+                    </svg>
+                  </button>
                 </div>
+                {!passwordMatch && <p className="text-xs text-red-500 mt-1">Les mots de passe ne correspondent pas.</p>}
               </div>
 
               {/* Account type */}
@@ -159,27 +320,47 @@ export default function RegisterPage() {
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Type de compte</label>
                 <div className="grid grid-cols-2 gap-3">
                   {[
-                    { type: "buyer" as AccountType, icon: "🛒", title: "Acheteur", desc: "Je cherche des services et produits" },
-                    { type: "seller" as AccountType, icon: "💼", title: "Vendeur / Freelance", desc: "Je vends mes créations" },
+                    {
+                      type: "buyer" as AccountType,
+                      title: "Acheteur",
+                      desc: "Je cherche des services et produits",
+                      icon: (
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                        </svg>
+                      ),
+                    },
+                    {
+                      type: "seller" as AccountType,
+                      title: "Vendeur / Freelance",
+                      desc: "Je vends mes créations et services",
+                      icon: (
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                        </svg>
+                      ),
+                    },
                   ].map((opt) => (
                     <button
                       key={opt.type}
                       type="button"
                       onClick={() => setAccountType(opt.type)}
-                      className={`flex flex-col items-center text-center p-4 rounded-2xl border-2 transition-all duration-200 ${
+                      className={`relative flex flex-col items-center text-center p-4 rounded-2xl border-2 transition-all duration-200 ${
                         accountType === opt.type
                           ? "border-violet-500 bg-violet-50 dark:bg-violet-900/30 shadow-md shadow-violet-100 dark:shadow-violet-900/30"
                           : "border-gray-200 dark:border-gray-600 hover:border-violet-300 dark:hover:border-violet-700 hover:bg-gray-50 dark:hover:bg-gray-700/50"
                       }`}
                     >
-                      <span className="text-2xl mb-2">{opt.icon}</span>
+                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-2.5 transition-colors ${accountType === opt.type ? "bg-violet-100 dark:bg-violet-800/60 text-violet-600 dark:text-violet-300" : "bg-gray-100 dark:bg-gray-700 text-gray-500"}`}>
+                        {opt.icon}
+                      </div>
                       <span className={`text-sm font-semibold ${accountType === opt.type ? "text-violet-700 dark:text-violet-300" : "text-gray-700 dark:text-gray-300"}`}>
                         {opt.title}
                       </span>
                       <span className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 leading-tight">{opt.desc}</span>
                       {accountType === opt.type && (
-                        <span className="mt-2 w-5 h-5 bg-violet-600 rounded-full flex items-center justify-center">
-                          <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <span className="absolute top-2.5 right-2.5 w-4 h-4 bg-violet-600 rounded-full flex items-center justify-center">
+                          <svg className="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                           </svg>
                         </span>
@@ -191,14 +372,8 @@ export default function RegisterPage() {
 
               {/* Terms */}
               <label className="flex items-start gap-3 cursor-pointer group">
-                <div className="relative mt-0.5">
-                  <input
-                    type="checkbox"
-                    checked={terms}
-                    onChange={(e) => setTerms(e.target.checked)}
-                    className="sr-only"
-                    required
-                  />
+                <div className="relative mt-0.5 shrink-0">
+                  <input type="checkbox" checked={terms} onChange={(e) => setTerms(e.target.checked)} className="sr-only" />
                   <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all ${terms ? "bg-violet-600 border-violet-600" : "border-gray-300 dark:border-gray-600 group-hover:border-violet-400"}`}>
                     {terms && (
                       <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -217,7 +392,7 @@ export default function RegisterPage() {
 
               <button
                 type="submit"
-                disabled={loading || !terms || !passwordMatch}
+                disabled={loading || !canSubmit}
                 className="w-full py-3.5 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-bold rounded-xl shadow-lg shadow-violet-200 dark:shadow-violet-900/40 transition-all hover:scale-[1.02] active:scale-100 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-2"
               >
                 {loading ? (
@@ -228,9 +403,7 @@ export default function RegisterPage() {
                     </svg>
                     Création du compte...
                   </>
-                ) : (
-                  "Créer mon compte"
-                )}
+                ) : "Créer mon compte"}
               </button>
             </form>
 
