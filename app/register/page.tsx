@@ -97,12 +97,20 @@ export default function RegisterPage() {
     console.log("signUp result:", { data, error: authError });
 
     if (authError) {
-      console.error("Supabase signUp error:", authError);
-      setError(translateError(authError.message));
+      console.log("Supabase error:", JSON.stringify(authError));
+      setError(translateError(authError.message) || authError.message || JSON.stringify(authError));
       setLoading(false);
       return;
     }
 
+    // User created but email confirmation required (no session yet)
+    if (data?.user && !data?.session) {
+      setSuccess(true);
+      setLoading(false);
+      return;
+    }
+
+    // Fully signed in (e.g. email confirmation disabled)
     setSuccess(true);
     setLoading(false);
   };
@@ -175,7 +183,7 @@ export default function RegisterPage() {
                 <svg className="w-4 h-4 text-red-500 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+                <p className="text-sm text-red-600 dark:text-red-400">{(error as any)?.message || error?.toString() || JSON.stringify(error)}</p>
               </div>
             )}
 
