@@ -73,11 +73,11 @@ const categories: Category[] = [
 
 export default function Categories() {
   return (
-    <section className="py-16 bg-[#F5E7C6] dark:bg-[#2a2a2a]">
+    <section className="py-16 bg-[#FFF8F0] dark:bg-[#2a2a2a]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-end justify-between mb-8">
           <div>
-            <h2 className="text-2xl sm:text-3xl font-bold text-[#222222] dark:text-[#FAF3E1]">
+            <h2 className="text-2xl sm:text-3xl font-bold text-[#1A1A1A] dark:text-[#FAF3E1]">
               Explorez les catégories
             </h2>
             <p className="mt-1 text-gray-500 dark:text-gray-400 text-sm">
@@ -98,11 +98,11 @@ export default function Categories() {
             <a
               key={cat.label}
               href="#"
-              className="group flex-shrink-0 flex flex-col items-center gap-3 p-5 bg-[#FAF3E1] dark:bg-[#1a1a1a] rounded-2xl border border-[#F5E7C6] dark:border-[#3a3a3a] hover:border-[#FA8112]/40 dark:hover:border-[#FA8112]/40 hover:shadow-lg hover:shadow-[#FA8112]/10 transition-all duration-200 w-36"
+              className="group flex-shrink-0 flex flex-col items-center gap-3 p-5 bg-white dark:bg-[#1a1a1a] rounded-2xl border border-[#F0E8E0] dark:border-[#3a3a3a] hover:border-[#FA8112]/40 dark:hover:border-[#FA8112]/40 hover:shadow-lg hover:shadow-[#FA8112]/10 transition-all duration-200 w-36"
             >
-              <div className="w-16 h-16 flex items-center justify-center bg-[#F5E7C6] dark:bg-[#2a2a2a] rounded-xl group-hover:bg-[#FA8112]/10 transition-colors">
+              <div className="w-16 h-16 flex items-center justify-center bg-[#FFF8F0] dark:bg-[#2a2a2a] rounded-xl group-hover:bg-[#FA8112]/10 transition-colors">
                 <svg
-                  className="w-8 h-8 text-[#222222] dark:text-[#FAF3E1] group-hover:text-[#FA8112] transition-colors"
+                  className="w-8 h-8 text-[#1A1A1A] dark:text-[#FAF3E1] group-hover:text-[#FA8112] transition-colors"
                   fill="none"
                   stroke="currentColor"
                   strokeWidth={1.5}
@@ -120,7 +120,7 @@ export default function Categories() {
               </div>
 
               <div className="text-center">
-                <div className="font-semibold text-[#222222] dark:text-[#FAF3E1] text-sm group-hover:text-[#FA8112] transition-colors">
+                <div className="font-semibold text-[#1A1A1A] dark:text-[#FAF3E1] text-sm group-hover:text-[#FA8112] transition-colors">
                   {cat.label}
                 </div>
                 <div className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">

@@ -41,7 +41,7 @@ export default function Footer() {
           <div className="lg:col-span-1">
             <a href="#" className="flex items-center gap-0.5 mb-4">
               <span className="text-2xl font-extrabold text-[#FA8112]">Pix</span>
-              <span className="text-2xl font-extrabold text-[#FAF3E1]">Raise</span>
+              <span className="text-2xl font-extrabold text-white">Raise</span>
             </a>
             <p className="text-sm leading-relaxed mb-6">
               La marketplace des freelances et ressources numériques en Algérie.
@@ -65,7 +65,7 @@ export default function Footer() {
           {/* Link groups */}
           {Object.entries(links).map(([group, items]) => (
             <div key={group}>
-              <h4 className="text-[#FAF3E1] font-semibold text-sm mb-4">{group}</h4>
+              <h4 className="text-white font-semibold text-sm mb-4">{group}</h4>
               <ul className="space-y-2.5">
                 {items.map((item) => (
                   <li key={item}>

@@ -42,14 +42,14 @@ const steps = [
 
 export default function HowItWorks() {
   return (
-    <section className="py-20 bg-[#FAF3E1] dark:bg-[#1a1a1a]">
+    <section className="py-20 bg-white dark:bg-[#1a1a1a]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-14">
           <span className="inline-block px-4 py-1.5 bg-[#FA8112]/10 dark:bg-[#FA8112]/20 text-[#FA8112] text-sm font-semibold rounded-full mb-4">
             Simple & Rapide
           </span>
-          <h2 className="text-3xl sm:text-4xl font-bold text-[#222222] dark:text-[#FAF3E1] mb-3">
+          <h2 className="text-3xl sm:text-4xl font-bold text-[#1A1A1A] dark:text-[#FAF3E1] mb-3">
             Comment ça marche ?
           </h2>
           <p className="text-gray-500 dark:text-gray-400 max-w-lg mx-auto">
@@ -66,11 +66,11 @@ export default function HowItWorks() {
           {steps.map((step, i) => (
             <div
               key={step.title}
-              className={`relative group bg-[#FAF3E1] dark:bg-[#2a2a2a] rounded-2xl border ${step.accent} p-8 hover:shadow-xl hover:shadow-[#FA8112]/10 dark:hover:shadow-[#FA8112]/5 transition-all duration-200 z-10`}
+              className={`relative group bg-white dark:bg-[#2a2a2a] rounded-2xl border ${step.accent} p-8 hover:shadow-xl hover:shadow-[#FA8112]/10 dark:hover:shadow-[#FA8112]/5 transition-all duration-200 z-10`}
             >
               {/* Step number */}
               <div className="absolute -top-4 left-8">
-                <span className="inline-flex items-center justify-center w-8 h-8 bg-[#FAF3E1] dark:bg-[#1a1a1a] border-2 border-current rounded-full text-xs font-bold text-gray-400 dark:text-gray-500 shadow-sm">
+                <span className="inline-flex items-center justify-center w-8 h-8 bg-white dark:bg-[#1a1a1a] border-2 border-current rounded-full text-xs font-bold text-gray-400 dark:text-gray-500 shadow-sm">
                   {step.number}
                 </span>
               </div>
@@ -80,7 +80,7 @@ export default function HowItWorks() {
                 {step.icon}
               </div>
 
-              <h3 className="text-xl font-bold text-[#222222] dark:text-[#FAF3E1] mb-3">
+              <h3 className="text-xl font-bold text-[#1A1A1A] dark:text-[#FAF3E1] mb-3">
                 {step.title}
               </h3>
               <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed">

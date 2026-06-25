@@ -3,13 +3,13 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  --background: #FAF3E1;
-  --foreground: #222222;
+  --background: #FFFFFF;
+  --foreground: #1A1A1A;
   --color-primary: #FA8112;
   --color-primary-hover: #E8730F;
-  --color-bg: #FAF3E1;
-  --color-surface: #F5E7C6;
-  --color-text: #222222;
+  --color-bg: #FFFFFF;
+  --color-surface: #FFF8F0;
+  --color-text: #1A1A1A;
 }
 
 body {

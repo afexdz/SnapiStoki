@@ -35,7 +35,7 @@ export default function Hero() {
         <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white leading-tight mb-4 tracking-tight">
           Trouvez le talent
           <br />
-          <span className="text-[#FAF3E1]">qu'il vous faut,</span> maintenant.
+          <span className="text-white">qu'il vous faut,</span> maintenant.
         </h1>
         <p className="text-lg sm:text-xl text-white/80 mb-8 max-w-xl mx-auto">
           La marketplace numérique algérienne — services, ressources et
@@ -43,7 +43,7 @@ export default function Hero() {
         </p>
 
         {/* Search bar */}
-        <div className="flex items-center bg-[#FAF3E1] dark:bg-[#2a2a2a] rounded-xl shadow-2xl overflow-hidden max-w-2xl mx-auto ring-4 ring-white/20">
+        <div className="flex items-center bg-white dark:bg-[#2a2a2a] rounded-xl shadow-2xl overflow-hidden max-w-2xl mx-auto ring-4 ring-white/20">
           <div className="flex items-center gap-2 pl-4 text-gray-400">
             <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -54,7 +54,7 @@ export default function Hero() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Rechercher un service… ex: création de logo"
-            className="flex-1 px-3 py-4 text-[#222222] dark:text-[#FAF3E1] bg-transparent outline-none text-sm sm:text-base placeholder-gray-400 dark:placeholder-gray-500"
+            className="flex-1 px-3 py-4 text-[#1A1A1A] dark:text-[#FAF3E1] bg-transparent outline-none text-sm sm:text-base placeholder-gray-400 dark:placeholder-gray-500"
           />
           <button className="m-1.5 px-6 py-3 bg-[#FA8112] hover:bg-[#E8730F] active:bg-[#D46A0E] text-white font-semibold rounded-lg transition-colors text-sm sm:text-base shrink-0">
             Rechercher

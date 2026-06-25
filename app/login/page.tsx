@@ -63,12 +63,12 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#FAF3E1] via-[#F5E7C6] to-[#FAF3E1] dark:from-[#1a1a1a] dark:via-[#2a2a2a] dark:to-[#1a1a1a] flex flex-col">
+    <div className="min-h-screen bg-white dark:from-[#1a1a1a] dark:via-[#2a2a2a] dark:to-[#1a1a1a] flex flex-col">
       {/* Header */}
       <header className="px-6 py-4 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-0.5">
           <span className="text-xl font-extrabold text-[#FA8112]">Pix</span>
-          <span className="text-xl font-extrabold text-[#222222] dark:text-[#FAF3E1]">Raise</span>
+          <span className="text-xl font-extrabold text-[#1A1A1A] dark:text-[#FAF3E1]">Raise</span>
         </Link>
         <Link href="/register" className="text-sm text-gray-600 dark:text-gray-400 hover:text-[#FA8112] transition-colors">
           Créer un compte →
@@ -84,7 +84,7 @@ export default function LoginPage() {
       {/* Card */}
       <div className="flex-1 flex items-center justify-center px-4 py-8">
         <div className="relative w-full max-w-md">
-          <div className="bg-[#FAF3E1] dark:bg-[#2a2a2a] rounded-3xl shadow-2xl shadow-[#FA8112]/10 dark:shadow-[#FA8112]/5 border border-[#F5E7C6] dark:border-[#3a3a3a] p-8 sm:p-10">
+          <div className="bg-white dark:bg-[#2a2a2a] rounded-3xl shadow-2xl shadow-[#FA8112]/10 dark:shadow-[#FA8112]/5 border border-[#F0E8E0] dark:border-[#3a3a3a] p-8 sm:p-10">
 
             {/* Header */}
             <div className="text-center mb-8">
@@ -93,7 +93,7 @@ export default function LoginPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>
               </div>
-              <h1 className="text-2xl font-extrabold text-[#222222] dark:text-[#FAF3E1]">Bon retour !</h1>
+              <h1 className="text-2xl font-extrabold text-[#1A1A1A] dark:text-[#FAF3E1]">Bon retour !</h1>
               <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">Connectez-vous à votre compte PixRaise</p>
             </div>
 
@@ -111,7 +111,7 @@ export default function LoginPage() {
             <button
               onClick={handleGoogle}
               disabled={googleLoading}
-              className="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-xl border-2 border-[#F5E7C6] dark:border-[#3a3a3a] bg-[#FAF3E1] dark:bg-[#2a2a2a] text-gray-700 dark:text-gray-200 text-sm font-semibold hover:border-[#FA8112]/30 dark:hover:border-[#FA8112]/30 hover:bg-[#F5E7C6] dark:hover:bg-[#3a3a3a] transition-all mb-6 disabled:opacity-60 disabled:cursor-not-allowed"
+              className="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-xl border-2 border-[#F0E8E0] dark:border-[#3a3a3a] bg-white dark:bg-[#2a2a2a] text-gray-700 dark:text-gray-200 text-sm font-semibold hover:border-[#FA8112]/30 dark:hover:border-[#FA8112]/30 hover:bg-[#FFF8F0] dark:hover:bg-[#3a3a3a] transition-all mb-6 disabled:opacity-60 disabled:cursor-not-allowed"
             >
               {googleLoading ? (
                 <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
@@ -130,15 +130,15 @@ export default function LoginPage() {
             </button>
 
             <div className="flex items-center gap-3 mb-6">
-              <div className="flex-1 h-px bg-[#F5E7C6] dark:bg-[#3a3a3a]" />
+              <div className="flex-1 h-px bg-[#FFF8F0] dark:bg-[#3a3a3a]" />
               <span className="text-xs text-gray-400 dark:text-gray-500 font-medium">ou par email</span>
-              <div className="flex-1 h-px bg-[#F5E7C6] dark:bg-[#3a3a3a]" />
+              <div className="flex-1 h-px bg-[#FFF8F0] dark:bg-[#3a3a3a]" />
             </div>
 
             {/* Form */}
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-[#222222] dark:text-[#FAF3E1] mb-1.5">
+                <label className="block text-sm font-medium text-[#1A1A1A] dark:text-[#FAF3E1] mb-1.5">
                   Adresse email
                 </label>
                 <div className="relative">
@@ -153,14 +153,14 @@ export default function LoginPage() {
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="vous@exemple.com"
                     required
-                    className="w-full pl-10 pr-4 py-3 rounded-xl border border-[#F5E7C6] dark:border-[#3a3a3a] bg-[#F5E7C6] dark:bg-[#1a1a1a] text-[#222222] dark:text-[#FAF3E1] placeholder-gray-400 dark:placeholder-gray-500 outline-none focus:border-[#FA8112] focus:ring-2 focus:ring-[#FA8112]/20 transition-all text-sm"
+                    className="w-full pl-10 pr-4 py-3 rounded-xl border border-[#F0E8E0] dark:border-[#3a3a3a] bg-[#FFF8F0] dark:bg-[#1a1a1a] text-[#1A1A1A] dark:text-[#FAF3E1] placeholder-gray-400 dark:placeholder-gray-500 outline-none focus:border-[#FA8112] focus:ring-2 focus:ring-[#FA8112]/20 transition-all text-sm"
                   />
                 </div>
               </div>
 
               <div>
                 <div className="flex items-center justify-between mb-1.5">
-                  <label className="block text-sm font-medium text-[#222222] dark:text-[#FAF3E1]">
+                  <label className="block text-sm font-medium text-[#1A1A1A] dark:text-[#FAF3E1]">
                     Mot de passe
                   </label>
                   <a href="#" className="text-xs text-[#FA8112] hover:text-[#E8730F] transition-colors">
@@ -179,7 +179,7 @@ export default function LoginPage() {
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
                     required
-                    className="w-full pl-10 pr-12 py-3 rounded-xl border border-[#F5E7C6] dark:border-[#3a3a3a] bg-[#F5E7C6] dark:bg-[#1a1a1a] text-[#222222] dark:text-[#FAF3E1] placeholder-gray-400 dark:placeholder-gray-500 outline-none focus:border-[#FA8112] focus:ring-2 focus:ring-[#FA8112]/20 transition-all text-sm"
+                    className="w-full pl-10 pr-12 py-3 rounded-xl border border-[#F0E8E0] dark:border-[#3a3a3a] bg-[#FFF8F0] dark:bg-[#1a1a1a] text-[#1A1A1A] dark:text-[#FAF3E1] placeholder-gray-400 dark:placeholder-gray-500 outline-none focus:border-[#FA8112] focus:ring-2 focus:ring-[#FA8112]/20 transition-all text-sm"
                   />
                   <button
                     type="button"

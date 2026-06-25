@@ -74,11 +74,11 @@ function Stars({ rating }: { rating: number }) {
 
 export default function Marketplace() {
   return (
-    <section className="py-16 bg-[#F5E7C6] dark:bg-[#2a2a2a]">
+    <section className="py-16 bg-[#FFF8F0] dark:bg-[#2a2a2a]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-end justify-between mb-8">
           <div>
-            <h2 className="text-2xl sm:text-3xl font-bold text-[#222222] dark:text-[#FAF3E1]">
+            <h2 className="text-2xl sm:text-3xl font-bold text-[#1A1A1A] dark:text-[#FAF3E1]">
               Marketplace numérique
             </h2>
             <p className="mt-1 text-gray-500 dark:text-gray-400 text-sm">
@@ -97,7 +97,7 @@ export default function Marketplace() {
           {products.map((p) => (
             <div
               key={p.title}
-              className="group bg-[#FAF3E1] dark:bg-[#1a1a1a] rounded-2xl border border-[#F5E7C6] dark:border-[#3a3a3a] hover:border-[#FA8112]/30 dark:hover:border-[#FA8112]/30 hover:shadow-xl hover:shadow-[#FA8112]/10 transition-all duration-200 overflow-hidden"
+              className="group bg-white dark:bg-[#1a1a1a] rounded-2xl border border-[#F0E8E0] dark:border-[#3a3a3a] hover:border-[#FA8112]/30 dark:hover:border-[#FA8112]/30 hover:shadow-xl hover:shadow-[#FA8112]/10 transition-all duration-200 overflow-hidden"
             >
               {/* Thumbnail */}
               <div className={`relative h-44 bg-gradient-to-br ${p.color} overflow-hidden`}>
@@ -126,7 +126,7 @@ export default function Marketplace() {
 
               {/* Content */}
               <div className="p-5">
-                <h3 className="font-semibold text-[#222222] dark:text-[#FAF3E1] text-sm leading-snug mb-3 group-hover:text-[#FA8112] transition-colors line-clamp-2">
+                <h3 className="font-semibold text-[#1A1A1A] dark:text-[#FAF3E1] text-sm leading-snug mb-3 group-hover:text-[#FA8112] transition-colors line-clamp-2">
                   {p.title}
                 </h3>
 
@@ -147,7 +147,7 @@ export default function Marketplace() {
 
                 <div className="flex items-center justify-between">
                   <div className="flex items-baseline gap-2">
-                    <span className="text-lg font-bold text-[#222222] dark:text-[#FAF3E1]">
+                    <span className="text-lg font-bold text-[#1A1A1A] dark:text-[#FAF3E1]">
                       {p.price}{" "}
                       <span className="text-[#FA8112] text-base">DA</span>
                     </span>

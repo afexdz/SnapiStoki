@@ -82,11 +82,11 @@ function Stars({ rating }: { rating: number }) {
 
 export default function TopFreelancers() {
   return (
-    <section className="py-16 bg-[#FAF3E1] dark:bg-[#1a1a1a]">
+    <section className="py-16 bg-white dark:bg-[#1a1a1a]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-end justify-between mb-8">
           <div>
-            <h2 className="text-2xl sm:text-3xl font-bold text-[#222222] dark:text-[#FAF3E1]">
+            <h2 className="text-2xl sm:text-3xl font-bold text-[#1A1A1A] dark:text-[#FAF3E1]">
               Meilleurs freelances
             </h2>
             <p className="mt-1 text-gray-500 dark:text-gray-400 text-sm">
@@ -105,7 +105,7 @@ export default function TopFreelancers() {
           {freelancers.map((f) => (
             <div
               key={f.name}
-              className="group flex-shrink-0 w-60 bg-[#FAF3E1] dark:bg-[#2a2a2a] rounded-2xl border border-[#F5E7C6] dark:border-[#3a3a3a] hover:border-[#FA8112]/30 dark:hover:border-[#FA8112]/30 hover:shadow-xl hover:shadow-[#FA8112]/10 transition-all duration-200 overflow-hidden"
+              className="group flex-shrink-0 w-60 bg-white dark:bg-[#2a2a2a] rounded-2xl border border-[#F0E8E0] dark:border-[#3a3a3a] hover:border-[#FA8112]/30 dark:hover:border-[#FA8112]/30 hover:shadow-xl hover:shadow-[#FA8112]/10 transition-all duration-200 overflow-hidden"
             >
               {/* Gradient banner */}
               <div className={`h-20 bg-gradient-to-br ${f.color} relative`}>
@@ -125,7 +125,7 @@ export default function TopFreelancers() {
                 </div>
 
                 <div className="mt-3">
-                  <h3 className="font-semibold text-[#222222] dark:text-[#FAF3E1] text-sm leading-tight group-hover:text-[#FA8112] transition-colors">
+                  <h3 className="font-semibold text-[#1A1A1A] dark:text-[#FAF3E1] text-sm leading-tight group-hover:text-[#FA8112] transition-colors">
                     {f.name}
                   </h3>
                   <p className="text-gray-500 dark:text-gray-400 text-xs mt-0.5">
@@ -144,7 +144,7 @@ export default function TopFreelancers() {
                 <div className="mt-4 flex items-center justify-between">
                   <div>
                     <span className="text-xs text-gray-400">À partir de</span>
-                    <div className="text-sm font-bold text-[#222222] dark:text-[#FAF3E1]">
+                    <div className="text-sm font-bold text-[#1A1A1A] dark:text-[#FAF3E1]">
                       {f.price} <span className="text-[#FA8112]">DA</span>
                     </div>
                   </div>

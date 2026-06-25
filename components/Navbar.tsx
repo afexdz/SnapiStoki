@@ -79,16 +79,16 @@ export default function Navbar() {
     <nav
       className={`sticky top-0 z-50 transition-all duration-300 ${
         scrolled
-          ? "bg-[#FAF3E1]/95 dark:bg-[#1a1a1a]/95 backdrop-blur-md shadow-md"
-          : "bg-[#FAF3E1] dark:bg-[#1a1a1a]"
-      } border-b border-[#F5E7C6] dark:border-[#2a2a2a]`}
+          ? "bg-white/95 dark:bg-[#1a1a1a]/95 backdrop-blur-md shadow-md"
+          : "bg-white dark:bg-[#1a1a1a]"
+      } border-b border-[#F0E8E0] dark:border-[#2a2a2a]`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-0.5 shrink-0">
             <span className="text-2xl font-extrabold text-[#FA8112] tracking-tight">Pix</span>
-            <span className="text-2xl font-extrabold text-[#222222] dark:text-[#FAF3E1] tracking-tight">Raise</span>
+            <span className="text-2xl font-extrabold text-[#1A1A1A] dark:text-[#FAF3E1] tracking-tight">Raise</span>
           </Link>
 
           {/* Nav links – desktop */}
@@ -116,7 +116,7 @@ export default function Navbar() {
             {/* Dark mode toggle */}
             <button
               onClick={toggleDark}
-              className="p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-[#F5E7C6] dark:hover:bg-[#2a2a2a] transition-colors"
+              className="p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-[#FFF8F0] dark:hover:bg-[#2a2a2a] transition-colors"
               aria-label="Basculer le thème"
             >
               {dark ? (
@@ -135,7 +135,7 @@ export default function Navbar() {
               <div className="relative" ref={dropdownRef}>
                 <button
                   onClick={() => setDropdownOpen(!dropdownOpen)}
-                  className="flex items-center gap-2 pl-1 pr-2.5 py-1 rounded-xl hover:bg-[#F5E7C6] dark:hover:bg-[#2a2a2a] transition-colors group"
+                  className="flex items-center gap-2 pl-1 pr-2.5 py-1 rounded-xl hover:bg-[#FFF8F0] dark:hover:bg-[#2a2a2a] transition-colors group"
                 >
                   <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#FA8112] to-[#E8730F] flex items-center justify-center text-white text-xs font-black shadow-sm">
                     {initials}
@@ -149,8 +149,8 @@ export default function Navbar() {
                 </button>
 
                 {dropdownOpen && (
-                  <div className="absolute right-0 top-full mt-2 w-52 bg-[#FAF3E1] dark:bg-[#2a2a2a] rounded-2xl border border-[#F5E7C6] dark:border-[#3a3a3a] shadow-xl shadow-gray-200/60 dark:shadow-black/40 py-1.5 z-50">
-                    <div className="px-4 py-2.5 border-b border-[#F5E7C6] dark:border-[#3a3a3a]">
+                  <div className="absolute right-0 top-full mt-2 w-52 bg-white dark:bg-[#2a2a2a] rounded-2xl border border-[#F0E8E0] dark:border-[#3a3a3a] shadow-xl shadow-gray-200/60 dark:shadow-black/40 py-1.5 z-50">
+                    <div className="px-4 py-2.5 border-b border-[#F0E8E0] dark:border-[#3a3a3a]">
                       <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 truncate">{user.email}</p>
                     </div>
                     <Link
@@ -173,7 +173,7 @@ export default function Navbar() {
                       </svg>
                       Mon profil
                     </Link>
-                    <div className="border-t border-[#F5E7C6] dark:border-[#3a3a3a] mt-1 pt-1">
+                    <div className="border-t border-[#F0E8E0] dark:border-[#3a3a3a] mt-1 pt-1">
                       <button
                         onClick={handleSignOut}
                         className="flex items-center gap-2.5 w-full px-4 py-2.5 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
@@ -208,7 +208,7 @@ export default function Navbar() {
             {/* Mobile hamburger */}
             <button
               onClick={() => setMenuOpen(!menuOpen)}
-              className="md:hidden p-2 rounded-lg text-gray-500 hover:bg-[#F5E7C6] dark:hover:bg-[#2a2a2a] transition-colors"
+              className="md:hidden p-2 rounded-lg text-gray-500 hover:bg-[#FFF8F0] dark:hover:bg-[#2a2a2a] transition-colors"
               aria-label="Menu"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -224,7 +224,7 @@ export default function Navbar() {
 
         {/* Mobile menu */}
         {menuOpen && (
-          <div className="md:hidden pb-4 space-y-1 border-t border-[#F5E7C6] dark:border-[#2a2a2a] pt-3">
+          <div className="md:hidden pb-4 space-y-1 border-t border-[#F0E8E0] dark:border-[#2a2a2a] pt-3">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
