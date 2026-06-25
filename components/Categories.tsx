@@ -73,11 +73,11 @@ const categories: Category[] = [
 
 export default function Categories() {
   return (
-    <section className="py-16 bg-gray-50 dark:bg-gray-900/50">
+    <section className="py-16 bg-[#F5E7C6] dark:bg-[#2a2a2a]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-end justify-between mb-8">
           <div>
-            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
+            <h2 className="text-2xl sm:text-3xl font-bold text-[#222222] dark:text-[#FAF3E1]">
               Explorez les catégories
             </h2>
             <p className="mt-1 text-gray-500 dark:text-gray-400 text-sm">
@@ -86,7 +86,7 @@ export default function Categories() {
           </div>
           <a
             href="#"
-            className="hidden sm:inline-flex text-sm font-medium text-violet-600 dark:text-violet-400 hover:text-violet-700 dark:hover:text-violet-300 transition-colors"
+            className="hidden sm:inline-flex text-sm font-medium text-[#FA8112] hover:text-[#E8730F] transition-colors"
           >
             Voir tout →
           </a>
@@ -98,12 +98,11 @@ export default function Categories() {
             <a
               key={cat.label}
               href="#"
-              className="group flex-shrink-0 flex flex-col items-center gap-3 p-5 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 hover:border-violet-300 dark:hover:border-violet-600 hover:shadow-lg hover:shadow-violet-100 dark:hover:shadow-violet-900/30 transition-all duration-200 w-36"
+              className="group flex-shrink-0 flex flex-col items-center gap-3 p-5 bg-[#FAF3E1] dark:bg-[#1a1a1a] rounded-2xl border border-[#F5E7C6] dark:border-[#3a3a3a] hover:border-[#FA8112]/40 dark:hover:border-[#FA8112]/40 hover:shadow-lg hover:shadow-[#FA8112]/10 transition-all duration-200 w-36"
             >
-              {/* Icon container – 64×64, black icon */}
-              <div className="w-16 h-16 flex items-center justify-center bg-gray-100 dark:bg-gray-700 rounded-xl group-hover:bg-violet-50 dark:group-hover:bg-violet-900/40 transition-colors">
+              <div className="w-16 h-16 flex items-center justify-center bg-[#F5E7C6] dark:bg-[#2a2a2a] rounded-xl group-hover:bg-[#FA8112]/10 transition-colors">
                 <svg
-                  className="w-8 h-8 text-gray-900 dark:text-white group-hover:text-violet-600 dark:group-hover:text-violet-400 transition-colors"
+                  className="w-8 h-8 text-[#222222] dark:text-[#FAF3E1] group-hover:text-[#FA8112] transition-colors"
                   fill="none"
                   stroke="currentColor"
                   strokeWidth={1.5}
@@ -121,7 +120,7 @@ export default function Categories() {
               </div>
 
               <div className="text-center">
-                <div className="font-semibold text-gray-900 dark:text-white text-sm group-hover:text-violet-600 dark:group-hover:text-violet-400 transition-colors">
+                <div className="font-semibold text-[#222222] dark:text-[#FAF3E1] text-sm group-hover:text-[#FA8112] transition-colors">
                   {cat.label}
                 </div>
                 <div className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">

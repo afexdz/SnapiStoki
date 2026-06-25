@@ -28,7 +28,7 @@ export default function LoginPage() {
   const [googleLoading, setGoogleLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
     setError("");
@@ -63,37 +63,37 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-indigo-50 dark:from-gray-950 dark:via-gray-900 dark:to-indigo-950 flex flex-col">
+    <div className="min-h-screen bg-gradient-to-br from-[#FAF3E1] via-[#F5E7C6] to-[#FAF3E1] dark:from-[#1a1a1a] dark:via-[#2a2a2a] dark:to-[#1a1a1a] flex flex-col">
       {/* Header */}
       <header className="px-6 py-4 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-0.5">
-          <span className="text-xl font-extrabold text-violet-600">Pix</span>
-          <span className="text-xl font-extrabold text-gray-900 dark:text-white">Raise</span>
+          <span className="text-xl font-extrabold text-[#FA8112]">Pix</span>
+          <span className="text-xl font-extrabold text-[#222222] dark:text-[#FAF3E1]">Raise</span>
         </Link>
-        <Link href="/register" className="text-sm text-gray-600 dark:text-gray-400 hover:text-violet-600 dark:hover:text-violet-400 transition-colors">
+        <Link href="/register" className="text-sm text-gray-600 dark:text-gray-400 hover:text-[#FA8112] transition-colors">
           Créer un compte →
         </Link>
       </header>
 
       {/* Background blobs */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-96 h-96 bg-violet-200/40 dark:bg-violet-900/20 rounded-full blur-3xl" />
-        <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-indigo-200/40 dark:bg-indigo-900/20 rounded-full blur-3xl" />
+        <div className="absolute -top-40 -right-40 w-96 h-96 bg-[#FA8112]/15 dark:bg-[#FA8112]/10 rounded-full blur-3xl" />
+        <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-[#E8730F]/15 dark:bg-[#FA8112]/10 rounded-full blur-3xl" />
       </div>
 
       {/* Card */}
       <div className="flex-1 flex items-center justify-center px-4 py-8">
         <div className="relative w-full max-w-md">
-          <div className="bg-white dark:bg-gray-800/90 rounded-3xl shadow-2xl shadow-violet-100/60 dark:shadow-violet-950/50 border border-gray-100 dark:border-gray-700 p-8 sm:p-10">
+          <div className="bg-[#FAF3E1] dark:bg-[#2a2a2a] rounded-3xl shadow-2xl shadow-[#FA8112]/10 dark:shadow-[#FA8112]/5 border border-[#F5E7C6] dark:border-[#3a3a3a] p-8 sm:p-10">
 
             {/* Header */}
             <div className="text-center mb-8">
-              <div className="w-14 h-14 bg-gradient-to-br from-violet-500 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-violet-200 dark:shadow-violet-900/50">
+              <div className="w-14 h-14 bg-gradient-to-br from-[#FA8112] to-[#E8730F] rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-[#FA8112]/30">
                 <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>
               </div>
-              <h1 className="text-2xl font-extrabold text-gray-900 dark:text-white">Bon retour !</h1>
+              <h1 className="text-2xl font-extrabold text-[#222222] dark:text-[#FAF3E1]">Bon retour !</h1>
               <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">Connectez-vous à votre compte PixRaise</p>
             </div>
 
@@ -111,7 +111,7 @@ export default function LoginPage() {
             <button
               onClick={handleGoogle}
               disabled={googleLoading}
-              className="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 text-sm font-semibold hover:border-gray-300 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-600 transition-all mb-6 disabled:opacity-60 disabled:cursor-not-allowed"
+              className="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-xl border-2 border-[#F5E7C6] dark:border-[#3a3a3a] bg-[#FAF3E1] dark:bg-[#2a2a2a] text-gray-700 dark:text-gray-200 text-sm font-semibold hover:border-[#FA8112]/30 dark:hover:border-[#FA8112]/30 hover:bg-[#F5E7C6] dark:hover:bg-[#3a3a3a] transition-all mb-6 disabled:opacity-60 disabled:cursor-not-allowed"
             >
               {googleLoading ? (
                 <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
@@ -130,15 +130,15 @@ export default function LoginPage() {
             </button>
 
             <div className="flex items-center gap-3 mb-6">
-              <div className="flex-1 h-px bg-gray-200 dark:bg-gray-600" />
+              <div className="flex-1 h-px bg-[#F5E7C6] dark:bg-[#3a3a3a]" />
               <span className="text-xs text-gray-400 dark:text-gray-500 font-medium">ou par email</span>
-              <div className="flex-1 h-px bg-gray-200 dark:bg-gray-600" />
+              <div className="flex-1 h-px bg-[#F5E7C6] dark:bg-[#3a3a3a]" />
             </div>
 
             {/* Form */}
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                <label className="block text-sm font-medium text-[#222222] dark:text-[#FAF3E1] mb-1.5">
                   Adresse email
                 </label>
                 <div className="relative">
@@ -153,17 +153,17 @@ export default function LoginPage() {
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="vous@exemple.com"
                     required
-                    className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/60 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 transition-all text-sm"
+                    className="w-full pl-10 pr-4 py-3 rounded-xl border border-[#F5E7C6] dark:border-[#3a3a3a] bg-[#F5E7C6] dark:bg-[#1a1a1a] text-[#222222] dark:text-[#FAF3E1] placeholder-gray-400 dark:placeholder-gray-500 outline-none focus:border-[#FA8112] focus:ring-2 focus:ring-[#FA8112]/20 transition-all text-sm"
                   />
                 </div>
               </div>
 
               <div>
                 <div className="flex items-center justify-between mb-1.5">
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <label className="block text-sm font-medium text-[#222222] dark:text-[#FAF3E1]">
                     Mot de passe
                   </label>
-                  <a href="#" className="text-xs text-violet-600 dark:text-violet-400 hover:text-violet-700 transition-colors">
+                  <a href="#" className="text-xs text-[#FA8112] hover:text-[#E8730F] transition-colors">
                     Mot de passe oublié ?
                   </a>
                 </div>
@@ -179,7 +179,7 @@ export default function LoginPage() {
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
                     required
-                    className="w-full pl-10 pr-12 py-3 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/60 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 transition-all text-sm"
+                    className="w-full pl-10 pr-12 py-3 rounded-xl border border-[#F5E7C6] dark:border-[#3a3a3a] bg-[#F5E7C6] dark:bg-[#1a1a1a] text-[#222222] dark:text-[#FAF3E1] placeholder-gray-400 dark:placeholder-gray-500 outline-none focus:border-[#FA8112] focus:ring-2 focus:ring-[#FA8112]/20 transition-all text-sm"
                   />
                   <button
                     type="button"
@@ -204,7 +204,7 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-3.5 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-bold rounded-xl shadow-lg shadow-violet-200 dark:shadow-violet-900/40 transition-all hover:scale-[1.02] active:scale-100 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-2"
+                className="w-full py-3.5 bg-[#FA8112] hover:bg-[#E8730F] active:bg-[#D46A0E] text-white font-bold rounded-xl shadow-lg shadow-[#FA8112]/30 transition-all hover:scale-[1.02] active:scale-100 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-2"
               >
                 {loading ? (
                   <>
@@ -220,7 +220,7 @@ export default function LoginPage() {
 
             <p className="mt-6 text-center text-sm text-gray-500 dark:text-gray-400">
               Pas encore de compte ?{" "}
-              <Link href="/register" className="text-violet-600 dark:text-violet-400 font-semibold hover:text-violet-700 transition-colors">
+              <Link href="/register" className="text-[#FA8112] font-semibold hover:text-[#E8730F] transition-colors">
                 S'inscrire gratuitement
               </Link>
             </p>

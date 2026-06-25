@@ -1,10 +1,10 @@
 export default function GetStarted() {
   return (
-    <section className="py-16 bg-white dark:bg-gray-950">
+    <section className="py-16 bg-[#FAF3E1] dark:bg-[#1a1a1a]">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Heading */}
         <div className="text-center mb-10">
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white">
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-[#222222] dark:text-[#FAF3E1]">
             Comment voulez-vous commencer ?
           </h2>
           <p className="mt-2 text-gray-500 dark:text-gray-400 text-sm sm:text-base">
@@ -18,21 +18,21 @@ export default function GetStarted() {
           {/* Card 1 – Cherche un freelance */}
           <a
             href="/freelance"
-            className="group relative flex flex-col p-8 rounded-3xl border border-violet-100 dark:border-violet-800 border-l-4 border-l-violet-600 bg-[#F3F0FF] dark:bg-violet-900/20 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-violet-200/70 dark:hover:shadow-violet-900/50 overflow-hidden"
+            className="group relative flex flex-col p-8 rounded-3xl border border-[#FA8112]/20 dark:border-[#FA8112]/30 border-l-4 border-l-[#FA8112] bg-[#FFF3E6] dark:bg-[#FA8112]/10 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-[#FA8112]/20 dark:hover:shadow-[#FA8112]/10 overflow-hidden"
           >
             {/* Background pattern */}
             <div className="absolute inset-0 pointer-events-none opacity-30 dark:opacity-10"
               style={{
-                backgroundImage: "radial-gradient(circle, rgba(124,58,237,0.15) 1px, transparent 1px)",
+                backgroundImage: "radial-gradient(circle, rgba(250,129,18,0.15) 1px, transparent 1px)",
                 backgroundSize: "24px 24px",
               }}
             />
 
             <div className="relative">
               {/* Icon */}
-              <div className="mb-6 w-16 h-16 rounded-2xl bg-violet-600/10 dark:bg-violet-600/20 flex items-center justify-center group-hover:bg-violet-600/20 dark:group-hover:bg-violet-600/30 transition-colors">
+              <div className="mb-6 w-16 h-16 rounded-2xl bg-[#FA8112]/10 dark:bg-[#FA8112]/20 flex items-center justify-center group-hover:bg-[#FA8112]/20 dark:group-hover:bg-[#FA8112]/30 transition-colors">
                 <svg
-                  className="w-9 h-9 text-violet-700 dark:text-violet-300 transition-transform duration-300 group-hover:scale-110"
+                  className="w-9 h-9 text-[#FA8112] transition-transform duration-300 group-hover:scale-110"
                   fill="none"
                   stroke="currentColor"
                   strokeWidth={1.6}
@@ -43,7 +43,7 @@ export default function GetStarted() {
               </div>
 
               {/* Text */}
-              <h3 className="text-xl font-extrabold text-gray-900 dark:text-white mb-2 group-hover:text-violet-700 dark:group-hover:text-violet-300 transition-colors">
+              <h3 className="text-xl font-extrabold text-[#222222] dark:text-[#FAF3E1] mb-2 group-hover:text-[#FA8112] transition-colors">
                 Je cherche un freelance
               </h3>
               <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed mb-6">
@@ -52,7 +52,7 @@ export default function GetStarted() {
               </p>
 
               {/* Button */}
-              <span className="inline-flex items-center gap-2 px-5 py-2.5 bg-violet-600 group-hover:bg-violet-700 text-white text-sm font-semibold rounded-xl transition-colors shadow-md shadow-violet-200 dark:shadow-violet-900/50 w-fit">
+              <span className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#FA8112] group-hover:bg-[#E8730F] text-white text-sm font-semibold rounded-xl transition-colors shadow-md shadow-[#FA8112]/30 w-fit">
                 Explorer les freelances
                 <svg className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
@@ -64,7 +64,7 @@ export default function GetStarted() {
           {/* Card 2 – Vends mon art */}
           <a
             href="/marketplace"
-            className="group relative flex flex-col p-8 rounded-3xl border border-gray-100 dark:border-gray-700 border-l-4 border-l-amber-500 bg-white dark:bg-gray-800/80 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-amber-100/80 dark:hover:shadow-amber-900/20 overflow-hidden"
+            className="group relative flex flex-col p-8 rounded-3xl border border-[#F5E7C6] dark:border-[#3a3a3a] border-l-4 border-l-amber-500 bg-[#FAF3E1] dark:bg-[#2a2a2a] transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-amber-100/80 dark:hover:shadow-amber-900/20 overflow-hidden"
           >
             {/* Background pattern */}
             <div
@@ -90,7 +90,7 @@ export default function GetStarted() {
               </div>
 
               {/* Text */}
-              <h3 className="text-xl font-extrabold text-gray-900 dark:text-white mb-2 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
+              <h3 className="text-xl font-extrabold text-[#222222] dark:text-[#FAF3E1] mb-2 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
                 Je vends mon art / produit digital
               </h3>
               <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed mb-6">
@@ -99,7 +99,7 @@ export default function GetStarted() {
               </p>
 
               {/* Button */}
-              <span className="inline-flex items-center gap-2 px-5 py-2.5 bg-transparent border-2 border-gray-900 dark:border-gray-300 text-gray-900 dark:text-gray-200 group-hover:border-amber-500 group-hover:text-amber-600 dark:group-hover:border-amber-500 dark:group-hover:text-amber-400 text-sm font-semibold rounded-xl transition-all w-fit">
+              <span className="inline-flex items-center gap-2 px-5 py-2.5 bg-transparent border-2 border-[#222222] dark:border-[#FAF3E1] text-[#222222] dark:text-[#FAF3E1] group-hover:border-amber-500 group-hover:text-amber-600 dark:group-hover:border-amber-500 dark:group-hover:text-amber-400 text-sm font-semibold rounded-xl transition-all w-fit">
                 Commencer à vendre
                 <svg className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />

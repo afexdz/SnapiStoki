@@ -6,7 +6,7 @@ const products = [
     price: "3 500",
     originalPrice: "5 000",
     category: "Design",
-    color: "from-violet-400 to-indigo-500",
+    color: "from-[#FA8112] to-[#E8730F]",
     rating: 4.9,
     sales: 234,
     tag: "Bestseller",
@@ -36,7 +36,7 @@ const products = [
     rating: 4.8,
     sales: 412,
     tag: "Populaire",
-    tagColor: "bg-violet-600",
+    tagColor: "bg-[#FA8112]",
   },
   {
     title: "Thème Blog Personnel – Élégant & Minimaliste",
@@ -74,11 +74,11 @@ function Stars({ rating }: { rating: number }) {
 
 export default function Marketplace() {
   return (
-    <section className="py-16 bg-gray-50 dark:bg-gray-900/50">
+    <section className="py-16 bg-[#F5E7C6] dark:bg-[#2a2a2a]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-end justify-between mb-8">
           <div>
-            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
+            <h2 className="text-2xl sm:text-3xl font-bold text-[#222222] dark:text-[#FAF3E1]">
               Marketplace numérique
             </h2>
             <p className="mt-1 text-gray-500 dark:text-gray-400 text-sm">
@@ -87,7 +87,7 @@ export default function Marketplace() {
           </div>
           <a
             href="#"
-            className="hidden sm:inline-flex text-sm font-medium text-violet-600 dark:text-violet-400 hover:text-violet-700 transition-colors"
+            className="hidden sm:inline-flex text-sm font-medium text-[#FA8112] hover:text-[#E8730F] transition-colors"
           >
             Voir tout →
           </a>
@@ -97,7 +97,7 @@ export default function Marketplace() {
           {products.map((p) => (
             <div
               key={p.title}
-              className="group bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 hover:border-violet-200 dark:hover:border-violet-700 hover:shadow-xl hover:shadow-violet-100/50 dark:hover:shadow-violet-900/20 transition-all duration-200 overflow-hidden"
+              className="group bg-[#FAF3E1] dark:bg-[#1a1a1a] rounded-2xl border border-[#F5E7C6] dark:border-[#3a3a3a] hover:border-[#FA8112]/30 dark:hover:border-[#FA8112]/30 hover:shadow-xl hover:shadow-[#FA8112]/10 transition-all duration-200 overflow-hidden"
             >
               {/* Thumbnail */}
               <div className={`relative h-44 bg-gradient-to-br ${p.color} overflow-hidden`}>
@@ -126,12 +126,12 @@ export default function Marketplace() {
 
               {/* Content */}
               <div className="p-5">
-                <h3 className="font-semibold text-gray-900 dark:text-white text-sm leading-snug mb-3 group-hover:text-violet-600 dark:group-hover:text-violet-400 transition-colors line-clamp-2">
+                <h3 className="font-semibold text-[#222222] dark:text-[#FAF3E1] text-sm leading-snug mb-3 group-hover:text-[#FA8112] transition-colors line-clamp-2">
                   {p.title}
                 </h3>
 
                 <div className="flex items-center gap-2 mb-3">
-                  <div className="w-6 h-6 rounded-full bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center text-white text-xs font-bold">
+                  <div className="w-6 h-6 rounded-full bg-gradient-to-br from-[#FA8112] to-[#E8730F] flex items-center justify-center text-white text-xs font-bold">
                     {p.authorInitials}
                   </div>
                   <span className="text-xs text-gray-500 dark:text-gray-400">{p.author}</span>
@@ -147,9 +147,9 @@ export default function Marketplace() {
 
                 <div className="flex items-center justify-between">
                   <div className="flex items-baseline gap-2">
-                    <span className="text-lg font-bold text-gray-900 dark:text-white">
+                    <span className="text-lg font-bold text-[#222222] dark:text-[#FAF3E1]">
                       {p.price}{" "}
-                      <span className="text-violet-600 dark:text-violet-400 text-base">DA</span>
+                      <span className="text-[#FA8112] text-base">DA</span>
                     </span>
                     {p.originalPrice && (
                       <span className="text-sm text-gray-400 line-through">
@@ -157,7 +157,7 @@ export default function Marketplace() {
                       </span>
                     )}
                   </div>
-                  <button className="px-4 py-2 bg-violet-600 hover:bg-violet-700 active:bg-violet-800 text-white text-xs font-semibold rounded-lg transition-colors">
+                  <button className="px-4 py-2 bg-[#FA8112] hover:bg-[#E8730F] active:bg-[#D46A0E] text-white text-xs font-semibold rounded-lg transition-colors">
                     Acheter
                   </button>
                 </div>

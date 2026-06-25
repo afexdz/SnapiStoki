@@ -33,15 +33,15 @@ const socials = [
 
 export default function Footer() {
   return (
-    <footer className="bg-gray-950 dark:bg-black text-gray-400">
+    <footer className="bg-[#222222] dark:bg-[#0f0f0f] text-gray-400">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Top */}
         <div className="py-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
           {/* Brand */}
           <div className="lg:col-span-1">
             <a href="#" className="flex items-center gap-0.5 mb-4">
-              <span className="text-2xl font-extrabold text-violet-500">Pix</span>
-              <span className="text-2xl font-extrabold text-white">Raise</span>
+              <span className="text-2xl font-extrabold text-[#FA8112]">Pix</span>
+              <span className="text-2xl font-extrabold text-[#FAF3E1]">Raise</span>
             </a>
             <p className="text-sm leading-relaxed mb-6">
               La marketplace des freelances et ressources numériques en Algérie.
@@ -54,7 +54,7 @@ export default function Footer() {
                   key={s.label}
                   href="#"
                   aria-label={s.label}
-                  className="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-800 hover:bg-violet-600 text-gray-400 hover:text-white transition-all"
+                  className="w-8 h-8 flex items-center justify-center rounded-lg bg-[#333333] hover:bg-[#FA8112] text-gray-400 hover:text-white transition-all"
                 >
                   {s.icon}
                 </a>
@@ -65,13 +65,13 @@ export default function Footer() {
           {/* Link groups */}
           {Object.entries(links).map(([group, items]) => (
             <div key={group}>
-              <h4 className="text-white font-semibold text-sm mb-4">{group}</h4>
+              <h4 className="text-[#FAF3E1] font-semibold text-sm mb-4">{group}</h4>
               <ul className="space-y-2.5">
                 {items.map((item) => (
                   <li key={item}>
                     <a
                       href="#"
-                      className="text-sm hover:text-violet-400 transition-colors"
+                      className="text-sm hover:text-[#FA8112] transition-colors"
                     >
                       {item}
                     </a>
@@ -83,13 +83,13 @@ export default function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="border-t border-gray-800 py-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div className="border-t border-[#333333] py-6 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-xs text-gray-600">
             © {new Date().getFullYear()} PixRaise. Tous droits réservés.
           </p>
           <div className="flex items-center gap-4 text-xs">
             {["Confidentialité", "Conditions", "Cookies"].map((l) => (
-              <a key={l} href="#" className="hover:text-violet-400 transition-colors">
+              <a key={l} href="#" className="hover:text-[#FA8112] transition-colors">
                 {l}
               </a>
             ))}

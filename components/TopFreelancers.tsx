@@ -6,7 +6,7 @@ const freelancers = [
     rating: 4.9,
     reviews: 142,
     price: "8 500",
-    color: "from-violet-500 to-indigo-600",
+    color: "from-[#FA8112] to-[#E8730F]",
     badge: "Top Vendeur",
   },
   {
@@ -82,11 +82,11 @@ function Stars({ rating }: { rating: number }) {
 
 export default function TopFreelancers() {
   return (
-    <section className="py-16 bg-white dark:bg-gray-950">
+    <section className="py-16 bg-[#FAF3E1] dark:bg-[#1a1a1a]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-end justify-between mb-8">
           <div>
-            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
+            <h2 className="text-2xl sm:text-3xl font-bold text-[#222222] dark:text-[#FAF3E1]">
               Meilleurs freelances
             </h2>
             <p className="mt-1 text-gray-500 dark:text-gray-400 text-sm">
@@ -95,7 +95,7 @@ export default function TopFreelancers() {
           </div>
           <a
             href="#"
-            className="hidden sm:inline-flex text-sm font-medium text-violet-600 dark:text-violet-400 hover:text-violet-700 transition-colors"
+            className="hidden sm:inline-flex text-sm font-medium text-[#FA8112] hover:text-[#E8730F] transition-colors"
           >
             Voir tout →
           </a>
@@ -105,7 +105,7 @@ export default function TopFreelancers() {
           {freelancers.map((f) => (
             <div
               key={f.name}
-              className="group flex-shrink-0 w-60 bg-white dark:bg-gray-800/80 rounded-2xl border border-gray-100 dark:border-gray-700 hover:border-violet-200 dark:hover:border-violet-700 hover:shadow-xl hover:shadow-violet-100/50 dark:hover:shadow-violet-900/20 transition-all duration-200 overflow-hidden"
+              className="group flex-shrink-0 w-60 bg-[#FAF3E1] dark:bg-[#2a2a2a] rounded-2xl border border-[#F5E7C6] dark:border-[#3a3a3a] hover:border-[#FA8112]/30 dark:hover:border-[#FA8112]/30 hover:shadow-xl hover:shadow-[#FA8112]/10 transition-all duration-200 overflow-hidden"
             >
               {/* Gradient banner */}
               <div className={`h-20 bg-gradient-to-br ${f.color} relative`}>
@@ -119,13 +119,13 @@ export default function TopFreelancers() {
               <div className="px-5 pb-5">
                 {/* Avatar */}
                 <div
-                  className={`-mt-8 w-14 h-14 rounded-xl bg-gradient-to-br ${f.color} flex items-center justify-center text-white font-bold text-lg shadow-lg border-2 border-white dark:border-gray-800`}
+                  className={`-mt-8 w-14 h-14 rounded-xl bg-gradient-to-br ${f.color} flex items-center justify-center text-white font-bold text-lg shadow-lg border-2 border-[#FAF3E1] dark:border-[#2a2a2a]`}
                 >
                   {f.initials}
                 </div>
 
                 <div className="mt-3">
-                  <h3 className="font-semibold text-gray-900 dark:text-white text-sm leading-tight group-hover:text-violet-600 dark:group-hover:text-violet-400 transition-colors">
+                  <h3 className="font-semibold text-[#222222] dark:text-[#FAF3E1] text-sm leading-tight group-hover:text-[#FA8112] transition-colors">
                     {f.name}
                   </h3>
                   <p className="text-gray-500 dark:text-gray-400 text-xs mt-0.5">
@@ -144,11 +144,11 @@ export default function TopFreelancers() {
                 <div className="mt-4 flex items-center justify-between">
                   <div>
                     <span className="text-xs text-gray-400">À partir de</span>
-                    <div className="text-sm font-bold text-gray-900 dark:text-white">
-                      {f.price} <span className="text-violet-600 dark:text-violet-400">DA</span>
+                    <div className="text-sm font-bold text-[#222222] dark:text-[#FAF3E1]">
+                      {f.price} <span className="text-[#FA8112]">DA</span>
                     </div>
                   </div>
-                  <button className="px-3 py-1.5 bg-violet-50 dark:bg-violet-900/30 text-violet-600 dark:text-violet-400 text-xs font-semibold rounded-lg hover:bg-violet-100 dark:hover:bg-violet-900/50 transition-colors">
+                  <button className="px-3 py-1.5 bg-[#FA8112]/10 text-[#FA8112] text-xs font-semibold rounded-lg hover:bg-[#FA8112]/20 transition-colors">
                     Voir profil
                   </button>
                 </div>

@@ -23,25 +23,21 @@ export default function Navbar() {
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Theme
     const saved = localStorage.getItem("theme");
     if (saved === "dark") {
       setDark(true);
       document.documentElement.classList.add("dark");
     }
 
-    // Scroll
     const onScroll = () => setScrolled(window.scrollY > 10);
     window.addEventListener("scroll", onScroll);
 
-    // Auth
     const supabase = createClient();
     supabase.auth.getUser().then(({ data }) => setUser(data.user));
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
     });
 
-    // Close dropdown on outside click
     const onClickOutside = (e: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
         setDropdownOpen(false);
@@ -83,16 +79,16 @@ export default function Navbar() {
     <nav
       className={`sticky top-0 z-50 transition-all duration-300 ${
         scrolled
-          ? "bg-white/95 dark:bg-gray-950/95 backdrop-blur-md shadow-md"
-          : "bg-white dark:bg-gray-950"
-      } border-b border-gray-100 dark:border-gray-800`}
+          ? "bg-[#FAF3E1]/95 dark:bg-[#1a1a1a]/95 backdrop-blur-md shadow-md"
+          : "bg-[#FAF3E1] dark:bg-[#1a1a1a]"
+      } border-b border-[#F5E7C6] dark:border-[#2a2a2a]`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-0.5 shrink-0">
-            <span className="text-2xl font-extrabold text-violet-600 tracking-tight">Pix</span>
-            <span className="text-2xl font-extrabold text-gray-900 dark:text-white tracking-tight">Raise</span>
+            <span className="text-2xl font-extrabold text-[#FA8112] tracking-tight">Pix</span>
+            <span className="text-2xl font-extrabold text-[#222222] dark:text-[#FAF3E1] tracking-tight">Raise</span>
           </Link>
 
           {/* Nav links – desktop */}
@@ -105,8 +101,8 @@ export default function Navbar() {
                   href={link.href}
                   className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                     active
-                      ? "text-violet-600 dark:text-violet-400 bg-violet-50 dark:bg-violet-900/30"
-                      : "text-gray-600 dark:text-gray-300 hover:text-violet-600 dark:hover:text-violet-400 hover:bg-gray-50 dark:hover:bg-gray-800"
+                      ? "text-[#FA8112] bg-[#FA8112]/10 dark:bg-[#FA8112]/15"
+                      : "text-gray-600 dark:text-gray-300 hover:text-[#FA8112] hover:bg-[#FA8112]/8 dark:hover:text-[#FA8112] dark:hover:bg-[#FA8112]/10"
                   }`}
                 >
                   {link.label}
@@ -120,7 +116,7 @@ export default function Navbar() {
             {/* Dark mode toggle */}
             <button
               onClick={toggleDark}
-              className="p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              className="p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-[#F5E7C6] dark:hover:bg-[#2a2a2a] transition-colors"
               aria-label="Basculer le thème"
             >
               {dark ? (
@@ -139,9 +135,9 @@ export default function Navbar() {
               <div className="relative" ref={dropdownRef}>
                 <button
                   onClick={() => setDropdownOpen(!dropdownOpen)}
-                  className="flex items-center gap-2 pl-1 pr-2.5 py-1 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors group"
+                  className="flex items-center gap-2 pl-1 pr-2.5 py-1 rounded-xl hover:bg-[#F5E7C6] dark:hover:bg-[#2a2a2a] transition-colors group"
                 >
-                  <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center text-white text-xs font-black shadow-sm">
+                  <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#FA8112] to-[#E8730F] flex items-center justify-center text-white text-xs font-black shadow-sm">
                     {initials}
                   </div>
                   <span className="hidden sm:block text-sm font-medium text-gray-700 dark:text-gray-300 max-w-[100px] truncate">
@@ -153,14 +149,14 @@ export default function Navbar() {
                 </button>
 
                 {dropdownOpen && (
-                  <div className="absolute right-0 top-full mt-2 w-52 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-xl shadow-gray-200/60 dark:shadow-black/40 py-1.5 z-50">
-                    <div className="px-4 py-2.5 border-b border-gray-100 dark:border-gray-700">
+                  <div className="absolute right-0 top-full mt-2 w-52 bg-[#FAF3E1] dark:bg-[#2a2a2a] rounded-2xl border border-[#F5E7C6] dark:border-[#3a3a3a] shadow-xl shadow-gray-200/60 dark:shadow-black/40 py-1.5 z-50">
+                    <div className="px-4 py-2.5 border-b border-[#F5E7C6] dark:border-[#3a3a3a]">
                       <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 truncate">{user.email}</p>
                     </div>
                     <Link
                       href="/dashboard"
                       onClick={() => setDropdownOpen(false)}
-                      className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-violet-50 dark:hover:bg-violet-900/30 hover:text-violet-600 dark:hover:text-violet-400 transition-colors"
+                      className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-[#FA8112]/10 hover:text-[#FA8112] transition-colors"
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
@@ -170,14 +166,14 @@ export default function Navbar() {
                     <Link
                       href="/profile"
                       onClick={() => setDropdownOpen(false)}
-                      className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-violet-50 dark:hover:bg-violet-900/30 hover:text-violet-600 dark:hover:text-violet-400 transition-colors"
+                      className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-[#FA8112]/10 hover:text-[#FA8112] transition-colors"
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                       </svg>
                       Mon profil
                     </Link>
-                    <div className="border-t border-gray-100 dark:border-gray-700 mt-1 pt-1">
+                    <div className="border-t border-[#F5E7C6] dark:border-[#3a3a3a] mt-1 pt-1">
                       <button
                         onClick={handleSignOut}
                         className="flex items-center gap-2.5 w-full px-4 py-2.5 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
@@ -196,13 +192,13 @@ export default function Navbar() {
               <>
                 <Link
                   href="/login"
-                  className="hidden sm:inline-flex text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-violet-600 dark:hover:text-violet-400 transition-colors px-3 py-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800"
+                  className="hidden sm:inline-flex text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-[#FA8112] transition-colors px-3 py-2 rounded-lg hover:bg-[#FA8112]/8 dark:hover:bg-[#FA8112]/10"
                 >
                   Connexion
                 </Link>
                 <Link
                   href="/register"
-                  className="inline-flex items-center px-4 py-2 bg-violet-600 hover:bg-violet-700 active:bg-violet-800 text-white text-sm font-semibold rounded-lg transition-all shadow-sm shadow-violet-200 dark:shadow-none hover:shadow-violet-300 dark:hover:shadow-none hover:scale-105"
+                  className="inline-flex items-center px-4 py-2 bg-[#FA8112] hover:bg-[#E8730F] active:bg-[#D46A0E] text-white text-sm font-semibold rounded-lg transition-all shadow-sm shadow-[#FA8112]/30 hover:shadow-[#FA8112]/40 hover:scale-105"
                 >
                   S'inscrire
                 </Link>
@@ -212,7 +208,7 @@ export default function Navbar() {
             {/* Mobile hamburger */}
             <button
               onClick={() => setMenuOpen(!menuOpen)}
-              className="md:hidden p-2 rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              className="md:hidden p-2 rounded-lg text-gray-500 hover:bg-[#F5E7C6] dark:hover:bg-[#2a2a2a] transition-colors"
               aria-label="Menu"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -228,20 +224,20 @@ export default function Navbar() {
 
         {/* Mobile menu */}
         {menuOpen && (
-          <div className="md:hidden pb-4 space-y-1 border-t border-gray-100 dark:border-gray-800 pt-3">
+          <div className="md:hidden pb-4 space-y-1 border-t border-[#F5E7C6] dark:border-[#2a2a2a] pt-3">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
                 onClick={() => setMenuOpen(false)}
-                className="block px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-violet-600 dark:hover:text-violet-400 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors"
+                className="block px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-[#FA8112] hover:bg-[#FA8112]/8 dark:hover:bg-[#FA8112]/10 rounded-lg transition-colors"
               >
                 {link.label}
               </Link>
             ))}
             {user ? (
               <>
-                <Link href="/dashboard" onClick={() => setMenuOpen(false)} className="block px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-violet-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                <Link href="/dashboard" onClick={() => setMenuOpen(false)} className="block px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-[#FA8112] rounded-lg hover:bg-[#FA8112]/8 dark:hover:bg-[#FA8112]/10 transition-colors">
                   Tableau de bord
                 </Link>
                 <button onClick={handleSignOut} className="block w-full text-left px-3 py-2 text-sm font-medium text-red-600 dark:text-red-400 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
@@ -249,7 +245,7 @@ export default function Navbar() {
                 </button>
               </>
             ) : (
-              <Link href="/login" onClick={() => setMenuOpen(false)} className="block px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-violet-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+              <Link href="/login" onClick={() => setMenuOpen(false)} className="block px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-[#FA8112] rounded-lg hover:bg-[#FA8112]/8 dark:hover:bg-[#FA8112]/10 transition-colors">
                 Connexion
               </Link>
             )}

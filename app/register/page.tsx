@@ -9,7 +9,7 @@ type AccountType = "buyer" | "seller"
 function PasswordRule({ met, label }: { met: boolean; label: string }) {
   return (
     <li className={`flex items-center gap-2 text-xs transition-colors duration-200 ${met ? "text-emerald-600 dark:text-emerald-400" : "text-gray-400 dark:text-gray-500"}`}>
-      <span className={`w-4 h-4 rounded-full flex items-center justify-center shrink-0 transition-all duration-200 ${met ? "bg-emerald-100 dark:bg-emerald-900/40" : "bg-gray-100 dark:bg-gray-700"}`}>
+      <span className={`w-4 h-4 rounded-full flex items-center justify-center shrink-0 transition-all duration-200 ${met ? "bg-emerald-100 dark:bg-emerald-900/40" : "bg-[#F5E7C6] dark:bg-[#2a2a2a]"}`}>
         {met ? (
           <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
@@ -91,22 +91,22 @@ export default function RegisterPage() {
 
   if (success) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-indigo-50 dark:from-gray-950 dark:via-gray-900 dark:to-indigo-950 flex items-center justify-center px-4">
-        <div className="w-full max-w-md bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-2xl shadow-violet-100/60 p-10 text-center">
+      <div className="min-h-screen bg-gradient-to-br from-[#FAF3E1] via-[#F5E7C6] to-[#FAF3E1] dark:from-[#1a1a1a] dark:via-[#2a2a2a] dark:to-[#1a1a1a] flex items-center justify-center px-4">
+        <div className="w-full max-w-md bg-[#FAF3E1] dark:bg-[#2a2a2a] rounded-3xl border border-[#F5E7C6] dark:border-[#3a3a3a] shadow-2xl shadow-[#FA8112]/10 p-10 text-center">
           <div className="w-16 h-16 bg-emerald-100 dark:bg-emerald-900/40 rounded-2xl flex items-center justify-center mx-auto mb-5">
             <svg className="w-8 h-8 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
             </svg>
           </div>
-          <h2 className="text-2xl font-black text-gray-900 dark:text-white mb-2">Vérifiez votre email !</h2>
+          <h2 className="text-2xl font-black text-[#222222] dark:text-[#FAF3E1] mb-2">Vérifiez votre email !</h2>
           <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed mb-6">
             Un lien de confirmation a été envoyé à{" "}
-            <strong className="text-gray-700 dark:text-gray-300">{email}</strong>.
+            <strong className="text-[#222222] dark:text-[#FAF3E1]">{email}</strong>.
             Cliquez dessus pour activer votre compte.
           </p>
           <Link
             href="/login"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-violet-600 to-indigo-600 text-white font-bold rounded-xl text-sm shadow-lg shadow-violet-200 dark:shadow-violet-900/40 hover:from-violet-500 hover:to-indigo-500 transition-all"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-[#FA8112] hover:bg-[#E8730F] text-white font-bold rounded-xl text-sm shadow-lg shadow-[#FA8112]/30 transition-all"
           >
             Aller à la connexion →
           </Link>
@@ -116,33 +116,33 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-indigo-50 dark:from-gray-950 dark:via-gray-900 dark:to-indigo-950 flex flex-col">
+    <div className="min-h-screen bg-gradient-to-br from-[#FAF3E1] via-[#F5E7C6] to-[#FAF3E1] dark:from-[#1a1a1a] dark:via-[#2a2a2a] dark:to-[#1a1a1a] flex flex-col">
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-96 h-96 bg-violet-200/40 dark:bg-violet-900/20 rounded-full blur-3xl" />
-        <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-indigo-200/40 dark:bg-indigo-900/20 rounded-full blur-3xl" />
+        <div className="absolute -top-40 -right-40 w-96 h-96 bg-[#FA8112]/15 dark:bg-[#FA8112]/10 rounded-full blur-3xl" />
+        <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-[#E8730F]/15 dark:bg-[#FA8112]/10 rounded-full blur-3xl" />
       </div>
 
       <header className="relative px-6 py-4 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-0.5">
-          <span className="text-xl font-extrabold text-violet-600">Pix</span>
-          <span className="text-xl font-extrabold text-gray-900 dark:text-white">Raise</span>
+          <span className="text-xl font-extrabold text-[#FA8112]">Pix</span>
+          <span className="text-xl font-extrabold text-[#222222] dark:text-[#FAF3E1]">Raise</span>
         </Link>
-        <Link href="/login" className="text-sm text-gray-600 dark:text-gray-400 hover:text-violet-600 dark:hover:text-violet-400 transition-colors">
+        <Link href="/login" className="text-sm text-gray-600 dark:text-gray-400 hover:text-[#FA8112] transition-colors">
           Déjà membre ? Se connecter
         </Link>
       </header>
 
       <div className="flex-1 flex items-center justify-center px-4 py-8">
         <div className="relative w-full max-w-lg">
-          <div className="bg-white dark:bg-gray-800/90 rounded-3xl shadow-2xl shadow-violet-100/60 dark:shadow-violet-950/50 border border-gray-100 dark:border-gray-700 p-8 sm:p-10">
+          <div className="bg-[#FAF3E1] dark:bg-[#2a2a2a] rounded-3xl shadow-2xl shadow-[#FA8112]/10 dark:shadow-[#FA8112]/5 border border-[#F5E7C6] dark:border-[#3a3a3a] p-8 sm:p-10">
 
             <div className="text-center mb-8">
-              <div className="w-14 h-14 bg-gradient-to-br from-violet-500 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-violet-200 dark:shadow-violet-900/50">
+              <div className="w-14 h-14 bg-gradient-to-br from-[#FA8112] to-[#E8730F] rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-[#FA8112]/30">
                 <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
                 </svg>
               </div>
-              <h1 className="text-2xl font-extrabold text-gray-900 dark:text-white">Créer un compte</h1>
+              <h1 className="text-2xl font-extrabold text-[#222222] dark:text-[#FAF3E1]">Créer un compte</h1>
               <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">Rejoignez la communauté PixRaise</p>
             </div>
 
@@ -158,7 +158,7 @@ export default function RegisterPage() {
             <form onSubmit={handleSubmit} className="space-y-4">
               {/* Full name */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                <label className="block text-sm font-medium text-[#222222] dark:text-[#FAF3E1] mb-1.5">
                   Nom complet
                 </label>
                 <div className="relative">
@@ -173,14 +173,14 @@ export default function RegisterPage() {
                     onChange={(e) => setFullName(e.target.value)}
                     placeholder="Karim Bensalem"
                     required
-                    className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/60 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 transition-all text-sm"
+                    className="w-full pl-10 pr-4 py-3 rounded-xl border border-[#F5E7C6] dark:border-[#3a3a3a] bg-[#F5E7C6] dark:bg-[#1a1a1a] text-[#222222] dark:text-[#FAF3E1] placeholder-gray-400 dark:placeholder-gray-500 outline-none focus:border-[#FA8112] focus:ring-2 focus:ring-[#FA8112]/20 transition-all text-sm"
                   />
                 </div>
               </div>
 
               {/* Email */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                <label className="block text-sm font-medium text-[#222222] dark:text-[#FAF3E1] mb-1.5">
                   Adresse email
                 </label>
                 <div className="relative">
@@ -195,14 +195,14 @@ export default function RegisterPage() {
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="vous@exemple.com"
                     required
-                    className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/60 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 transition-all text-sm"
+                    className="w-full pl-10 pr-4 py-3 rounded-xl border border-[#F5E7C6] dark:border-[#3a3a3a] bg-[#F5E7C6] dark:bg-[#1a1a1a] text-[#222222] dark:text-[#FAF3E1] placeholder-gray-400 dark:placeholder-gray-500 outline-none focus:border-[#FA8112] focus:ring-2 focus:ring-[#FA8112]/20 transition-all text-sm"
                   />
                 </div>
               </div>
 
               {/* Password */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                <label className="block text-sm font-medium text-[#222222] dark:text-[#FAF3E1] mb-1.5">
                   Mot de passe
                 </label>
                 <div className="relative">
@@ -218,7 +218,7 @@ export default function RegisterPage() {
                     placeholder="••••••••"
                     required
                     minLength={8}
-                    className="w-full pl-10 pr-12 py-3 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/60 text-gray-900 dark:text-white placeholder-gray-400 outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 transition-all text-sm"
+                    className="w-full pl-10 pr-12 py-3 rounded-xl border border-[#F5E7C6] dark:border-[#3a3a3a] bg-[#F5E7C6] dark:bg-[#1a1a1a] text-[#222222] dark:text-[#FAF3E1] placeholder-gray-400 outline-none focus:border-[#FA8112] focus:ring-2 focus:ring-[#FA8112]/20 transition-all text-sm"
                   />
                   <button
                     type="button"
@@ -246,7 +246,7 @@ export default function RegisterPage() {
                         {strengthCount <= 1 ? "Faible" : strengthCount === 2 ? "Moyen" : strengthCount === 3 ? "Bon" : "Excellent"}
                       </span>
                     </div>
-                    <div className="h-1.5 w-full bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
+                    <div className="h-1.5 w-full bg-[#F5E7C6] dark:bg-[#3a3a3a] rounded-full overflow-hidden">
                       <div
                         className={`h-full rounded-full transition-all duration-300 ${strengthColor}`}
                         style={{ width: `${strengthPercent}%` }}
@@ -264,7 +264,7 @@ export default function RegisterPage() {
 
               {/* Confirm password */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                <label className="block text-sm font-medium text-[#222222] dark:text-[#FAF3E1] mb-1.5">
                   Confirmer le mot de passe
                 </label>
                 <div className="relative">
@@ -279,9 +279,9 @@ export default function RegisterPage() {
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     placeholder="••••••••"
                     required
-                    className={`w-full pl-10 pr-12 py-3 rounded-xl border bg-gray-50 dark:bg-gray-700/60 text-gray-900 dark:text-white placeholder-gray-400 outline-none focus:ring-2 transition-all text-sm ${
+                    className={`w-full pl-10 pr-12 py-3 rounded-xl border bg-[#F5E7C6] dark:bg-[#1a1a1a] text-[#222222] dark:text-[#FAF3E1] placeholder-gray-400 outline-none focus:ring-2 transition-all text-sm ${
                       passwordsMatch
-                        ? "border-gray-200 dark:border-gray-600 focus:border-violet-500 focus:ring-violet-500/20"
+                        ? "border-[#F5E7C6] dark:border-[#3a3a3a] focus:border-[#FA8112] focus:ring-[#FA8112]/20"
                         : "border-red-400 focus:border-red-400 focus:ring-red-400/20"
                     }`}
                   />
@@ -309,7 +309,7 @@ export default function RegisterPage() {
 
               {/* Account type */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+                <label className="block text-sm font-medium text-[#222222] dark:text-[#FAF3E1] mb-3">
                   Type de compte
                 </label>
                 <div className="grid grid-cols-2 gap-3">
@@ -341,21 +341,21 @@ export default function RegisterPage() {
                       onClick={() => setAccountType(opt.type)}
                       className={`relative flex flex-col items-center text-center p-4 rounded-2xl border-2 transition-all duration-200 ${
                         accountType === opt.type
-                          ? "border-violet-500 bg-violet-50 dark:bg-violet-900/30 shadow-md shadow-violet-100 dark:shadow-violet-900/30"
-                          : "border-gray-200 dark:border-gray-600 hover:border-violet-300 dark:hover:border-violet-700 hover:bg-gray-50 dark:hover:bg-gray-700/50"
+                          ? "border-[#FA8112] bg-[#FA8112]/10 dark:bg-[#FA8112]/15 shadow-md shadow-[#FA8112]/20"
+                          : "border-[#F5E7C6] dark:border-[#3a3a3a] hover:border-[#FA8112]/40 hover:bg-[#FA8112]/5 dark:hover:bg-[#FA8112]/10"
                       }`}
                     >
-                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-2.5 transition-colors ${accountType === opt.type ? "bg-violet-100 dark:bg-violet-800/60 text-violet-600 dark:text-violet-300" : "bg-gray-100 dark:bg-gray-700 text-gray-500"}`}>
+                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-2.5 transition-colors ${accountType === opt.type ? "bg-[#FA8112]/20 text-[#FA8112]" : "bg-[#F5E7C6] dark:bg-[#2a2a2a] text-gray-500"}`}>
                         {opt.icon}
                       </div>
-                      <span className={`text-sm font-semibold ${accountType === opt.type ? "text-violet-700 dark:text-violet-300" : "text-gray-700 dark:text-gray-300"}`}>
+                      <span className={`text-sm font-semibold ${accountType === opt.type ? "text-[#FA8112]" : "text-[#222222] dark:text-[#FAF3E1]"}`}>
                         {opt.title}
                       </span>
                       <span className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 leading-tight">
                         {opt.desc}
                       </span>
                       {accountType === opt.type && (
-                        <span className="absolute top-2.5 right-2.5 w-4 h-4 bg-violet-600 rounded-full flex items-center justify-center">
+                        <span className="absolute top-2.5 right-2.5 w-4 h-4 bg-[#FA8112] rounded-full flex items-center justify-center">
                           <svg className="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                           </svg>
@@ -375,7 +375,7 @@ export default function RegisterPage() {
                     onChange={(e) => setTerms(e.target.checked)}
                     className="sr-only"
                   />
-                  <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all ${terms ? "bg-violet-600 border-violet-600" : "border-gray-300 dark:border-gray-600 group-hover:border-violet-400"}`}>
+                  <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all ${terms ? "bg-[#FA8112] border-[#FA8112]" : "border-gray-300 dark:border-gray-600 group-hover:border-[#FA8112]/60"}`}>
                     {terms && (
                       <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
@@ -385,16 +385,16 @@ export default function RegisterPage() {
                 </div>
                 <span className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
                   J'accepte les{" "}
-                  <a href="#" className="text-violet-600 dark:text-violet-400 hover:underline font-medium">conditions d'utilisation</a>
+                  <a href="#" className="text-[#FA8112] hover:text-[#E8730F] hover:underline font-medium">conditions d'utilisation</a>
                   {" "}et la{" "}
-                  <a href="#" className="text-violet-600 dark:text-violet-400 hover:underline font-medium">politique de confidentialité</a>
+                  <a href="#" className="text-[#FA8112] hover:text-[#E8730F] hover:underline font-medium">politique de confidentialité</a>
                 </span>
               </label>
 
               <button
                 type="submit"
                 disabled={loading || !canSubmit}
-                className="w-full py-3.5 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-bold rounded-xl shadow-lg shadow-violet-200 dark:shadow-violet-900/40 transition-all hover:scale-[1.02] active:scale-100 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-2"
+                className="w-full py-3.5 bg-[#FA8112] hover:bg-[#E8730F] active:bg-[#D46A0E] text-white font-bold rounded-xl shadow-lg shadow-[#FA8112]/30 transition-all hover:scale-[1.02] active:scale-100 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-2"
               >
                 {loading ? (
                   <>
@@ -410,7 +410,7 @@ export default function RegisterPage() {
 
             <p className="mt-6 text-center text-sm text-gray-500 dark:text-gray-400">
               Déjà membre ?{" "}
-              <Link href="/login" className="text-violet-600 dark:text-violet-400 font-semibold hover:text-violet-700 transition-colors">
+              <Link href="/login" className="text-[#FA8112] font-semibold hover:text-[#E8730F] transition-colors">
                 Se connecter
               </Link>
             </p>
