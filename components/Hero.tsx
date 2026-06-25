@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { motion } from "framer-motion";
 
 const popularTags = [
   "Logo Design",
@@ -59,6 +60,71 @@ export default function Hero() {
           <button className="m-1.5 px-6 py-3 bg-violet-600 hover:bg-violet-700 active:bg-violet-800 text-white font-semibold rounded-lg transition-colors text-sm sm:text-base shrink-0">
             Rechercher
           </button>
+        </div>
+
+        {/* CTA pill buttons */}
+        <div className="mt-6 flex flex-wrap justify-center gap-4">
+          {/* Button 1 – Freelance */}
+          <motion.a
+            href="/freelance"
+            whileHover={{ scale: 1.03 }}
+            transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+            className="relative overflow-hidden cursor-pointer inline-flex items-center group"
+            style={{
+              padding: "12px 28px",
+              borderRadius: "999px",
+              fontSize: "14px",
+              fontWeight: 500,
+              border: "1px solid #7C3AED",
+              color: "#7C3AED",
+              background: "transparent",
+            }}
+          >
+            {/* Fill layer */}
+            <span
+              className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+              style={{ background: "#7C3AED" }}
+            />
+            {/* Shimmer */}
+            <span
+              className="absolute inset-0 rounded-full translate-x-[-160%] group-hover:translate-x-[160%] transition-transform duration-[600ms] ease-out skew-x-[-15deg]"
+              style={{ background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.28), transparent)" }}
+            />
+            <span className="relative group-hover:text-white transition-colors duration-300">
+              Je cherche un freelance
+            </span>
+          </motion.a>
+
+          {/* Button 2 – Produit digital */}
+          <motion.a
+            href="/marketplace"
+            whileHover={{ scale: 1.03 }}
+            transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+            className="relative overflow-hidden cursor-pointer inline-flex items-center group"
+            style={{
+              padding: "12px 28px",
+              borderRadius: "999px",
+              fontSize: "14px",
+              fontWeight: 500,
+              border: "1px solid #111",
+              color: "#111",
+              background: "transparent",
+            }}
+          >
+            {/* Fill layer */}
+            <span
+              className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+              style={{ background: "#111" }}
+            />
+            {/* Shimmer */}
+            <span
+              className="absolute inset-0 rounded-full translate-x-[-160%] group-hover:translate-x-[160%] transition-transform duration-[600ms] ease-out skew-x-[-15deg]"
+              style={{ background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.22), transparent)" }}
+            />
+            <span className="relative group-hover:text-white transition-colors duration-300">
+              Je cherche un produit digital
+            </span>
+          </motion.a>
         </div>
 
         {/* Popular tags */}
