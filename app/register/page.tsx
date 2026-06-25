@@ -54,7 +54,7 @@ export default function RegisterPage() {
   const [showConfirm, setShowConfirm] = useState(false);
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
   const rules = useMemo(() => ({
@@ -79,7 +79,7 @@ export default function RegisterPage() {
     e.preventDefault();
     if (!canSubmit) return;
     setLoading(true);
-    setError("");
+    setError(null);
 
     const supabase = createClient();
     const { data, error: authError } = await supabase.auth.signUp({
@@ -98,7 +98,7 @@ export default function RegisterPage() {
 
     if (authError) {
       console.log("Supabase error:", JSON.stringify(authError));
-      setError(translateError(authError.message) || authError.message || JSON.stringify(authError));
+      setError(translateError(authError.message) || authError.message || "Une erreur est survenue.");
       setLoading(false);
       return;
     }
@@ -117,7 +117,7 @@ export default function RegisterPage() {
 
   const handleGoogle = async () => {
     setGoogleLoading(true);
-    setError("");
+    setError(null);
     const supabase = createClient();
     await supabase.auth.signInWithOAuth({
       provider: "google",
@@ -183,7 +183,7 @@ export default function RegisterPage() {
                 <svg className="w-4 h-4 text-red-500 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <p className="text-sm text-red-600 dark:text-red-400">{(error as any)?.message || error?.toString() || JSON.stringify(error)}</p>
+                <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
               </div>
             )}
 
@@ -226,7 +226,7 @@ export default function RegisterPage() {
                     </svg>
                   </div>
                   <input
-                    type="text" value={fullName} onChange={(e) => setFullName(e.target.value)}
+                    type="text" value={fullName} onChange={(e) => { setFullName(e.target.value); setError(null); }}
                     placeholder="Karim Bensalem" required
                     className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/60 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 transition-all text-sm"
                   />
@@ -243,7 +243,7 @@ export default function RegisterPage() {
                     </svg>
                   </div>
                   <input
-                    type="email" value={email} onChange={(e) => setEmail(e.target.value)}
+                    type="email" value={email} onChange={(e) => { setEmail(e.target.value); setError(null); }}
                     placeholder="vous@exemple.com" required
                     className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/60 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 transition-all text-sm"
                   />
