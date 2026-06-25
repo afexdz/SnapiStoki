@@ -7,17 +7,23 @@ import { createClient } from "@/lib/supabase/client";
 type AccountType = "buyer" | "seller";
 
 const FR_ERRORS: Record<string, string> = {
-  "User already registered": "Un compte existe déjà avec cet email.",
-  "Password should be at least": "Le mot de passe doit contenir au moins 8 caractères.",
-  "Unable to validate email": "Adresse email invalide.",
-  "Signup is disabled": "Les inscriptions sont temporairement désactivées.",
+  "User already registered":        "Cet email est déjà utilisé.",
+  "Email already registered":       "Cet email est déjà utilisé.",
+  "already been registered":        "Cet email est déjà utilisé.",
+  "Password should be at least":    "Mot de passe trop court (8 caractères minimum).",
+  "Password too short":             "Mot de passe trop court.",
+  "Unable to validate email":       "Email invalide.",
+  "Invalid email":                  "Email invalide.",
+  "Signup is disabled":             "Les inscriptions sont temporairement désactivées.",
+  "Email rate limit exceeded":      "Trop de tentatives. Veuillez réessayer plus tard.",
 };
 
 function translateError(msg: string): string {
   for (const [key, val] of Object.entries(FR_ERRORS)) {
-    if (msg.includes(key)) return val;
+    if (msg.toLowerCase().includes(key.toLowerCase())) return val;
   }
-  return "Une erreur est survenue. Veuillez réessayer.";
+  // Show the raw message so nothing is hidden during development
+  return msg;
 }
 
 function PasswordRule({ met, label }: { met: boolean; label: string }) {
@@ -76,19 +82,22 @@ export default function RegisterPage() {
     setError("");
 
     const supabase = createClient();
-    const { error: authError } = await supabase.auth.signUp({
+    const { data, error: authError } = await supabase.auth.signUp({
       email,
       password,
       options: {
         data: {
           full_name: fullName,
-          account_type: accountType,
+          role: accountType,
         },
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
+        emailRedirectTo: "https://pixraise.com/auth/callback",
       },
     });
 
+    console.log("signUp result:", { data, error: authError });
+
     if (authError) {
+      console.error("Supabase signUp error:", authError);
       setError(translateError(authError.message));
       setLoading(false);
       return;
