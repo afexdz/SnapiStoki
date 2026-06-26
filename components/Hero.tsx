@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { detectUserWilaya } from "@/lib/geolocation";
+import type { Wilaya } from "@/lib/wilayas";
 
 const popularTags = [
   "Logo Design",
@@ -14,6 +16,14 @@ const popularTags = [
 
 export default function Hero() {
   const [query, setQuery] = useState("");
+  const [nearbyWilaya, setNearbyWilaya] = useState<Wilaya | null>(null);
+  const [locLoading, setLocLoading] = useState(true);
+
+  useEffect(() => {
+    detectUserWilaya()
+      .then((w) => setNearbyWilaya(w))
+      .finally(() => setLocLoading(false));
+  }, []);
 
   return (
     <section className="relative overflow-hidden bg-gradient-to-br from-[#FA8112] via-[#E8730F] to-[#D46A0E] dark:from-[#1a1a1a] dark:via-[#2a2a2a] dark:to-[#1a1a1a]">
@@ -25,10 +35,22 @@ export default function Hero() {
       </div>
 
       <div className="relative max-w-4xl mx-auto px-4 py-24 sm:py-32 text-center">
-        {/* Badge */}
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/15 backdrop-blur-sm rounded-full text-white/90 text-sm font-medium mb-6 border border-white/20">
-          <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-          +5,000 freelances actifs en Algérie
+        {/* Badge — shows wilaya when detected */}
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/15 backdrop-blur-sm rounded-full text-white/90 text-sm font-medium mb-6 border border-white/20 transition-all duration-500">
+          {!locLoading && nearbyWilaya ? (
+            <>
+              <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              Freelances près de chez vous à <strong>{nearbyWilaya.name}</strong>
+            </>
+          ) : (
+            <>
+              <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+              +5 000 freelances actifs en Algérie
+            </>
+          )}
         </div>
 
         {/* Headline */}
@@ -74,6 +96,22 @@ export default function Hero() {
             </button>
           ))}
         </div>
+
+        {/* Nearby wilaya link */}
+        {!locLoading && nearbyWilaya && (
+          <div className="mt-6">
+            <a
+              href={`/freelances?wilaya=${encodeURIComponent(nearbyWilaya.name)}`}
+              className="inline-flex items-center gap-1.5 text-white/90 hover:text-white text-sm font-medium underline underline-offset-2 transition-colors"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              Voir les freelances à {nearbyWilaya.name} →
+            </a>
+          </div>
+        )}
       </div>
     </section>
   );

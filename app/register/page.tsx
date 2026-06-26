@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react"
 import Link from "next/link"
 import { createClient } from "@/lib/supabase/client"
+import { WILAYAS } from "@/lib/wilayas"
 
 type AccountType = "buyer" | "seller"
 
@@ -29,6 +30,7 @@ export default function RegisterPage() {
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
   const [accountType, setAccountType] = useState<AccountType>("buyer")
+  const [wilaya, setWilaya] = useState("")
   const [terms, setTerms] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
@@ -71,7 +73,7 @@ export default function RegisterPage() {
       email,
       password,
       options: {
-        data: { full_name: fullName, role: accountType },
+        data: { full_name: fullName, role: accountType, wilaya: wilaya || null },
         emailRedirectTo: 'https://pixraise.com/auth/callback'
       }
     })
@@ -363,6 +365,38 @@ export default function RegisterPage() {
                       )}
                     </button>
                   ))}
+                </div>
+              </div>
+
+              {/* Wilaya */}
+              <div>
+                <label className="block text-sm font-medium text-[#1A1A1A] dark:text-[#FAF3E1] mb-1.5">
+                  Wilaya <span className="text-gray-400 font-normal">(optionnel)</span>
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-3.5 flex items-center pointer-events-none text-gray-400">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                  </div>
+                  <select
+                    value={wilaya}
+                    onChange={(e) => setWilaya(e.target.value)}
+                    className="w-full pl-10 pr-4 py-3 rounded-xl border border-[#F0E8E0] dark:border-[#3a3a3a] bg-[#FFF8F0] dark:bg-[#1a1a1a] text-[#1A1A1A] dark:text-[#FAF3E1] outline-none focus:border-[#FA8112] focus:ring-2 focus:ring-[#FA8112]/20 transition-all text-sm appearance-none cursor-pointer"
+                  >
+                    <option value="">Sélectionnez votre wilaya</option>
+                    {WILAYAS.map((w) => (
+                      <option key={w.id} value={w.name}>
+                        {w.id.toString().padStart(2, "0")} — {w.name}
+                      </option>
+                    ))}
+                  </select>
+                  <div className="absolute inset-y-0 right-3.5 flex items-center pointer-events-none text-gray-400">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
                 </div>
               </div>
 
