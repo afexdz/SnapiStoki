@@ -252,8 +252,8 @@ export default function ProfilePage() {
 
       if (!profileError && data) {
         setProfile(data)
-        if (data.avatar_url) setAvatarUrl(data.avatar_url)
-        if (data.cover_url)  setCoverUrl(data.cover_url)
+        setAvatarUrl(data.avatar_url ?? null)
+        setCoverUrl(data.cover_url ?? null)
         setEditForm({
           full_name: data.full_name || "",
           bio:       data.bio       || "",

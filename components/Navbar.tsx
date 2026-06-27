@@ -19,6 +19,7 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [user, setUser] = useState<User | null>(null);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -33,9 +34,28 @@ export default function Navbar() {
     window.addEventListener("scroll", onScroll);
 
     const supabase = createClient();
-    supabase.auth.getUser().then(({ data }) => setUser(data.user));
+
+    const fetchAvatar = async (uid: string) => {
+      const { data } = await supabase
+        .from("profiles")
+        .select("avatar_url")
+        .eq("id", uid)
+        .single();
+      setAvatarUrl(data?.avatar_url ?? null);
+    };
+
+    supabase.auth.getUser().then(({ data }) => {
+      setUser(data.user);
+      if (data.user) fetchAvatar(data.user.id);
+    });
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
+      if (session?.user) {
+        fetchAvatar(session.user.id);
+      } else {
+        setAvatarUrl(null);
+      }
     });
 
     const onClickOutside = (e: MouseEvent) => {
@@ -137,9 +157,17 @@ export default function Navbar() {
                   onClick={() => setDropdownOpen(!dropdownOpen)}
                   className="flex items-center gap-2 pl-1 pr-2.5 py-1 rounded-xl hover:bg-[#FFF8F0] dark:hover:bg-[#2a2a2a] transition-colors group"
                 >
-                  <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#FA8112] to-[#E8730F] flex items-center justify-center text-white text-xs font-black shadow-sm">
-                    {initials}
-                  </div>
+                  {avatarUrl ? (
+                    <img
+                      src={avatarUrl}
+                      alt="avatar"
+                      className="w-8 h-8 rounded-lg object-cover shadow-sm"
+                    />
+                  ) : (
+                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#FA8112] to-[#E8730F] flex items-center justify-center text-white text-xs font-black shadow-sm">
+                      {initials}
+                    </div>
+                  )}
                   <span className="hidden sm:block text-sm font-medium text-gray-700 dark:text-gray-300 max-w-[100px] truncate">
                     {displayName}
                   </span>
