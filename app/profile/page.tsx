@@ -184,82 +184,32 @@ export default function ProfilePage() {
   const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file || !user) return
-
-    setUploading(true)
-    const sb = createClient()
-
+    const supabase = createClient()
     const fileExt = file.name.split(".").pop()
     const fileName = `${user.id}-avatar-${Date.now()}.${fileExt}`
-
-    const { error: uploadError } = await sb.storage
+    const { error: uploadError } = await supabase.storage
       .from("avatars")
       .upload(fileName, file, { upsert: true })
-
-    if (uploadError) {
-      console.error("Upload error:", uploadError)
-      alert("Erreur upload: " + uploadError.message)
-      setUploading(false)
-      return
-    }
-
-    const { data: { publicUrl } } = sb.storage.from("avatars").getPublicUrl(fileName)
-
-    const { error: updateError } = await sb
-      .from("profiles")
-      .update({ avatar_url: publicUrl })
-      .eq("id", user.id)
-
-    if (updateError) {
-      console.error("Update error:", updateError)
-      alert("Erreur mise à jour: " + updateError.message)
-    } else {
-      setProfile((prev) => prev ? { ...prev, avatar_url: publicUrl } : null)
-      alert("Photo de profil mise à jour !")
-    }
-
-    setUploading(false)
-    e.target.value = ""
+    if (uploadError) return
+    const { data: { publicUrl } } = supabase.storage.from("avatars").getPublicUrl(fileName)
+    await supabase.from("profiles").update({ avatar_url: publicUrl }).eq("id", user.id)
+    setProfile((prev) => prev ? { ...prev, avatar_url: publicUrl + "?t=" + Date.now() } : null)
   }
 
   /* ── Cover upload ── */
   const handleCoverUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file || !user) return
-
-    setUploading(true)
-    const sb = createClient()
-
+    const supabase = createClient()
     const fileExt = file.name.split(".").pop()
     const fileName = `${user.id}-cover-${Date.now()}.${fileExt}`
-
-    const { error: uploadError } = await sb.storage
+    const { error: uploadError } = await supabase.storage
       .from("covers")
       .upload(fileName, file, { upsert: true })
-
-    if (uploadError) {
-      console.error("Upload error:", uploadError)
-      alert("Erreur upload: " + uploadError.message)
-      setUploading(false)
-      return
-    }
-
-    const { data: { publicUrl } } = sb.storage.from("covers").getPublicUrl(fileName)
-
-    const { error: updateError } = await sb
-      .from("profiles")
-      .update({ cover_url: publicUrl })
-      .eq("id", user.id)
-
-    if (updateError) {
-      console.error("Update error:", updateError)
-      alert("Erreur mise à jour: " + updateError.message)
-    } else {
-      setProfile((prev) => prev ? { ...prev, cover_url: publicUrl } : null)
-      alert("Photo de couverture mise à jour !")
-    }
-
-    setUploading(false)
-    e.target.value = ""
+    if (uploadError) return
+    const { data: { publicUrl } } = supabase.storage.from("covers").getPublicUrl(fileName)
+    await supabase.from("profiles").update({ cover_url: publicUrl }).eq("id", user.id)
+    setProfile((prev) => prev ? { ...prev, cover_url: publicUrl + "?t=" + Date.now() } : null)
   }
 
   /* ── Save profile edit ── */
@@ -331,19 +281,16 @@ export default function ProfilePage() {
         {/* ── Cover + Avatar ── */}
         <div className="relative">
           {/* Cover */}
-          <div
-            className="h-52 sm:h-64 relative overflow-hidden"
-            style={profile?.cover_url
-              ? { backgroundImage: `url(${profile.cover_url})`, backgroundSize: "cover", backgroundPosition: "center" }
-              : undefined}
-          >
+          <div className="h-52 sm:h-64 relative overflow-hidden">
             {!profile?.cover_url && (
               <div className="absolute inset-0 bg-gradient-to-br from-[#FA8112] via-[#E8730F] to-[#D46A0E]">
                 <div className="absolute -top-20 -right-20 w-64 h-64 bg-white/10 rounded-full blur-3xl" />
                 <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-amber-300/10 rounded-full blur-3xl" />
               </div>
             )}
-            {profile?.cover_url && <div className="absolute inset-0 bg-black/20" />}
+            {profile?.cover_url ? (
+              <img src={profile.cover_url} alt="Cover" key={profile.cover_url} className="w-full h-full object-cover absolute inset-0" />
+            ) : null}
 
             <button
               onClick={() => coverRef.current?.click()}
@@ -371,10 +318,12 @@ export default function ProfilePage() {
                 className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden shadow-xl border-4 border-white dark:border-[#1a1a1a] hover:opacity-90 transition-opacity disabled:opacity-70"
               >
                 {profile?.avatar_url ? (
-                  <img src={profile.avatar_url} alt={displayName} className="w-full h-full object-cover" />
+                  <img src={profile.avatar_url} alt="Avatar" key={profile.avatar_url} className="w-full h-full object-cover rounded-xl" />
                 ) : (
-                  <div className="w-full h-full bg-gradient-to-br from-[#FA8112] to-[#E8730F] flex items-center justify-center text-white text-3xl sm:text-4xl font-extrabold">
-                    {displayInitials}
+                  <div className="w-full h-full bg-gradient-to-br from-[#FA8112] to-[#E8730F] flex items-center justify-center">
+                    <span className="text-2xl font-bold text-white">
+                      {profile?.full_name?.charAt(0)?.toUpperCase() || "A"}
+                    </span>
                   </div>
                 )}
                 {uploading && (
