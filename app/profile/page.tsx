@@ -239,49 +239,41 @@ export default function ProfilePage() {
 
   /* ── Init: auth + profile + stats ── */
   useEffect(() => {
-    ;(async () => {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) { router.replace("/login"); return }
-      setUser(user)
+    const loadProfile = async () => {
+      const supabase = createClient()
 
-      const { data, error: profileError } = await supabase
-        .from("profiles")
-        .select("id, full_name, bio, wilaya, role, avatar_url, cover_url, rating, created_at")
-        .eq("id", user.id)
-        .single()
-
-      if (!profileError && data) {
-        setProfile(data)
-        setAvatarUrl(data.avatar_url ?? null)
-        setCoverUrl(data.cover_url ?? null)
-        setEditForm({
-          full_name: data.full_name || "",
-          bio:       data.bio       || "",
-          wilaya:    data.wilaya    || "",
-          role:      data.role      || "",
-        })
+      const { data: { user }, error: userError } = await supabase.auth.getUser()
+      if (userError || !user) {
+        router.push('/login')
+        return
       }
 
-      const [a, b, c, d] = await Promise.allSettled([
-        supabase.from("orders").select("id", { count: "exact", head: true }).eq("seller_id", user.id),
-        supabase.from("orders").select("id", { count: "exact", head: true }).eq("seller_id", user.id).eq("status", "completed"),
-        supabase.from("reviews").select("id", { count: "exact", head: true }).eq("seller_id", user.id),
-        supabase.from("orders").select("total_price").eq("seller_id", user.id).in("status", ["completed", "paid"]),
-      ])
+      setUser(user)
 
-      setStats({
-        orders:  a.status === "fulfilled" ? (a.value.count ?? 0) : 0,
-        sales:   b.status === "fulfilled" ? (b.value.count ?? 0) : 0,
-        reviews: c.status === "fulfilled" ? (c.value.count ?? 0) : 0,
-        revenue: d.status === "fulfilled"
-          ? ((d.value.data ?? []) as { total_price: number | null }[])
-              .reduce((s, o) => s + (o.total_price ?? 0), 0)
-          : 0,
-      })
+      const { data: profileData, error: profileError } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .single()
+
+      console.log('Profile data:', profileData)
+      console.log('Profile error:', profileError)
+
+      if (profileData) {
+        setProfile(profileData)
+        if (profileData.avatar_url) {
+          console.log('Setting avatar:', profileData.avatar_url)
+          setAvatarUrl(profileData.avatar_url)
+        }
+        if (profileData.cover_url) {
+          setCoverUrl(profileData.cover_url)
+        }
+      }
 
       setLoading(false)
-    })()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    }
+
+    loadProfile()
   }, [])
 
   /* ── Tab data ── */
