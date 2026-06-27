@@ -103,9 +103,8 @@ export default function ProfilePage() {
 
   const [activeTab, setActiveTab]       = useState<Tab>("services")
   const [loading, setLoading]           = useState(true)
-  const [tabLoading, setTabLoading]     = useState(false)
-  const [uploadingAvatar, setUploadingAvatar] = useState(false)
-  const [uploadingCover, setUploadingCover]   = useState(false)
+  const [tabLoading, setTabLoading] = useState(false)
+  const [uploading, setUploading]   = useState(false)
   const [showEdit, setShowEdit] = useState(false)
   const [saving, setSaving]     = useState(false)
   const [editForm, setEditForm] = useState({ full_name: "", bio: "", wilaya: "", role: "" })
@@ -182,38 +181,84 @@ export default function ProfilePage() {
   }, [activeTab, user])
 
   /* ── Avatar upload ── */
-  const onAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file || !user) return
-    setUploadingAvatar(true)
-    const ext  = file.name.split(".").pop()
-    const path = `${user.id}/avatar.${ext}`
-    const { error } = await supabase.storage.from("avatars").upload(path, file, { upsert: true })
-    if (!error) {
-      const { data: { publicUrl } } = supabase.storage.from("avatars").getPublicUrl(path)
-      const url = `${publicUrl}?v=${Date.now()}`
-      await supabase.from("profiles").update({ avatar_url: url }).eq("id", user.id)
-      setProfile((p) => p ? { ...p, avatar_url: url } : p)
+
+    setUploading(true)
+    const sb = createClient()
+
+    const fileExt = file.name.split(".").pop()
+    const fileName = `${user.id}-avatar-${Date.now()}.${fileExt}`
+
+    const { error: uploadError } = await sb.storage
+      .from("avatars")
+      .upload(fileName, file, { upsert: true })
+
+    if (uploadError) {
+      console.error("Upload error:", uploadError)
+      alert("Erreur upload: " + uploadError.message)
+      setUploading(false)
+      return
     }
-    setUploadingAvatar(false)
+
+    const { data: { publicUrl } } = sb.storage.from("avatars").getPublicUrl(fileName)
+
+    const { error: updateError } = await sb
+      .from("profiles")
+      .update({ avatar_url: publicUrl })
+      .eq("id", user.id)
+
+    if (updateError) {
+      console.error("Update error:", updateError)
+      alert("Erreur mise à jour: " + updateError.message)
+    } else {
+      setProfile((prev) => prev ? { ...prev, avatar_url: publicUrl } : null)
+      alert("Photo de profil mise à jour !")
+    }
+
+    setUploading(false)
     e.target.value = ""
   }
 
   /* ── Cover upload ── */
-  const onCoverChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleCoverUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file || !user) return
-    setUploadingCover(true)
-    const ext  = file.name.split(".").pop()
-    const path = `${user.id}/cover.${ext}`
-    const { error } = await supabase.storage.from("covers").upload(path, file, { upsert: true })
-    if (!error) {
-      const { data: { publicUrl } } = supabase.storage.from("covers").getPublicUrl(path)
-      const url = `${publicUrl}?v=${Date.now()}`
-      await supabase.from("profiles").update({ cover_url: url }).eq("id", user.id)
-      setProfile((p) => p ? { ...p, cover_url: url } : p)
+
+    setUploading(true)
+    const sb = createClient()
+
+    const fileExt = file.name.split(".").pop()
+    const fileName = `${user.id}-cover-${Date.now()}.${fileExt}`
+
+    const { error: uploadError } = await sb.storage
+      .from("covers")
+      .upload(fileName, file, { upsert: true })
+
+    if (uploadError) {
+      console.error("Upload error:", uploadError)
+      alert("Erreur upload: " + uploadError.message)
+      setUploading(false)
+      return
     }
-    setUploadingCover(false)
+
+    const { data: { publicUrl } } = sb.storage.from("covers").getPublicUrl(fileName)
+
+    const { error: updateError } = await sb
+      .from("profiles")
+      .update({ cover_url: publicUrl })
+      .eq("id", user.id)
+
+    if (updateError) {
+      console.error("Update error:", updateError)
+      alert("Erreur mise à jour: " + updateError.message)
+    } else {
+      setProfile((prev) => prev ? { ...prev, cover_url: publicUrl } : null)
+      alert("Photo de couverture mise à jour !")
+    }
+
+    setUploading(false)
     e.target.value = ""
   }
 
@@ -280,8 +325,8 @@ export default function ProfilePage() {
       <main className="min-h-screen bg-[#FFF8F0] dark:bg-[#1a1a1a] pb-20">
 
         {/* Hidden file inputs */}
-        <input ref={avatarRef} type="file" accept="image/*" className="hidden" onChange={onAvatarChange} />
-        <input ref={coverRef}  type="file" accept="image/*" className="hidden" onChange={onCoverChange}  />
+        <input ref={avatarRef} type="file" accept="image/*" className="hidden" onChange={handleAvatarUpload} />
+        <input ref={coverRef}  type="file" accept="image/*" className="hidden" onChange={handleCoverUpload}  />
 
         {/* ── Cover + Avatar ── */}
         <div className="relative">
@@ -302,10 +347,10 @@ export default function ProfilePage() {
 
             <button
               onClick={() => coverRef.current?.click()}
-              disabled={uploadingCover}
+              disabled={uploading}
               className="absolute top-4 right-4 flex items-center gap-2 px-3 py-1.5 bg-black/30 backdrop-blur-sm text-white text-xs font-medium rounded-lg border border-white/20 hover:bg-black/50 transition-colors disabled:opacity-60"
             >
-              {uploadingCover
+              {uploading
                 ? <><Spinner cls="w-3.5 h-3.5" /> Envoi...</>
                 : <>
                     <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -322,7 +367,7 @@ export default function ProfilePage() {
             <div className="relative">
               <button
                 onClick={() => avatarRef.current?.click()}
-                disabled={uploadingAvatar}
+                disabled={uploading}
                 className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden shadow-xl border-4 border-white dark:border-[#1a1a1a] hover:opacity-90 transition-opacity disabled:opacity-70"
               >
                 {profile?.avatar_url ? (
@@ -332,7 +377,7 @@ export default function ProfilePage() {
                     {displayInitials}
                   </div>
                 )}
-                {uploadingAvatar && (
+                {uploading && (
                   <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
                     <Spinner />
                   </div>
