@@ -244,18 +244,21 @@ export default function ProfilePage() {
       if (!user) { router.replace("/login"); return }
       setUser(user)
 
-      const { data: prof } = await supabase
-        .from("profiles").select("*").eq("id", user.id).single()
+      const { data, error: profileError } = await supabase
+        .from("profiles")
+        .select("id, full_name, bio, wilaya, role, avatar_url, cover_url, rating, created_at")
+        .eq("id", user.id)
+        .single()
 
-      if (prof) {
-        setProfile(prof)
-        setAvatarUrl(prof.avatar_url || null)
-        setCoverUrl(prof.cover_url || null)
+      if (!profileError && data) {
+        setProfile(data)
+        if (data.avatar_url) setAvatarUrl(data.avatar_url)
+        if (data.cover_url)  setCoverUrl(data.cover_url)
         setEditForm({
-          full_name: prof.full_name || "",
-          bio: prof.bio || "",
-          wilaya: prof.wilaya || "",
-          role: prof.role || "",
+          full_name: data.full_name || "",
+          bio:       data.bio       || "",
+          wilaya:    data.wilaya    || "",
+          role:      data.role      || "",
         })
       }
 
@@ -349,11 +352,11 @@ export default function ProfilePage() {
     const urlWithBust = `${publicUrl}?v=${ts}`
 
     if (cropMode === "avatar") {
-      await sb.from("profiles").update({ avatar_url: publicUrl }).eq("id", user.id)
-      setAvatarUrl(urlWithBust)
+      const { error: dbErr } = await sb.from("profiles").update({ avatar_url: publicUrl }).eq("id", user.id)
+      if (!dbErr) setAvatarUrl(urlWithBust)
     } else {
-      await sb.from("profiles").update({ cover_url: publicUrl }).eq("id", user.id)
-      setCoverUrl(urlWithBust)
+      const { error: dbErr } = await sb.from("profiles").update({ cover_url: publicUrl }).eq("id", user.id)
+      if (!dbErr) setCoverUrl(urlWithBust)
     }
 
     setUploading(false)
