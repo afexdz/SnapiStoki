@@ -7,7 +7,7 @@ import "react-image-crop/dist/ReactCrop.css"
 import Navbar from "@/components/Navbar"
 import Footer from "@/components/Footer"
 import { createClient } from "@/lib/supabase/client"
-import { WILAYAS } from "@/lib/wilayas"
+import { WILAYAS, findNearestWilaya } from "@/lib/wilayas"
 import type { User } from "@supabase/supabase-js"
 
 /* ─── Types ─────────────────────────────────────────────────── */
@@ -231,6 +231,8 @@ export default function ProfilePage() {
   const [saving, setSaving]     = useState(false)
   const [editForm, setEditForm] = useState({ full_name: "", bio: "", wilaya: "", role: "" })
 
+  const [detectedWilaya, setDetectedWilaya] = useState("")
+
   const [cropSrc, setCropSrc]   = useState<string | null>(null)
   const [cropMode, setCropMode] = useState<CropMode>("avatar")
 
@@ -267,6 +269,21 @@ export default function ProfilePage() {
         }
         if (profileData.cover_url) {
           setCoverUrl(profileData.cover_url)
+        }
+
+        // Auto-detect wilaya from IP if user hasn't set one
+        if (!profileData.wilaya) {
+          try {
+            const res = await fetch('https://ipapi.co/json/')
+            const geo = await res.json()
+            if (geo.latitude && geo.longitude) {
+              const nearest = findNearestWilaya(geo.latitude, geo.longitude)
+              setDetectedWilaya(nearest.name)
+              setEditForm(prev => ({ ...prev, wilaya: nearest.name }))
+            }
+          } catch (e) {
+            console.log('IP detection failed:', e)
+          }
         }
       }
 
@@ -364,9 +381,9 @@ export default function ProfilePage() {
   const openEdit = () => {
     setEditForm({
       full_name: profile?.full_name || "",
-      bio: profile?.bio || "",
-      wilaya: profile?.wilaya || "",
-      role: profile?.role || "",
+      bio:       profile?.bio       || "",
+      wilaya:    profile?.wilaya    || detectedWilaya || "",
+      role:      profile?.role      || "",
     })
     setShowEdit(true)
   }
@@ -374,8 +391,26 @@ export default function ProfilePage() {
   const saveProfile = async () => {
     if (!user) return
     setSaving(true)
-    await supabase.from("profiles").update(editForm).eq("id", user.id)
-    setProfile((p) => p ? { ...p, ...editForm } : p)
+    const sb = createClient()
+    const { error } = await sb
+      .from("profiles")
+      .update({
+        full_name:  editForm.full_name,
+        bio:        editForm.bio,
+        wilaya:     editForm.wilaya,
+        role:       editForm.role,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", user.id)
+    if (!error) {
+      setProfile(prev => prev ? {
+        ...prev,
+        full_name: editForm.full_name,
+        bio:       editForm.bio,
+        wilaya:    editForm.wilaya,
+        role:      editForm.role,
+      } : null)
+    }
     setSaving(false)
     setShowEdit(false)
   }

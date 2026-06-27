@@ -74,3 +74,19 @@ export function getWilayaById(id: number): Wilaya | undefined {
 export function getWilayaByName(name: string): Wilaya | undefined {
   return WILAYAS.find(w => w.name.toLowerCase() === name.toLowerCase())
 }
+
+export function findNearestWilaya(lat: number, lng: number): Wilaya {
+  let nearest = WILAYAS[0]
+  let minDist = Infinity
+  for (const w of WILAYAS) {
+    const dLat = ((w.lat - lat) * Math.PI) / 180
+    const dLng = ((w.lng - lng) * Math.PI) / 180
+    const a =
+      Math.sin(dLat / 2) ** 2 +
+      Math.cos((lat * Math.PI) / 180) * Math.cos((w.lat * Math.PI) / 180) *
+      Math.sin(dLng / 2) ** 2
+    const dist = 6371 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+    if (dist < minDist) { minDist = dist; nearest = w }
+  }
+  return nearest
+}
