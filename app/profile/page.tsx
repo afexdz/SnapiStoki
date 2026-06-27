@@ -101,8 +101,11 @@ export default function ProfilePage() {
   const [products, setProducts] = useState<Product[]>([])
   const [reviews, setReviews]   = useState<Review[]>([])
 
-  const [activeTab, setActiveTab]       = useState<Tab>("services")
-  const [loading, setLoading]           = useState(true)
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null)
+  const [coverUrl, setCoverUrl]   = useState<string | null>(null)
+
+  const [activeTab, setActiveTab]   = useState<Tab>("services")
+  const [loading, setLoading]       = useState(true)
   const [tabLoading, setTabLoading] = useState(false)
   const [uploading, setUploading]   = useState(false)
   const [showEdit, setShowEdit] = useState(false)
@@ -124,6 +127,8 @@ export default function ProfilePage() {
 
       if (prof) {
         setProfile(prof)
+        setAvatarUrl(prof.avatar_url || null)
+        setCoverUrl(prof.cover_url || null)
         setEditForm({
           full_name: prof.full_name || "",
           bio: prof.bio || "",
@@ -193,7 +198,7 @@ export default function ProfilePage() {
     if (uploadError) return
     const { data: { publicUrl } } = supabase.storage.from("avatars").getPublicUrl(fileName)
     await supabase.from("profiles").update({ avatar_url: publicUrl }).eq("id", user.id)
-    setProfile((prev) => prev ? { ...prev, avatar_url: publicUrl + "?t=" + Date.now() } : null)
+    setAvatarUrl(publicUrl + "?v=" + Date.now())
   }
 
   /* ── Cover upload ── */
@@ -209,7 +214,7 @@ export default function ProfilePage() {
     if (uploadError) return
     const { data: { publicUrl } } = supabase.storage.from("covers").getPublicUrl(fileName)
     await supabase.from("profiles").update({ cover_url: publicUrl }).eq("id", user.id)
-    setProfile((prev) => prev ? { ...prev, cover_url: publicUrl + "?t=" + Date.now() } : null)
+    setCoverUrl(publicUrl + "?v=" + Date.now())
   }
 
   /* ── Save profile edit ── */
@@ -282,15 +287,22 @@ export default function ProfilePage() {
         <div className="relative">
           {/* Cover */}
           <div className="h-52 sm:h-64 relative overflow-hidden">
-            {!profile?.cover_url && (
-              <div className="absolute inset-0 bg-gradient-to-br from-[#FA8112] via-[#E8730F] to-[#D46A0E]">
+            <div style={{ position: "absolute", inset: 0, background: "#FA8112" }}>
+              {coverUrl && (
+                <img
+                  key={coverUrl}
+                  src={coverUrl}
+                  alt="cover"
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                />
+              )}
+            </div>
+            {!coverUrl && (
+              <div className="absolute inset-0 bg-gradient-to-br from-[#FA8112] via-[#E8730F] to-[#D46A0E] pointer-events-none">
                 <div className="absolute -top-20 -right-20 w-64 h-64 bg-white/10 rounded-full blur-3xl" />
                 <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-amber-300/10 rounded-full blur-3xl" />
               </div>
             )}
-            {profile?.cover_url ? (
-              <img src={profile.cover_url} alt="Cover" key={profile.cover_url} className="w-full h-full object-cover absolute inset-0" />
-            ) : null}
 
             <button
               onClick={() => coverRef.current?.click()}
@@ -317,15 +329,22 @@ export default function ProfilePage() {
                 disabled={uploading}
                 className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden shadow-xl border-4 border-white dark:border-[#1a1a1a] hover:opacity-90 transition-opacity disabled:opacity-70"
               >
-                {profile?.avatar_url ? (
-                  <img src={profile.avatar_url} alt="Avatar" key={profile.avatar_url} className="w-full h-full object-cover rounded-xl" />
-                ) : (
-                  <div className="w-full h-full bg-gradient-to-br from-[#FA8112] to-[#E8730F] flex items-center justify-center">
-                    <span className="text-2xl font-bold text-white">
-                      {profile?.full_name?.charAt(0)?.toUpperCase() || "A"}
-                    </span>
-                  </div>
-                )}
+                <div style={{ width: "100%", height: "100%", borderRadius: "12px", overflow: "hidden", background: "#FA8112" }}>
+                  {avatarUrl ? (
+                    <img
+                      key={avatarUrl}
+                      src={avatarUrl}
+                      alt="avatar"
+                      style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                    />
+                  ) : (
+                    <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                      <span style={{ fontSize: "32px", fontWeight: "700", color: "white" }}>
+                        {profile?.full_name?.charAt(0)?.toUpperCase() || user?.email?.charAt(0)?.toUpperCase() || "A"}
+                      </span>
+                    </div>
+                  )}
+                </div>
                 {uploading && (
                   <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
                     <Spinner />
