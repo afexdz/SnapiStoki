@@ -1,7 +1,9 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, useCallback } from "react"
 import { useRouter } from "next/navigation"
+import ReactCrop, { type Crop, type PixelCrop, centerCrop, makeAspectCrop } from "react-image-crop"
+import "react-image-crop/dist/ReactCrop.css"
 import Navbar from "@/components/Navbar"
 import Footer from "@/components/Footer"
 import { createClient } from "@/lib/supabase/client"
@@ -89,6 +91,123 @@ function Spinner({ cls = "w-5 h-5" }: { cls?: string }) {
   )
 }
 
+/* ─── Crop helpers ───────────────────────────────────────────── */
+function centerAspectCrop(w: number, h: number, aspect: number): Crop {
+  return centerCrop(makeAspectCrop({ unit: "%", width: 90 }, aspect, w, h), w, h)
+}
+
+async function cropToBlob(img: HTMLImageElement, crop: PixelCrop, outW: number, outH: number): Promise<Blob> {
+  const canvas = document.createElement("canvas")
+  canvas.width  = outW
+  canvas.height = outH
+  const ctx = canvas.getContext("2d")!
+  const scaleX = img.naturalWidth  / img.width
+  const scaleY = img.naturalHeight / img.height
+  ctx.drawImage(img, crop.x * scaleX, crop.y * scaleY, crop.width * scaleX, crop.height * scaleY, 0, 0, outW, outH)
+  return new Promise((res, rej) =>
+    canvas.toBlob((b) => b ? res(b) : rej(new Error("canvas toBlob failed")), "image/jpeg", 0.92)
+  )
+}
+
+/* ─── CropModal ──────────────────────────────────────────────── */
+type CropMode = "avatar" | "cover"
+
+interface CropModalProps {
+  src: string
+  mode: CropMode
+  onConfirm: (blob: Blob) => void
+  onCancel: () => void
+}
+
+function CropModal({ src, mode, onConfirm, onCancel }: CropModalProps) {
+  const aspect   = mode === "avatar" ? 1 : 16 / 3
+  const minW     = mode === "avatar" ? 200 : 1200
+  const minH     = mode === "avatar" ? 200 : 300
+  const outW     = mode === "avatar" ? 400  : 1200
+  const outH     = mode === "avatar" ? 400  : 300
+
+  const imgRef                      = useRef<HTMLImageElement>(null)
+  const [crop, setCrop]             = useState<Crop>()
+  const [completedCrop, setCompleted] = useState<PixelCrop>()
+  const [confirming, setConfirming] = useState(false)
+
+  const onLoad = useCallback((e: React.SyntheticEvent<HTMLImageElement>) => {
+    const { naturalWidth: w, naturalHeight: h } = e.currentTarget
+    setCrop(centerAspectCrop(w, h, aspect))
+  }, [aspect])
+
+  const handleConfirm = async () => {
+    if (!completedCrop || !imgRef.current) return
+    setConfirming(true)
+    const blob = await cropToBlob(imgRef.current, completedCrop, outW, outH)
+    onConfirm(blob)
+  }
+
+  return (
+    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+      <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={onCancel} />
+      <div className="relative w-full max-w-2xl bg-[#1a1a1a] rounded-2xl shadow-2xl border border-[#3a3a3a] overflow-hidden z-10">
+        {/* Header */}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-[#3a3a3a]">
+          <h3 className="text-base font-bold text-white">Recadrer la photo</h3>
+          <button onClick={onCancel} className="text-gray-400 hover:text-white transition-colors">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        {/* Crop area */}
+        <div className="flex items-center justify-center bg-black/60 p-4 max-h-[60vh] overflow-auto">
+          <ReactCrop
+            crop={crop}
+            onChange={(_, pct) => setCrop(pct)}
+            onComplete={(c) => setCompleted(c)}
+            aspect={aspect}
+            minWidth={minW / 4}
+            minHeight={minH / 4}
+            circularCrop={mode === "avatar"}
+            keepSelection
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              ref={imgRef}
+              src={src}
+              alt="crop-source"
+              onLoad={onLoad}
+              style={{ maxHeight: "55vh", maxWidth: "100%", display: "block" }}
+            />
+          </ReactCrop>
+        </div>
+
+        {/* Hint */}
+        <p className="text-center text-xs text-gray-500 pt-3 px-6">
+          {mode === "avatar" ? "Ratio 1:1 — glissez pour repositionner" : "Ratio 16:3 — glissez pour repositionner"}
+        </p>
+
+        {/* Actions */}
+        <div className="flex gap-3 px-6 py-5">
+          <button
+            onClick={onCancel}
+            className="flex-1 py-2.5 border-2 border-[#3a3a3a] text-gray-300 text-sm font-semibold rounded-xl hover:border-[#FA8112]/40 transition-colors"
+          >
+            Annuler
+          </button>
+          <button
+            onClick={handleConfirm}
+            disabled={!completedCrop || confirming}
+            className="flex-1 py-2.5 bg-[#FA8112] hover:bg-[#E8730F] text-white text-sm font-semibold rounded-xl transition-all shadow-lg shadow-[#FA8112]/30 disabled:opacity-50 flex items-center justify-center gap-2"
+          >
+            {confirming
+              ? <><svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg> Envoi...</>
+              : "Confirmer"}
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 /* ─── Page ───────────────────────────────────────────────────── */
 export default function ProfilePage() {
   const router = useRouter()
@@ -111,6 +230,9 @@ export default function ProfilePage() {
   const [showEdit, setShowEdit] = useState(false)
   const [saving, setSaving]     = useState(false)
   const [editForm, setEditForm] = useState({ full_name: "", bio: "", wilaya: "", role: "" })
+
+  const [cropSrc, setCropSrc]   = useState<string | null>(null)
+  const [cropMode, setCropMode] = useState<CropMode>("avatar")
 
   const avatarRef = useRef<HTMLInputElement>(null)
   const coverRef  = useRef<HTMLInputElement>(null)
@@ -185,36 +307,62 @@ export default function ProfilePage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab, user])
 
-  /* ── Avatar upload ── */
-  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  /* ── Open crop modal on file select ── */
+  const handleAvatarSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
-    if (!file || !user) return
-    const supabase = createClient()
-    const fileExt = file.name.split(".").pop()
-    const fileName = `${user.id}-avatar-${Date.now()}.${fileExt}`
-    const { error: uploadError } = await supabase.storage
-      .from("avatars")
-      .upload(fileName, file, { upsert: true })
-    if (uploadError) return
-    const { data: { publicUrl } } = supabase.storage.from("avatars").getPublicUrl(fileName)
-    await supabase.from("profiles").update({ avatar_url: publicUrl }).eq("id", user.id)
-    setAvatarUrl(publicUrl + "?v=" + Date.now())
+    if (!file) return
+    const url = URL.createObjectURL(file)
+    setCropMode("avatar")
+    setCropSrc(url)
+    e.target.value = ""
   }
 
-  /* ── Cover upload ── */
-  const handleCoverUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleCoverSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
-    if (!file || !user) return
-    const supabase = createClient()
-    const fileExt = file.name.split(".").pop()
-    const fileName = `${user.id}-cover-${Date.now()}.${fileExt}`
-    const { error: uploadError } = await supabase.storage
-      .from("covers")
-      .upload(fileName, file, { upsert: true })
-    if (uploadError) return
-    const { data: { publicUrl } } = supabase.storage.from("covers").getPublicUrl(fileName)
-    await supabase.from("profiles").update({ cover_url: publicUrl }).eq("id", user.id)
-    setCoverUrl(publicUrl + "?v=" + Date.now())
+    if (!file) return
+    const url = URL.createObjectURL(file)
+    setCropMode("cover")
+    setCropSrc(url)
+    e.target.value = ""
+  }
+
+  /* ── Upload confirmed crop blob ── */
+  const handleCropConfirm = async (blob: Blob) => {
+    if (!user) return
+    setUploading(true)
+    setCropSrc(null)
+
+    const sb       = createClient()
+    const ts       = Date.now()
+    const bucket   = cropMode === "avatar" ? "avatars" : "covers"
+    const fileName = cropMode === "avatar"
+      ? `${user.id}-avatar-${ts}.jpg`
+      : `${user.id}-cover-${ts}.jpg`
+
+    const { error: uploadError } = await sb.storage.from(bucket).upload(fileName, blob, {
+      upsert: true,
+      contentType: "image/jpeg",
+    })
+    if (uploadError) { setUploading(false); return }
+
+    const { data: { publicUrl } } = sb.storage.from(bucket).getPublicUrl(fileName)
+    const urlWithBust = `${publicUrl}?v=${ts}`
+
+    if (cropMode === "avatar") {
+      await sb.from("profiles").update({ avatar_url: publicUrl }).eq("id", user.id)
+      setAvatarUrl(urlWithBust)
+    } else {
+      await sb.from("profiles").update({ cover_url: publicUrl }).eq("id", user.id)
+      setCoverUrl(urlWithBust)
+    }
+
+    setUploading(false)
+    if (cropSrc) URL.revokeObjectURL(cropSrc)
+  }
+
+  const handleCropCancel = () => {
+    if (cropSrc) URL.revokeObjectURL(cropSrc)
+    setCropSrc(null)
   }
 
   /* ── Save profile edit ── */
@@ -280,8 +428,8 @@ export default function ProfilePage() {
       <main className="min-h-screen bg-[#FFF8F0] dark:bg-[#1a1a1a] pb-20">
 
         {/* Hidden file inputs */}
-        <input ref={avatarRef} type="file" accept="image/*" className="hidden" onChange={handleAvatarUpload} />
-        <input ref={coverRef}  type="file" accept="image/*" className="hidden" onChange={handleCoverUpload}  />
+        <input ref={avatarRef} type="file" accept="image/*" className="hidden" onChange={handleAvatarSelect} />
+        <input ref={coverRef}  type="file" accept="image/*" className="hidden" onChange={handleCoverSelect}  />
 
         {/* ── Cover + Avatar ── */}
         <div className="relative">
@@ -759,6 +907,15 @@ export default function ProfilePage() {
               </div>
             </div>
           </div>
+        )}
+        {/* ── Crop modal ── */}
+        {cropSrc && (
+          <CropModal
+            src={cropSrc}
+            mode={cropMode}
+            onConfirm={handleCropConfirm}
+            onCancel={handleCropCancel}
+          />
         )}
       </main>
       <Footer />
