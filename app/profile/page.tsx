@@ -246,12 +246,9 @@ export default function ProfilePage() {
   const avatarMenuRef = useRef<HTMLDivElement>(null)
 
   const [isRepositioning, setIsRepositioning] = useState(false)
-  const [coverPosition, setCoverPosition]     = useState("center center")
-  const [tempPosition, setTempPosition]       = useState("center center")
-  const [isDragging, setIsDragging]           = useState(false)
-  const [dragStartY, setDragStartY]           = useState(0)
-  const [dragStartPct, setDragStartPct]       = useState(50)
-  const coverContainerRef = useRef<HTMLDivElement>(null)
+  const [coverPosition, setCoverPosition]     = useState('center 50%')
+  const [dragStartY, setDragStartY]           = useState<number | null>(null)
+  const [positionPercent, setPositionPercent] = useState(50)
 
   /* ── Close menus on outside click ── */
   useEffect(() => {
@@ -297,7 +294,8 @@ export default function ProfilePage() {
         }
         if (profileData.cover_position) {
           setCoverPosition(profileData.cover_position)
-          setTempPosition(profileData.cover_position)
+          const match = profileData.cover_position.match(/(\d+)%/)
+          if (match) setPositionPercent(parseInt(match[1]))
         }
 
         // Auto-detect wilaya from IP if user hasn't set one
@@ -439,46 +437,45 @@ export default function ProfilePage() {
   }
 
   /* ── Cover reposition ── */
-  const parseYPct = (pos: string): number => {
-    const match = pos.match(/(\d+(?:\.\d+)?)%$/)
-    return match ? parseFloat(match[1]) : 50
-  }
-
   const enterRepositionMode = () => {
-    setTempPosition(coverPosition)
     setIsRepositioning(true)
     setShowCoverMenu(false)
   }
 
-  const handleRepoDragStart = (e: React.MouseEvent) => {
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (!isRepositioning) return
     e.preventDefault()
-    setIsDragging(true)
     setDragStartY(e.clientY)
-    setDragStartPct(parseYPct(tempPosition))
   }
 
-  const handleRepoDragMove = (e: React.MouseEvent) => {
-    if (!isDragging) return
-    const containerH = coverContainerRef.current?.offsetHeight ?? 208
-    const deltaY = e.clientY - dragStartY
-    const newY = Math.max(0, Math.min(100, dragStartPct - (deltaY / containerH * 100)))
-    setTempPosition(`center ${newY.toFixed(1)}%`)
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isRepositioning || dragStartY === null || e.buttons !== 1) return
+    e.preventDefault()
+    const diff = dragStartY - e.clientY
+    const newPercent = Math.max(0, Math.min(100, positionPercent + diff * 0.3))
+    setCoverPosition(`center ${newPercent}%`)
   }
 
-  const handleRepoDragEnd = () => setIsDragging(false)
+  const handleMouseUp = (e: React.MouseEvent) => {
+    if (!isRepositioning) return
+    const diff = (dragStartY || e.clientY) - e.clientY
+    const newPercent = Math.max(0, Math.min(100, positionPercent + diff * 0.3))
+    setPositionPercent(newPercent)
+    setDragStartY(null)
+  }
 
-  const confirmReposition = async () => {
-    if (!user) return
-    const sb = createClient()
-    const { error } = await sb.from("profiles").update({ cover_position: tempPosition }).eq("id", user.id)
-    if (!error) setCoverPosition(tempPosition)
+  const handleRepositionSave = async () => {
+    const supabase = createClient()
+    await supabase
+      .from('profiles')
+      .update({ cover_position: coverPosition })
+      .eq('id', user!.id)
     setIsRepositioning(false)
   }
 
-  const cancelReposition = () => {
-    setTempPosition(coverPosition)
+  const handleRepositionCancel = () => {
+    setCoverPosition(`center ${positionPercent}%`)
     setIsRepositioning(false)
-    setIsDragging(false)
   }
 
   /* ── Save profile edit ── */
@@ -568,15 +565,7 @@ export default function ProfilePage() {
         {/* ── Cover + Avatar ── */}
         <div className="relative">
           {/* Cover */}
-          <div
-            ref={coverContainerRef}
-            className="h-52 sm:h-64 relative overflow-hidden select-none"
-            style={{ cursor: isRepositioning ? (isDragging ? "grabbing" : "grab") : "default" }}
-            onMouseDown={isRepositioning ? handleRepoDragStart : undefined}
-            onMouseMove={isRepositioning ? handleRepoDragMove : undefined}
-            onMouseUp={isRepositioning ? handleRepoDragEnd : undefined}
-            onMouseLeave={isRepositioning ? handleRepoDragEnd : undefined}
-          >
+          <div className="h-52 sm:h-64 relative overflow-hidden select-none">
             {/* Cover background — z-index 0 */}
             {coverUrl ? (
               <img
@@ -586,12 +575,16 @@ export default function ProfilePage() {
                 draggable={false}
                 style={{
                   position: "absolute", inset: 0,
-                  width: "100%", height: "100%",
-                  objectFit: "cover",
-                  objectPosition: isRepositioning ? tempPosition : coverPosition,
-                  zIndex: 0,
-                  pointerEvents: "none",
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  objectPosition: coverPosition,
+                  cursor: isRepositioning ? 'ns-resize' : 'default',
+                  userSelect: 'none',
                 }}
+                onMouseDown={handleMouseDown}
+                onMouseMove={handleMouseMove}
+                onMouseUp={handleMouseUp}
               />
             ) : (
               <div
@@ -608,30 +601,15 @@ export default function ProfilePage() {
               </div>
             )}
 
-            {/* Reposition mode: hint + confirm/cancel buttons */}
+            {/* Reposition mode bar */}
             {isRepositioning && (
-              <>
-                <div className="absolute inset-0 ring-2 ring-inset ring-[#FA8112]/60" style={{ zIndex: 15, pointerEvents: "none" }} />
-                <div className="absolute top-3 left-1/2 -translate-x-1/2" style={{ zIndex: 20 }}>
-                  <span className="px-3 py-1 bg-black/50 backdrop-blur-sm text-white text-xs rounded-full">
-                    Glissez pour repositionner
-                  </span>
+              <div style={{position:'absolute', bottom:0, left:0, right:0, background:'rgba(0,0,0,0.7)', padding:'10px 16px', display:'flex', alignItems:'center', justifyContent:'space-between', zIndex:20}}>
+                <span style={{color:'white', fontSize:13}}>Faites glisser pour repositionner</span>
+                <div style={{display:'flex', gap:8}}>
+                  <button onClick={handleRepositionCancel} style={{color:'white', background:'transparent', border:'1px solid white', padding:'5px 14px', borderRadius:6, cursor:'pointer'}}>Annuler</button>
+                  <button onClick={handleRepositionSave} style={{background:'#FA8112', color:'white', border:'none', padding:'5px 14px', borderRadius:6, cursor:'pointer'}}>Confirmer</button>
                 </div>
-                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-3" style={{ zIndex: 20 }}>
-                  <button
-                    onClick={cancelReposition}
-                    className="px-4 py-2 bg-black/40 backdrop-blur-sm text-white text-sm font-semibold rounded-xl border border-white/20 hover:bg-black/60 transition-colors"
-                  >
-                    Annuler
-                  </button>
-                  <button
-                    onClick={confirmReposition}
-                    className="px-4 py-2 bg-[#FA8112] hover:bg-[#E8730F] text-white text-sm font-semibold rounded-xl shadow-lg transition-colors"
-                  >
-                    Confirmer
-                  </button>
-                </div>
-              </>
+              </div>
             )}
 
             {/* Cover 3-dot menu — hidden during reposition */}
