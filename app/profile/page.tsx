@@ -268,6 +268,7 @@ export default function ProfilePage() {
           setAvatarUrl(profileData.avatar_url)
         }
         if (profileData.cover_url) {
+          console.log('[profile] Setting cover_url from DB:', profileData.cover_url)
           setCoverUrl(profileData.cover_url)
         }
 
@@ -351,21 +352,38 @@ export default function ProfilePage() {
       ? `${user.id}-avatar-${ts}.jpg`
       : `${user.id}-cover-${ts}.jpg`
 
+    console.log(`[upload] Starting ${cropMode} upload — bucket=${bucket} file=${fileName}`)
+
     const { error: uploadError } = await sb.storage.from(bucket).upload(fileName, blob, {
       upsert: true,
       contentType: "image/jpeg",
     })
-    if (uploadError) { setUploading(false); return }
+    if (uploadError) {
+      console.error(`[upload] Storage upload FAILED:`, uploadError)
+      setUploading(false)
+      return
+    }
 
     const { data: { publicUrl } } = sb.storage.from(bucket).getPublicUrl(fileName)
-    const urlWithBust = `${publicUrl}?v=${ts}`
+    console.log(`[upload] Storage upload OK — publicUrl=${publicUrl}`)
 
     if (cropMode === "avatar") {
       const { error: dbErr } = await sb.from("profiles").update({ avatar_url: publicUrl }).eq("id", user.id)
-      if (!dbErr) setAvatarUrl(urlWithBust)
+      if (dbErr) {
+        console.error(`[upload] DB update avatar_url FAILED:`, dbErr)
+      } else {
+        console.log(`[upload] DB avatar_url updated OK`)
+        setAvatarUrl(`${publicUrl}?v=${ts}`)
+      }
     } else {
+      console.log(`[upload] Saving cover_url to DB:`, publicUrl)
       const { error: dbErr } = await sb.from("profiles").update({ cover_url: publicUrl }).eq("id", user.id)
-      if (!dbErr) setCoverUrl(urlWithBust)
+      if (dbErr) {
+        console.error(`[upload] DB update cover_url FAILED:`, dbErr)
+      } else {
+        console.log(`[upload] DB cover_url updated OK — refreshing state`)
+        setCoverUrl(publicUrl + '?t=' + Date.now())
+      }
     }
 
     setUploading(false)
@@ -471,7 +489,7 @@ export default function ProfilePage() {
                   key={coverUrl}
                   src={coverUrl}
                   alt="cover"
-                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                  style={{ position: "absolute", width: "100%", height: "100%", objectFit: "cover", zIndex: 10 }}
                 />
               )}
             </div>
