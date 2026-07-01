@@ -19,6 +19,7 @@ type Profile = {
   role: string | null
   avatar_url: string | null
   cover_url: string | null
+  cover_position: string | null
   rating: number | null
   created_at: string
 }
@@ -244,6 +245,14 @@ export default function ProfilePage() {
   const coverMenuRef  = useRef<HTMLDivElement>(null)
   const avatarMenuRef = useRef<HTMLDivElement>(null)
 
+  const [isRepositioning, setIsRepositioning] = useState(false)
+  const [coverPosition, setCoverPosition]     = useState("center center")
+  const [tempPosition, setTempPosition]       = useState("center center")
+  const [isDragging, setIsDragging]           = useState(false)
+  const [dragStartY, setDragStartY]           = useState(0)
+  const [dragStartPct, setDragStartPct]       = useState(50)
+  const coverContainerRef = useRef<HTMLDivElement>(null)
+
   /* ── Close menus on outside click ── */
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -285,6 +294,10 @@ export default function ProfilePage() {
         if (profileData.cover_url) {
           console.log('[profile] Setting cover_url from DB:', profileData.cover_url)
           setCoverUrl(profileData.cover_url)
+        }
+        if (profileData.cover_position) {
+          setCoverPosition(profileData.cover_position)
+          setTempPosition(profileData.cover_position)
         }
 
         // Auto-detect wilaya from IP if user hasn't set one
@@ -425,6 +438,49 @@ export default function ProfilePage() {
     if (!error) setAvatarUrl(null)
   }
 
+  /* ── Cover reposition ── */
+  const parseYPct = (pos: string): number => {
+    const match = pos.match(/(\d+(?:\.\d+)?)%$/)
+    return match ? parseFloat(match[1]) : 50
+  }
+
+  const enterRepositionMode = () => {
+    setTempPosition(coverPosition)
+    setIsRepositioning(true)
+    setShowCoverMenu(false)
+  }
+
+  const handleRepoDragStart = (e: React.MouseEvent) => {
+    e.preventDefault()
+    setIsDragging(true)
+    setDragStartY(e.clientY)
+    setDragStartPct(parseYPct(tempPosition))
+  }
+
+  const handleRepoDragMove = (e: React.MouseEvent) => {
+    if (!isDragging) return
+    const containerH = coverContainerRef.current?.offsetHeight ?? 208
+    const deltaY = e.clientY - dragStartY
+    const newY = Math.max(0, Math.min(100, dragStartPct - (deltaY / containerH * 100)))
+    setTempPosition(`center ${newY.toFixed(1)}%`)
+  }
+
+  const handleRepoDragEnd = () => setIsDragging(false)
+
+  const confirmReposition = async () => {
+    if (!user) return
+    const sb = createClient()
+    const { error } = await sb.from("profiles").update({ cover_position: tempPosition }).eq("id", user.id)
+    if (!error) setCoverPosition(tempPosition)
+    setIsRepositioning(false)
+  }
+
+  const cancelReposition = () => {
+    setTempPosition(coverPosition)
+    setIsRepositioning(false)
+    setIsDragging(false)
+  }
+
   /* ── Save profile edit ── */
   const openEdit = () => {
     setEditForm({
@@ -512,61 +568,115 @@ export default function ProfilePage() {
         {/* ── Cover + Avatar ── */}
         <div className="relative">
           {/* Cover */}
-          <div className="h-52 sm:h-64 relative overflow-hidden">
-            {/* Cover image — z-index 0, behind everything */}
+          <div
+            ref={coverContainerRef}
+            className="h-52 sm:h-64 relative overflow-hidden select-none"
+            style={{ cursor: isRepositioning ? (isDragging ? "grabbing" : "grab") : "default" }}
+            onMouseDown={isRepositioning ? handleRepoDragStart : undefined}
+            onMouseMove={isRepositioning ? handleRepoDragMove : undefined}
+            onMouseUp={isRepositioning ? handleRepoDragEnd : undefined}
+            onMouseLeave={isRepositioning ? handleRepoDragEnd : undefined}
+          >
+            {/* Cover background — z-index 0 */}
             {coverUrl ? (
               <img
                 key={coverUrl}
                 src={coverUrl}
                 alt="cover"
-                style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", zIndex: 0 }}
+                draggable={false}
+                style={{
+                  position: "absolute", inset: 0,
+                  width: "100%", height: "100%",
+                  objectFit: "cover",
+                  objectPosition: isRepositioning ? tempPosition : coverPosition,
+                  zIndex: 0,
+                  pointerEvents: "none",
+                }}
               />
             ) : (
-              <div className="absolute inset-0 bg-gradient-to-br from-[#FA8112] via-[#E8730F] to-[#D46A0E]" style={{ zIndex: 0 }}>
+              <div
+                className="absolute inset-0"
+                style={{ background: "linear-gradient(135deg, #FA8112 0%, #e06b00 100%)", zIndex: 0 }}
+              >
                 <div className="absolute -top-20 -right-20 w-64 h-64 bg-white/10 rounded-full blur-3xl" />
-                <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-amber-300/10 rounded-full blur-3xl" />
+                <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-white/5 rounded-full blur-3xl" />
+                <div className="absolute inset-0 flex items-center justify-center opacity-10">
+                  <svg className="w-24 h-24 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                </div>
               </div>
             )}
 
-            {/* Cover 3-dot menu */}
-            <div ref={coverMenuRef} className="absolute top-4 right-4" style={{ zIndex: 20 }}>
-              <button
-                onClick={() => setShowCoverMenu((v) => !v)}
-                disabled={uploading}
-                className="w-8 h-8 flex items-center justify-center bg-black/30 backdrop-blur-sm text-white rounded-lg border border-white/20 hover:bg-black/50 transition-colors disabled:opacity-60"
-              >
-                {uploading ? <Spinner cls="w-3.5 h-3.5" /> : <span className="text-base font-bold leading-none tracking-widest">···</span>}
-              </button>
-              {showCoverMenu && (
-                <div className="absolute right-0 top-10 w-52 bg-white dark:bg-[#2a2a2a] rounded-xl shadow-xl border border-[#F0E8E0] dark:border-[#3a3a3a] overflow-hidden">
+            {/* Reposition mode: hint + confirm/cancel buttons */}
+            {isRepositioning && (
+              <>
+                <div className="absolute inset-0 ring-2 ring-inset ring-[#FA8112]/60" style={{ zIndex: 15, pointerEvents: "none" }} />
+                <div className="absolute top-3 left-1/2 -translate-x-1/2" style={{ zIndex: 20 }}>
+                  <span className="px-3 py-1 bg-black/50 backdrop-blur-sm text-white text-xs rounded-full">
+                    Glissez pour repositionner
+                  </span>
+                </div>
+                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-3" style={{ zIndex: 20 }}>
                   <button
-                    onClick={() => { coverRef.current?.click(); setShowCoverMenu(false) }}
-                    className="w-full text-left px-4 py-2.5 text-sm text-[#1A1A1A] dark:text-[#FAF3E1] hover:bg-[#FA8112] hover:text-white transition-colors"
+                    onClick={cancelReposition}
+                    className="px-4 py-2 bg-black/40 backdrop-blur-sm text-white text-sm font-semibold rounded-xl border border-white/20 hover:bg-black/60 transition-colors"
                   >
-                    Changer la couverture
+                    Annuler
                   </button>
                   <button
-                    onClick={() => setShowCoverMenu(false)}
-                    className="w-full text-left px-4 py-2.5 text-sm text-[#1A1A1A] dark:text-[#FAF3E1] hover:bg-[#FA8112] hover:text-white transition-colors"
+                    onClick={confirmReposition}
+                    className="px-4 py-2 bg-[#FA8112] hover:bg-[#E8730F] text-white text-sm font-semibold rounded-xl shadow-lg transition-colors"
                   >
-                    Repositionner
-                  </button>
-                  <button
-                    onClick={() => { handleDeleteCover(); setShowCoverMenu(false) }}
-                    className="w-full text-left px-4 py-2.5 text-sm text-red-500 hover:bg-red-500 hover:text-white transition-colors"
-                  >
-                    Supprimer la couverture
+                    Confirmer
                   </button>
                 </div>
-              )}
-            </div>
+              </>
+            )}
+
+            {/* Cover 3-dot menu — hidden during reposition */}
+            {!isRepositioning && (
+              <div ref={coverMenuRef} className="absolute top-4 right-4" style={{ zIndex: 20 }}>
+                <button
+                  onClick={() => setShowCoverMenu((v) => !v)}
+                  disabled={uploading}
+                  className="w-8 h-8 flex items-center justify-center bg-black/30 backdrop-blur-sm text-white rounded-lg border border-white/20 hover:bg-black/50 transition-colors disabled:opacity-60"
+                >
+                  {uploading ? <Spinner cls="w-3.5 h-3.5" /> : <span className="text-base font-bold leading-none tracking-widest">···</span>}
+                </button>
+                {showCoverMenu && (
+                  <div className="absolute right-0 top-10 w-52 bg-white dark:bg-[#2a2a2a] rounded-xl shadow-xl border border-[#F0E8E0] dark:border-[#3a3a3a] overflow-hidden">
+                    <button
+                      onClick={() => { coverRef.current?.click(); setShowCoverMenu(false) }}
+                      className="w-full text-left px-4 py-2.5 text-sm text-[#1A1A1A] dark:text-[#FAF3E1] hover:bg-[#FA8112] hover:text-white transition-colors"
+                    >
+                      Changer la couverture
+                    </button>
+                    {coverUrl && (
+                      <button
+                        onClick={enterRepositionMode}
+                        className="w-full text-left px-4 py-2.5 text-sm text-[#1A1A1A] dark:text-[#FAF3E1] hover:bg-[#FA8112] hover:text-white transition-colors"
+                      >
+                        Repositionner
+                      </button>
+                    )}
+                    <button
+                      onClick={() => { handleDeleteCover(); setShowCoverMenu(false) }}
+                      className="w-full text-left px-4 py-2.5 text-sm text-red-500 hover:bg-red-500 hover:text-white transition-colors"
+                    >
+                      Supprimer la couverture
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Avatar */}
           <div className="absolute left-6 sm:left-10 bottom-0 translate-y-1/2" style={{ zIndex: 10 }}>
             <div className="relative">
               <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden shadow-xl border-4 border-white dark:border-[#1a1a1a]">
-                <div style={{ width: "100%", height: "100%", borderRadius: "12px", overflow: "hidden", background: "#FA8112" }}>
+                <div style={{ width: "100%", height: "100%", overflow: "hidden", background: "linear-gradient(135deg, #FA8112 0%, #e06b00 100%)" }}>
                   {avatarUrl ? (
                     <img
                       key={avatarUrl}
@@ -576,8 +686,8 @@ export default function ProfilePage() {
                     />
                   ) : (
                     <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                      <span style={{ fontSize: "32px", fontWeight: "700", color: "white" }}>
-                        {profile?.full_name?.charAt(0)?.toUpperCase() || user?.email?.charAt(0)?.toUpperCase() || "A"}
+                      <span style={{ fontSize: "36px", fontWeight: "800", color: "white", textShadow: "0 2px 4px rgba(0,0,0,0.2)", lineHeight: 1 }}>
+                        {profile?.full_name?.charAt(0)?.toUpperCase() || user?.email?.charAt(0)?.toUpperCase() || "?"}
                       </span>
                     </div>
                   )}
