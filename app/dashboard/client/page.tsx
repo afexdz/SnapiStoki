@@ -52,6 +52,11 @@ const navItems = [
     icon: "M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z",
   },
   {
+    label: "Mon profil",
+    href: "/profile",
+    icon: "M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z",
+  },
+  {
     label: "Paramètres",
     href: "/profile",
     icon: "M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z",
@@ -158,7 +163,7 @@ export default function ClientDashboard() {
         </div>
 
         <div className="px-5 py-4 border-b border-[#F0E8E0] dark:border-[#3a3a3a]">
-          <div className="flex items-center gap-3">
+          <Link href="/profile" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
             {profile?.avatar_url ? (
               <img src={profile.avatar_url} alt="avatar" className="w-10 h-10 rounded-xl object-cover" />
             ) : (
@@ -170,7 +175,7 @@ export default function ClientDashboard() {
               <p className="text-sm font-semibold text-[#1A1A1A] dark:text-[#FAF3E1] truncate">{displayName}</p>
               <p className="text-xs text-gray-400">Compte Acheteur</p>
             </div>
-          </div>
+          </Link>
         </div>
 
         <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
@@ -221,9 +226,9 @@ export default function ClientDashboard() {
             <span className="text-lg font-extrabold text-[#FA8112]">Pix</span>
             <span className="text-lg font-extrabold text-[#1A1A1A] dark:text-[#FAF3E1]">Raise</span>
           </Link>
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#FA8112] to-[#E8730F] flex items-center justify-center text-white text-xs font-bold">
+          <Link href="/profile" className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#FA8112] to-[#E8730F] flex items-center justify-center text-white text-xs font-bold">
             {initials}
-          </div>
+          </Link>
         </header>
 
         <main className="flex-1 p-4 sm:p-6 lg:p-8 space-y-6">

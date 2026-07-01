@@ -219,7 +219,7 @@ export default function FreelanceDashboard() {
 
         {/* Profile snippet */}
         <div className="px-5 py-4 border-b border-[#F0E8E0] dark:border-[#3a3a3a]">
-          <div className="flex items-center gap-3">
+          <Link href="/profile" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
             {profile?.avatar_url ? (
               <img src={profile.avatar_url} alt="avatar" className="w-10 h-10 rounded-xl object-cover" />
             ) : (
@@ -235,7 +235,7 @@ export default function FreelanceDashboard() {
                 </p>
               )}
             </div>
-          </div>
+          </Link>
         </div>
 
         {/* Nav */}
