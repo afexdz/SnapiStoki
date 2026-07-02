@@ -86,6 +86,14 @@ const navItems = [
         d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
     ),
   },
+  {
+    label: "Publier un service",
+    href: "/services/new",
+    icon: (
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8}
+        d="M12 4v16m8-8H4" />
+    ),
+  },
 ]
 
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {

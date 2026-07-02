@@ -35,9 +35,15 @@ type ProductResult = {
   description: string | null
   category: string | null
   price: number
-  cover_url: string | null
+  is_free: boolean | null
+  preview_urls: string[] | null
+  preview_images: string[] | null
   format: string | null
+  file_format: string | null
   sales_count: number | null
+  downloads: number | null
+  avg_rating: number | null
+  reviews_count: number | null
   seller_id: string
   profile: SellerProfile | null
 }
@@ -192,12 +198,13 @@ function FreelancerCard({ svc, index }: { svc: ServiceResult; index: number }) {
 
 /* ─── Product card ───────────────────────────────────────────── */
 function ProductCard({ product, index }: { product: ProductResult; index: number }) {
+  const coverImg = product.preview_urls?.[0] ?? product.preview_images?.[0] ?? null
   return (
     <div className="group bg-white dark:bg-[#2a2a2a] rounded-2xl border border-[#F0E8E0] dark:border-[#3a3a3a] hover:border-[#FA8112]/30 hover:shadow-xl hover:shadow-[#FA8112]/10 transition-all overflow-hidden flex flex-col">
       {/* Thumbnail */}
-      <div className={`h-36 relative overflow-hidden shrink-0 ${!product.cover_url ? `bg-gradient-to-br ${GRADIENTS[(index + 2) % GRADIENTS.length]}` : ""}`}>
-        {product.cover_url && (
-          <img src={product.cover_url} alt={product.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+      <div className={`h-36 relative overflow-hidden shrink-0 ${!coverImg ? `bg-gradient-to-br ${GRADIENTS[(index + 2) % GRADIENTS.length]}` : ""}`}>
+        {coverImg && (
+          <img src={coverImg} alt={product.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
         )}
         <div className="absolute inset-0 flex items-end p-3 gap-2">
           {product.category && (
@@ -205,9 +212,9 @@ function ProductCard({ product, index }: { product: ProductResult; index: number
               {product.category}
             </span>
           )}
-          {product.format && (
+          {(product.format ?? product.file_format) && (
             <span className="px-2 py-0.5 bg-[#FA8112]/80 backdrop-blur-sm text-white text-xs rounded-lg font-medium">
-              {product.format}
+              {product.format ?? product.file_format}
             </span>
           )}
         </div>
@@ -235,10 +242,10 @@ function ProductCard({ product, index }: { product: ProductResult; index: number
             {product.price.toLocaleString("fr-DZ")} <span className="text-[#FA8112] font-bold text-sm">DA</span>
           </span>
           <Link
-            href="/marketplace"
+            href={`/products/${product.id}`}
             className="flex items-center gap-1 px-4 py-2 bg-[#FA8112] hover:bg-[#E8730F] text-white text-xs font-semibold rounded-xl transition-colors shadow-md shadow-[#FA8112]/20"
           >
-            Acheter
+            {product.is_free ? "Télécharger" : "Acheter"}
           </Link>
         </div>
       </div>
@@ -340,7 +347,7 @@ function SearchResults() {
           .or(`title.ilike.%${q}%,description.ilike.%${q}%`)
           .limit(18),
         sb.from("digital_products")
-          .select("id, title, description, category, price, cover_url, format, sales_count, seller_id")
+          .select("id, title, description, category, price, is_free, preview_urls, preview_images, format, file_format, sales_count, downloads, avg_rating, reviews_count, seller_id")
           .or(`title.ilike.%${q}%,description.ilike.%${q}%`)
           .limit(18),
       ])
