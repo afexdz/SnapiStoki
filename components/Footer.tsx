@@ -32,12 +32,9 @@ export default function Footer() {
       <div className="max-w-[1180px] mx-auto px-6">
 
         {/* Top grid */}
-        <div
-          className="grid mb-11"
-          style={{ gridTemplateColumns: "1.4fr 1fr 1fr 1fr", gap: "36px" }}
-        >
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-9 mb-11">
           {/* Brand */}
-          <div>
+          <div className="col-span-2 md:col-span-1">
             <a href="/" className="inline-flex items-center gap-0 mb-3 font-jakarta">
               <span className="text-2xl font-extrabold text-[#FA8112]">Pix</span>
               <span className="text-2xl font-extrabold text-[#1A1A1A]">Raise</span>

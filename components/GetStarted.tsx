@@ -16,14 +16,13 @@ const points = [
 export default function GetStarted() {
   return (
     <section className="py-[88px] bg-white dark:bg-[#1a1a1a]">
-      <div className="max-w-[1180px] mx-auto px-6">
+      <div className="max-w-[1180px] mx-auto px-4 sm:px-6">
         <div
           id="vendre"
-          className="relative overflow-hidden rounded-[22px] grid items-center gap-11"
+          className="relative overflow-hidden rounded-[22px] grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] items-center gap-8 lg:gap-11"
           style={{
             background: "#1A1A1A",
-            padding: "64px 56px",
-            gridTemplateColumns: "1.2fr 0.8fr",
+            padding: "clamp(32px, 5vw, 64px) clamp(20px, 5vw, 56px)",
           }}
         >
           {/* Decorative orange glow bottom-right */}

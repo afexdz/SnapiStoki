@@ -173,7 +173,7 @@ export default function ProductDetailPage() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen bg-[#FAFAFA]">
+      <main className="min-h-screen bg-[#FAFAFA] pb-20 lg:pb-0">
         <div className="max-w-6xl mx-auto px-4 py-8">
           {/* Breadcrumb */}
           <nav className="text-xs text-gray-400 flex items-center gap-1.5 mb-6">
@@ -324,7 +324,7 @@ export default function ProductDetailPage() {
 
             {/* ── RIGHT: Buy Box ── */}
             <div className="lg:col-span-1">
-              <div className="sticky top-6 bg-white rounded-2xl border border-[#EEEEEE] p-5 shadow-sm space-y-4">
+              <div className="hidden lg:block sticky top-6 bg-white rounded-2xl border border-[#EEEEEE] p-5 shadow-sm space-y-4">
                 {/* Price */}
                 <div>
                   {product.is_free ? (
@@ -401,8 +401,35 @@ export default function ProductDetailPage() {
         </div>
       </main>
 
+      {/* Mobile sticky bottom buy bar */}
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-[#EEEEEE] px-4 py-3 flex items-center justify-between gap-4 shadow-[0_-4px_20px_rgba(0,0,0,0.08)]">
+        <div>
+          {product.is_free ? (
+            <p className="text-xl font-bold text-green-600">Gratuit</p>
+          ) : (
+            <>
+              <p className="text-xs text-gray-400">Prix</p>
+              <p className="text-xl font-bold text-[#1A1A1A]">{product.price.toLocaleString("fr-DZ")} <span className="text-sm text-[#FA8112]">DA</span></p>
+            </>
+          )}
+        </div>
+        {product.is_free ? (
+          <button
+            onClick={handleDownload}
+            disabled={downloading}
+            className="flex-1 max-w-[220px] py-3 bg-green-600 text-white font-bold text-sm rounded-xl hover:bg-green-700 transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
+          >
+            {downloading ? "Téléchargement..." : "Télécharger gratuitement"}
+          </button>
+        ) : (
+          <button className="flex-1 max-w-[220px] py-3 bg-[#FA8112] text-white font-bold text-sm rounded-xl hover:bg-[#E8730F] transition-colors">
+            Acheter maintenant
+          </button>
+        )}
+      </div>
+
       {showToast && (
-        <div className="fixed bottom-6 right-6 bg-green-600 text-white text-sm font-medium px-4 py-3 rounded-xl shadow-lg z-50">
+        <div className="fixed bottom-20 right-4 lg:bottom-6 lg:right-6 bg-green-600 text-white text-sm font-medium px-4 py-3 rounded-xl shadow-lg z-50">
           Produit publié avec succès !
         </div>
       )}

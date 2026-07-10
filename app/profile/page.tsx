@@ -145,9 +145,9 @@ function CropModal({ src, mode, onConfirm, onCancel }: CropModalProps) {
   }
 
   return (
-    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center sm:p-4">
       <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={onCancel} />
-      <div className="relative w-full max-w-2xl bg-[#1a1a1a] rounded-2xl shadow-2xl border border-[#3a3a3a] overflow-hidden z-10">
+      <div className="relative w-full sm:max-w-2xl bg-[#1a1a1a] sm:rounded-2xl shadow-2xl border-t sm:border border-[#3a3a3a] overflow-hidden z-10 max-h-[95vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-[#3a3a3a]">
           <h3 className="text-base font-bold text-white">Recadrer la photo</h3>
@@ -565,7 +565,7 @@ export default function ProfilePage() {
         {/* ── Cover + Avatar ── */}
         <div className="relative">
           {/* Cover */}
-          <div className="h-52 sm:h-64 relative overflow-hidden select-none">
+          <div className="h-[140px] sm:h-64 relative overflow-hidden select-none">
             {/* Cover background — z-index 0 */}
             {coverUrl ? (
               <img
@@ -653,7 +653,7 @@ export default function ProfilePage() {
           {/* Avatar */}
           <div className="absolute left-6 sm:left-10 bottom-0 translate-y-1/2" style={{ zIndex: 10 }}>
             <div className="relative">
-              <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden shadow-xl border-4 border-white dark:border-[#1a1a1a]">
+              <div className="relative w-[72px] h-[72px] sm:w-28 sm:h-28 rounded-2xl overflow-hidden shadow-xl border-4 border-white dark:border-[#1a1a1a]">
                 <div style={{ width: "100%", height: "100%", overflow: "hidden", background: "linear-gradient(135deg, #FA8112 0%, #e06b00 100%)" }}>
                   {avatarUrl ? (
                     <img

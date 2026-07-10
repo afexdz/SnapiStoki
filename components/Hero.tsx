@@ -108,8 +108,8 @@ export default function Hero({ servicesCount, profilesCount }: HeroProps) {
         }}
       />
 
-      <div className="relative max-w-[1180px] mx-auto px-6 py-[84px]">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 items-center" style={{ gridTemplateColumns: "1.05fr 0.95fr" }}>
+      <div className="relative max-w-[1180px] mx-auto px-4 sm:px-6 py-12 sm:py-[84px]">
+        <div className="grid grid-cols-1 lg:grid-cols-[1.05fr_0.95fr] gap-10 lg:gap-14 items-center">
 
           {/* ── Left column ── */}
           <div>
@@ -177,14 +177,14 @@ export default function Hero({ servicesCount, profilesCount }: HeroProps) {
             </form>
 
             {/* Popular chips */}
-            <div className="flex flex-wrap items-center gap-2.5 mb-10">
-              <span className="text-[13px] text-[rgba(26,26,26,0.60)]">Populaire :</span>
+            <div className="flex items-center gap-2.5 mb-8 overflow-x-auto scrollbar-hide pb-1">
+              <span className="text-[13px] text-[rgba(26,26,26,0.60)] shrink-0">Populaire :</span>
               {popularChips.map((chip) => (
                 <button
                   key={chip}
                   type="button"
                   onClick={() => searchChip(chip)}
-                  className="text-[13px] font-medium px-3.5 py-1.5 rounded-full bg-white border border-[rgba(26,26,26,0.12)] hover:border-[#FA8112] hover:text-[#FA8112] transition-all"
+                  className="shrink-0 text-[13px] font-medium px-3.5 py-1.5 rounded-full bg-white border border-[rgba(26,26,26,0.12)] hover:border-[#FA8112] hover:text-[#FA8112] transition-all"
                 >
                   {chip}
                 </button>

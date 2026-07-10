@@ -21,10 +21,16 @@
   --color-text: #1A1A1A;
 }
 
+html {
+  overflow-x: hidden;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-inter), system-ui, Arial, Helvetica, sans-serif;
+  overflow-x: hidden;
+  min-width: 320px;
 }
 
 h1, h2, h3, h4, h5, h6,
@@ -114,6 +120,15 @@ html.dark {
 
 .animate-pulse-dot {
   animation: pulseDot 1.5s ease-in-out infinite;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-slide-down {
+  animation: slideDown 0.2s ease-out forwards;
 }
 
 @keyframes shimmer {

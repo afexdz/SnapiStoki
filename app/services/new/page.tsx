@@ -50,12 +50,12 @@ function StepBar({ step }: { step: number }) {
                   </svg>
                 ) : num}
               </div>
-              <span className={`text-[10px] mt-1 whitespace-nowrap font-medium ${active ? "text-[#FA8112]" : "text-gray-400"}`}>
+              <span className={`hidden sm:block text-[10px] mt-1 whitespace-nowrap font-medium ${active ? "text-[#FA8112]" : "text-gray-400"}`}>
                 {label}
               </span>
             </div>
             {i < steps.length - 1 && (
-              <div className={`flex-1 h-0.5 mb-4 mx-1 ${num < step ? "bg-[#FA8112]" : "bg-gray-200"}`} />
+              <div className={`flex-1 h-0.5 sm:mb-4 mx-1 ${num < step ? "bg-[#FA8112]" : "bg-gray-200"}`} />
             )}
           </div>
         )

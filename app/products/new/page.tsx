@@ -181,7 +181,7 @@ export default function NewProductPage() {
 
             {/* Type + License */}
             <div className="bg-white rounded-2xl border border-[#EEEEEE] p-6 space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className={labelCls}>Type de produit</label>
                   <select value={productType} onChange={e => setProductType(e.target.value)} className={inputCls}>
@@ -309,7 +309,7 @@ export default function NewProductPage() {
               {previewError && <p className="text-xs text-red-500 mb-2">{previewError}</p>}
 
               {previews.length > 0 && (
-                <div className="grid grid-cols-4 gap-3">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                   {previews.map((p, i) => (
                     <div key={i} className="relative aspect-video bg-gray-100 rounded-lg overflow-hidden">
                       <img src={p.preview} alt="" className="w-full h-full object-cover" />

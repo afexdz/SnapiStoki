@@ -198,13 +198,13 @@ export default function Navbar() {
               <>
                 <Link
                   href="/login"
-                  className="hidden sm:inline-flex text-sm font-medium text-[rgba(26,26,26,0.7)] dark:text-gray-300 hover:text-[#1A1A1A] dark:hover:text-white transition-colors px-3 py-2 rounded-[10px] font-jakarta"
+                  className="hidden md:inline-flex text-sm font-medium text-[rgba(26,26,26,0.7)] dark:text-gray-300 hover:text-[#1A1A1A] dark:hover:text-white transition-colors px-3 py-2 rounded-[10px] font-jakarta"
                 >
                   Connexion
                 </Link>
                 <Link
                   href="/register"
-                  className="inline-flex items-center px-4 py-2 bg-[#FA8112] hover:bg-[#E06F05] text-white text-sm font-semibold rounded-[10px] transition-all hover:-translate-y-px shadow-[0_4px_14px_rgba(250,129,18,0.35)] hover:shadow-[0_4px_18px_rgba(250,129,18,0.45)] font-jakarta"
+                  className="hidden md:inline-flex items-center px-4 py-2 bg-[#FA8112] hover:bg-[#E06F05] text-white text-sm font-semibold rounded-[10px] transition-all hover:-translate-y-px shadow-[0_4px_14px_rgba(250,129,18,0.35)] hover:shadow-[0_4px_18px_rgba(250,129,18,0.45)] font-jakarta"
                 >
                   S&apos;inscrire
                 </Link>
@@ -230,30 +230,35 @@ export default function Navbar() {
 
         {/* Mobile menu */}
         {menuOpen && (
-          <div className="md:hidden pb-4 space-y-1 border-t border-[rgba(26,26,26,0.08)] dark:border-[#2a2a2a] pt-3">
+          <div className="md:hidden pb-4 space-y-1 border-t border-[rgba(26,26,26,0.08)] dark:border-[#2a2a2a] pt-3 animate-slide-down">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
                 onClick={() => setMenuOpen(false)}
-                className="block px-3 py-2.5 text-sm font-medium text-[rgba(26,26,26,0.7)] dark:text-gray-400 hover:text-[#1A1A1A] dark:hover:text-[#FAF3E1] hover:bg-[#FFEAD5] dark:hover:bg-[#2a2a2a] rounded-[10px] transition-colors font-jakarta"
+                className="flex items-center px-3 py-3 text-sm font-medium text-[rgba(26,26,26,0.7)] dark:text-gray-400 hover:text-[#1A1A1A] dark:hover:text-[#FAF3E1] hover:bg-[#FFEAD5] dark:hover:bg-[#2a2a2a] rounded-[10px] transition-colors font-jakarta min-h-[44px]"
               >
                 {link.label}
               </Link>
             ))}
             {user ? (
               <>
-                <Link href="/dashboard" onClick={() => setMenuOpen(false)} className="block px-3 py-2.5 text-sm font-medium text-[rgba(26,26,26,0.7)] dark:text-gray-400 hover:text-[#FA8112] rounded-[10px] hover:bg-[#FFEAD5] dark:hover:bg-[#2a2a2a] transition-colors font-jakarta">
+                <Link href="/dashboard" onClick={() => setMenuOpen(false)} className="flex items-center px-3 py-3 text-sm font-medium text-[rgba(26,26,26,0.7)] dark:text-gray-400 hover:text-[#FA8112] rounded-[10px] hover:bg-[#FFEAD5] dark:hover:bg-[#2a2a2a] transition-colors font-jakarta min-h-[44px]">
                   Tableau de bord
                 </Link>
-                <button onClick={handleSignOut} className="block w-full text-left px-3 py-2.5 text-sm font-medium text-red-600 dark:text-red-400 rounded-[10px] hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors font-jakarta">
+                <button onClick={handleSignOut} className="flex items-center w-full text-left px-3 py-3 text-sm font-medium text-red-600 dark:text-red-400 rounded-[10px] hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors font-jakarta min-h-[44px]">
                   Se déconnecter
                 </button>
               </>
             ) : (
-              <Link href="/login" onClick={() => setMenuOpen(false)} className="block px-3 py-2.5 text-sm font-medium text-[rgba(26,26,26,0.7)] dark:text-gray-400 hover:text-[#FA8112] rounded-[10px] hover:bg-[#FFEAD5] dark:hover:bg-[#2a2a2a] transition-colors font-jakarta">
-                Connexion
-              </Link>
+              <div className="flex flex-col gap-2 pt-2 border-t border-[rgba(26,26,26,0.08)] dark:border-[#2a2a2a]">
+                <Link href="/login" onClick={() => setMenuOpen(false)} className="flex items-center justify-center px-3 py-3 text-sm font-semibold text-[rgba(26,26,26,0.7)] dark:text-gray-400 hover:text-[#FA8112] rounded-[10px] border border-[rgba(26,26,26,0.12)] hover:border-[#FA8112]/40 transition-colors font-jakarta min-h-[44px]">
+                  Connexion
+                </Link>
+                <Link href="/register" onClick={() => setMenuOpen(false)} className="flex items-center justify-center px-3 py-3 text-sm font-semibold bg-[#FA8112] hover:bg-[#E06F05] text-white rounded-[10px] transition-colors font-jakarta min-h-[44px]">
+                  S&apos;inscrire gratuitement
+                </Link>
+              </div>
             )}
           </div>
         )}
