@@ -27,98 +27,99 @@ type ProductCardProduct = {
 }
 
 export default function ProductCard({ product }: { product: ProductCardProduct }) {
-  const img     = product.preview_urls?.[0] ?? product.preview_images?.[0] ?? null
-  const rating  = Number(product.avg_rating ?? product.rating ?? 0)
+  const img = product.preview_urls?.[0] ?? product.preview_images?.[0] ?? null
+  const rating = Number(product.avg_rating ?? product.rating ?? 0)
   const reviews = product.reviews_count ?? 0
-  const sales   = product.sales_count ?? product.downloads ?? 0
-  const fmt     = product.format ?? product.file_format ?? null
-  const name    = product.seller?.full_name ?? "Vendeur"
+  const sales = product.sales_count ?? product.downloads ?? 0
+  const fmt = product.format ?? product.file_format ?? null
+  const name = product.seller?.full_name ?? "Vendeur"
   const initials = name.trim().split(/\s+/).map(n => n[0]).join("").toUpperCase().slice(0, 2) || "?"
 
   return (
-    <Link href={`/products/${product.id}`} className="group block bg-white rounded-xl border border-[#EEEEEE] hover:shadow-md transition-shadow duration-200 overflow-hidden">
-      {/* Cover image — 16:10 */}
-      <div className="relative w-full" style={{ paddingBottom: "62.5%" }}>
-        <div className="absolute inset-0">
-          {img ? (
-            <img src={img} alt={product.title} loading="lazy" className="w-full h-full object-cover" />
-          ) : (
-            <div className="w-full h-full bg-gray-100 flex items-center justify-center">
-              <svg className="w-10 h-10 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-              </svg>
-            </div>
-          )}
-          {/* Format badge */}
-          {fmt && (
-            <span className="absolute top-2 left-2 px-2 py-0.5 bg-[#1A1A1A]/80 text-white text-[10px] font-semibold rounded-md">
-              {fmt}
-            </span>
-          )}
-          {product.is_free && (
-            <span className="absolute top-2 right-2 px-2 py-0.5 bg-green-500 text-white text-[10px] font-bold rounded-md">
-              Gratuit
-            </span>
-          )}
-        </div>
+    <Link
+      href={`/products/${product.id}`}
+      className="group flex flex-col bg-white dark:bg-[#2a2a2a] rounded-[14px] border border-[rgba(26,26,26,0.10)] dark:border-[#3a3a3a] hover:shadow-[0_8px_30px_rgba(0,0,0,0.10)] hover:-translate-y-1 transition-all duration-200 overflow-hidden"
+    >
+      {/* Thumbnail – 150px fixed height */}
+      <div className="relative h-[150px] shrink-0 overflow-hidden">
+        {img ? (
+          <img
+            src={img}
+            alt={product.title}
+            loading="lazy"
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          />
+        ) : (
+          <div className="w-full h-full bg-gradient-to-br from-[#FFEAD5] to-[#FFF8F0] dark:from-[#2a2a2a] dark:to-[#3a3a3a] flex items-center justify-center">
+            <svg className="w-10 h-10 text-[#FA8112]/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+            </svg>
+          </div>
+        )}
+
+        {/* Format badge (dark pill top-left) */}
+        {fmt && (
+          <span className="absolute top-2.5 left-2.5 px-2 py-0.5 bg-[#1A1A1A]/85 text-white text-[10px] font-bold rounded-full backdrop-blur-sm font-jakarta">
+            {fmt}
+          </span>
+        )}
+
+        {/* Free badge */}
+        {product.is_free && (
+          <span className="absolute top-2.5 right-2.5 px-2 py-0.5 bg-emerald-500 text-white text-[10px] font-bold rounded-full font-jakarta">
+            Gratuit
+          </span>
+        )}
       </div>
 
-      <div className="p-3">
+      <div className="p-4 flex flex-col flex-1">
         {/* Seller row */}
-        <div className="flex items-center gap-2 mb-2">
-          <div className="w-6 h-6 rounded-full overflow-hidden shrink-0 bg-[#FA8112] flex items-center justify-center">
+        <div className="flex items-center gap-2 mb-2.5">
+          <div className="w-6 h-6 rounded-full overflow-hidden shrink-0 bg-gradient-to-br from-[#FA8112] to-[#E06F05] flex items-center justify-center">
             {product.seller?.avatar_url ? (
               <img src={product.seller.avatar_url} alt={name} className="w-full h-full object-cover" />
             ) : (
               <span className="text-white text-[9px] font-bold">{initials}</span>
             )}
           </div>
-          <p className="text-xs font-medium text-[#1A1A1A] truncate">{name}</p>
+          <p className="text-[11px] font-semibold text-[#1A1A1A] dark:text-[#FAF3E1] truncate font-jakarta">{name}</p>
         </div>
 
         {/* Title */}
-        <h3 className="text-sm font-medium text-[#1A1A1A] leading-snug line-clamp-2 group-hover:text-[#FA8112] transition-colors min-h-[2.5rem]">
+        <h3 className="text-sm font-bold text-[#1A1A1A] dark:text-[#FAF3E1] leading-snug line-clamp-2 group-hover:text-[#FA8112] transition-colors flex-1 mb-3 font-jakarta">
           {product.title}
         </h3>
 
-        {/* Rating / Nouveau */}
-        <div className="mt-2 flex items-center gap-1">
-          {reviews > 0 ? (
-            <>
-              <span className="text-[#FA8112] text-xs">★</span>
-              <span className="text-xs font-semibold text-[#1A1A1A]">{rating.toFixed(1)}</span>
-              <span className="text-[10px] text-gray-400">({reviews} avis)</span>
-            </>
-          ) : (
-            <span className="text-[10px] font-semibold text-[#FA8112] border border-[#FA8112] rounded-full px-2 py-0.5">
-              Nouveau
-            </span>
-          )}
-          {sales > 0 && (
-            <span className="ml-auto text-[10px] text-gray-400">{sales} vente{sales > 1 ? "s" : ""}</span>
-          )}
-        </div>
-
-        {/* Price + license */}
-        <div className="mt-2 pt-2 border-t border-[#F5F5F5] flex items-center justify-between">
+        {/* Footer: rating + price */}
+        <div className="pt-3 border-t border-[rgba(26,26,26,0.07)] dark:border-[#3a3a3a] flex items-center justify-between">
           <div>
+            {reviews > 0 ? (
+              <div className="flex items-center gap-1">
+                <span className="text-[#FA8112] text-xs">★</span>
+                <span className="text-xs font-bold text-[#1A1A1A] dark:text-[#FAF3E1]">{rating.toFixed(1)}</span>
+                <span className="text-[10px] text-[rgba(26,26,26,0.40)] dark:text-gray-500">({reviews})</span>
+              </div>
+            ) : sales > 0 ? (
+              <span className="text-[10px] text-[rgba(26,26,26,0.40)] dark:text-gray-500">{sales} vente{sales > 1 ? "s" : ""}</span>
+            ) : (
+              <span className="text-[10px] font-semibold text-[#FA8112] border border-[#FA8112]/40 rounded-full px-2 py-0.5 font-jakarta">
+                Nouveau
+              </span>
+            )}
+          </div>
+          <div className="text-right">
             {product.is_free ? (
-              <p className="text-sm font-bold text-green-600">Gratuit</p>
+              <p className="text-sm font-extrabold text-emerald-600 font-jakarta">Gratuit</p>
             ) : (
               <>
-                <p className="text-[10px] text-gray-400">À partir de</p>
-                <p className="text-sm font-bold text-[#1A1A1A]">{product.price.toLocaleString("fr-DZ")} <span className="text-[#FA8112]">DA</span></p>
+                <p className="text-[9px] text-[rgba(26,26,26,0.40)] dark:text-gray-500">À partir de</p>
+                <p className="text-sm font-extrabold text-[#1A1A1A] dark:text-[#FAF3E1] font-jakarta">
+                  {product.price.toLocaleString("fr-DZ")}{" "}
+                  <span className="text-[#FA8112] text-xs font-bold">DA</span>
+                </p>
               </>
             )}
           </div>
-          {product.license && (
-            <div className="flex items-center gap-1 text-[10px] text-gray-400">
-              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-              </svg>
-              {product.license}
-            </div>
-          )}
         </div>
       </div>
     </Link>

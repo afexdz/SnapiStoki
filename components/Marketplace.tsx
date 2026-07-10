@@ -28,7 +28,7 @@ type Product = {
 
 export default function Marketplace() {
   const [products, setProducts] = useState<Product[]>([])
-  const [loading, setLoading]   = useState(true)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     createClient()
@@ -41,43 +41,59 @@ export default function Marketplace() {
       .eq("is_active", true)
       .limit(20)
       .then(({ data }) => {
-        if (data) setProducts(rankItems(data as unknown as Product[]).slice(0, 4))
+        if (data) setProducts(rankItems(data as unknown as Product[]).slice(0, 8))
         setLoading(false)
       })
   }, [])
 
   return (
-    <section className="py-16 bg-[#FFF8F0] dark:bg-[#2a2a2a]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-end justify-between mb-8">
+    <section className="py-[88px] bg-white dark:bg-[#1a1a1a]">
+      <div className="max-w-[1180px] mx-auto px-6">
+
+        {/* Section head */}
+        <div className="flex items-end justify-between mb-10">
           <div>
-            <h2 className="text-2xl sm:text-3xl font-bold text-[#1A1A1A] dark:text-[#FAF3E1]">
-              Marketplace numérique
+            <span className="inline-block text-[#FA8112] text-xs font-bold uppercase tracking-widest mb-3 font-jakarta">
+              Marketplace
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-[#1A1A1A] dark:text-[#FAF3E1]">
+              Téléchargez, c&apos;est prêt
             </h2>
-            <p className="mt-1 text-gray-500 dark:text-gray-400 text-sm">
-              Templates, packs et ressources prêts à l&apos;emploi
+            <p className="mt-2 text-[rgba(26,26,26,0.55)] dark:text-gray-400 text-sm max-w-md">
+              Templates, packs et ressources digitales prêts à l&apos;emploi
             </p>
           </div>
-          <Link href="/marketplace" className="hidden sm:inline-flex text-sm font-medium text-[#FA8112] hover:text-[#E8730F] transition-colors">
-            Voir tout →
+          <Link
+            href="/marketplace"
+            className="hidden sm:inline-flex text-sm font-semibold text-[#FA8112] hover:text-[#E06F05] transition-colors font-jakarta"
+          >
+            Voir tous les produits →
           </Link>
         </div>
 
         {loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {[1, 2, 3, 4].map(i => (
-              <div key={i} className="h-72 bg-gray-100 dark:bg-[#1a1a1a] rounded-2xl animate-pulse" />
+              <div key={i} className="h-72 bg-gray-100 dark:bg-[#2a2a2a] rounded-[14px] animate-pulse" />
             ))}
           </div>
         ) : products.length === 0 ? (
-          <div className="text-center py-12">
-            <p className="text-gray-400 text-sm">Aucun produit disponible pour le moment</p>
-            <Link href="/products/new" className="mt-3 inline-block text-sm text-[#FA8112] font-semibold">
-              Soyez le premier à vendre →
+          <div className="text-center py-16 bg-[#FFF8F0] dark:bg-[#2a2a2a] rounded-[14px] border border-[rgba(26,26,26,0.08)]">
+            <div className="w-14 h-14 mx-auto mb-4 rounded-xl bg-[#FFEAD5] flex items-center justify-center">
+              <svg className="w-7 h-7 text-[#FA8112]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+              </svg>
+            </div>
+            <p className="text-[rgba(26,26,26,0.55)] text-sm mb-3">Aucun produit pour le moment</p>
+            <Link
+              href="/products/new"
+              className="inline-flex items-center gap-1.5 px-5 py-2.5 bg-[#FA8112] hover:bg-[#E06F05] text-white text-sm font-semibold rounded-[10px] transition-all hover:-translate-y-px shadow-[0_4px_12px_rgba(250,129,18,0.35)] font-jakarta"
+            >
+              Vendre un produit →
             </Link>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {products.map(p => <ProductCard key={p.id} product={p} />)}
           </div>
         )}

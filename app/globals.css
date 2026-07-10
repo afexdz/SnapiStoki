@@ -3,10 +3,19 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
+  --white: #FFFFFF;
+  --cream: #FFF8F0;
+  --orange: #FA8112;
+  --orange-dark: #E06F05;
+  --orange-soft: #FFEAD5;
+  --ink: #1A1A1A;
+  --ink-60: rgba(26, 26, 26, 0.62);
+  --ink-12: rgba(26, 26, 26, 0.12);
+
   --background: #FFFFFF;
   --foreground: #1A1A1A;
   --color-primary: #FA8112;
-  --color-primary-hover: #E8730F;
+  --color-primary-hover: #E06F05;
   --color-bg: #FFFFFF;
   --color-surface: #FFF8F0;
   --color-text: #1A1A1A;
@@ -15,7 +24,16 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  font-family: var(--font-inter), system-ui, Arial, Helvetica, sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6,
+.font-jakarta {
+  font-family: var(--font-jakarta), system-ui, Arial, Helvetica, sans-serif;
+}
+
+button, .btn {
+  font-family: var(--font-jakarta), system-ui, Arial, Helvetica, sans-serif;
 }
 
 html.dark {
@@ -29,6 +47,15 @@ html.dark {
   scroll-behavior: smooth;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
@@ -37,7 +64,6 @@ html.dark {
   scrollbar-width: none;
 }
 
-/* Premium button glow animation */
 @keyframes glowPulse {
   0%, 100% {
     box-shadow: 0 8px 30px rgba(250, 129, 18, 0.45), 0 0 0 0 rgba(250, 129, 18, 0);
@@ -51,7 +77,6 @@ html.dark {
   animation: glowPulse 1.8s ease-in-out infinite;
 }
 
-/* Smooth float animation for hero blobs */
 @keyframes floatBlob {
   0%, 100% { transform: translateY(0px) scale(1); }
   50% { transform: translateY(-20px) scale(1.05); }
@@ -65,7 +90,32 @@ html.dark {
   animation: floatBlob 8s ease-in-out infinite 2s;
 }
 
-/* Shimmer for skeleton loading */
+@keyframes floatCard {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+
+.animate-float-card {
+  animation: floatCard 5s ease-in-out infinite;
+}
+
+.animate-float-card-2 {
+  animation: floatCard 6s ease-in-out infinite 1s;
+}
+
+.animate-float-card-3 {
+  animation: floatCard 7s ease-in-out infinite 2s;
+}
+
+@keyframes pulseDot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(1.3); }
+}
+
+.animate-pulse-dot {
+  animation: pulseDot 1.5s ease-in-out infinite;
+}
+
 @keyframes shimmer {
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }

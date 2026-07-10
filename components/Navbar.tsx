@@ -7,9 +7,10 @@ import { createClient } from "@/lib/supabase/client";
 import type { User } from "@supabase/supabase-js";
 
 const navLinks = [
-  { label: "Freelances", href: "/freelances" },
-  { label: "Marketplace", href: "/marketplace" },
-  { label: "Explorer", href: "/#categories" },
+  { label: "Services", href: "/freelances" },
+  { label: "Produits digitaux", href: "/marketplace" },
+  { label: "Comment ça marche", href: "/#how-it-works" },
+  { label: "Devenir vendeur", href: "/register" },
 ];
 
 export default function Navbar() {
@@ -17,7 +18,6 @@ export default function Navbar() {
   const pathname = usePathname();
   const [dark, setDark] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -29,9 +29,6 @@ export default function Navbar() {
       setDark(true);
       document.documentElement.classList.add("dark");
     }
-
-    const onScroll = () => setScrolled(window.scrollY > 10);
-    window.addEventListener("scroll", onScroll);
 
     const supabase = createClient();
 
@@ -66,7 +63,6 @@ export default function Navbar() {
     document.addEventListener("mousedown", onClickOutside);
 
     return () => {
-      window.removeEventListener("scroll", onScroll);
       subscription.unsubscribe();
       document.removeEventListener("mousedown", onClickOutside);
     };
@@ -96,17 +92,12 @@ export default function Navbar() {
   const initials = displayName.split(" ").map((n: string) => n[0]).join("").toUpperCase().slice(0, 2) || "?";
 
   return (
-    <nav
-      className={`sticky top-0 z-50 transition-all duration-300 ${
-        scrolled
-          ? "bg-white/95 dark:bg-[#1a1a1a]/95 backdrop-blur-md shadow-md"
-          : "bg-white dark:bg-[#1a1a1a]"
-      } border-b border-[#F0E8E0] dark:border-[#2a2a2a]`}
-    >
+    <nav className="sticky top-0 z-50 bg-white/92 dark:bg-[#1a1a1a]/92 backdrop-blur-md border-b border-[rgba(26,26,26,0.12)] dark:border-[rgba(255,255,255,0.08)]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center justify-between h-[70px]">
+
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-0.5 shrink-0">
+          <Link href="/" className="flex items-center gap-0 shrink-0 font-jakarta">
             <span className="text-2xl font-extrabold text-[#FA8112] tracking-tight">Pix</span>
             <span className="text-2xl font-extrabold text-[#1A1A1A] dark:text-[#FAF3E1] tracking-tight">Raise</span>
           </Link>
@@ -119,10 +110,10 @@ export default function Navbar() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  className={`px-3.5 py-2 rounded-lg text-sm font-medium transition-colors font-jakarta ${
                     active
-                      ? "text-[#FA8112] bg-[#FA8112]/10 dark:bg-[#FA8112]/15"
-                      : "text-gray-600 dark:text-gray-300 hover:text-[#FA8112] hover:bg-[#FA8112]/8 dark:hover:text-[#FA8112] dark:hover:bg-[#FA8112]/10"
+                      ? "text-[#FA8112]"
+                      : "text-[rgba(26,26,26,0.62)] dark:text-gray-400 hover:text-[#1A1A1A] dark:hover:text-[#FAF3E1]"
                   }`}
                 >
                   {link.label}
@@ -136,39 +127,34 @@ export default function Navbar() {
             {/* Dark mode toggle */}
             <button
               onClick={toggleDark}
-              className="p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-[#FFF8F0] dark:hover:bg-[#2a2a2a] transition-colors"
+              className="p-2 rounded-lg text-[rgba(26,26,26,0.5)] dark:text-gray-400 hover:bg-[#FFEAD5] dark:hover:bg-[#2a2a2a] transition-colors"
               aria-label="Basculer le thème"
             >
               {dark ? (
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clipRule="evenodd" />
                 </svg>
               ) : (
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                   <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
                 </svg>
               )}
             </button>
 
             {user ? (
-              /* Authenticated user avatar + dropdown */
               <div className="relative" ref={dropdownRef}>
                 <button
                   onClick={() => setDropdownOpen(!dropdownOpen)}
-                  className="flex items-center gap-2 pl-1 pr-2.5 py-1 rounded-xl hover:bg-[#FFF8F0] dark:hover:bg-[#2a2a2a] transition-colors group"
+                  className="flex items-center gap-2 pl-1 pr-2.5 py-1 rounded-xl hover:bg-[#FFEAD5] dark:hover:bg-[#2a2a2a] transition-colors"
                 >
                   {avatarUrl ? (
-                    <img
-                      src={avatarUrl}
-                      alt="avatar"
-                      className="w-8 h-8 rounded-lg object-cover shadow-sm"
-                    />
+                    <img src={avatarUrl} alt="avatar" className="w-8 h-8 rounded-[10px] object-cover" />
                   ) : (
-                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#FA8112] to-[#E8730F] flex items-center justify-center text-white text-xs font-black shadow-sm">
+                    <div className="w-8 h-8 rounded-[10px] bg-gradient-to-br from-[#FA8112] to-[#E06F05] flex items-center justify-center text-white text-xs font-black">
                       {initials}
                     </div>
                   )}
-                  <span className="hidden sm:block text-sm font-medium text-gray-700 dark:text-gray-300 max-w-[100px] truncate">
+                  <span className="hidden sm:block text-sm font-medium text-[#1A1A1A] dark:text-[#FAF3E1] max-w-[100px] truncate font-jakarta">
                     {displayName}
                   </span>
                   <svg className={`w-3.5 h-3.5 text-gray-400 transition-transform duration-200 ${dropdownOpen ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -177,60 +163,31 @@ export default function Navbar() {
                 </button>
 
                 {dropdownOpen && (
-                  <div className="absolute right-0 top-full mt-2 w-52 bg-white dark:bg-[#2a2a2a] rounded-2xl border border-[#F0E8E0] dark:border-[#3a3a3a] shadow-xl shadow-gray-200/60 dark:shadow-black/40 py-1.5 z-50">
-                    <div className="px-4 py-2.5 border-b border-[#F0E8E0] dark:border-[#3a3a3a]">
+                  <div className="absolute right-0 top-full mt-2 w-52 bg-white dark:bg-[#2a2a2a] rounded-2xl border border-[rgba(26,26,26,0.12)] dark:border-[#3a3a3a] shadow-xl shadow-gray-200/60 dark:shadow-black/40 py-1.5 z-50">
+                    <div className="px-4 py-2.5 border-b border-[rgba(26,26,26,0.08)] dark:border-[#3a3a3a]">
                       <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 truncate">{user.email}</p>
                     </div>
-                    <Link
-                      href="/dashboard"
-                      onClick={() => setDropdownOpen(false)}
-                      className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-[#FA8112]/10 hover:text-[#FA8112] transition-colors"
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                      </svg>
+                    <Link href="/dashboard" onClick={() => setDropdownOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-[rgba(26,26,26,0.7)] dark:text-gray-300 hover:bg-[#FFEAD5] hover:text-[#FA8112] transition-colors">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
                       Tableau de bord
                     </Link>
-                    <Link
-                      href="/profile"
-                      onClick={() => setDropdownOpen(false)}
-                      className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-[#FA8112]/10 hover:text-[#FA8112] transition-colors"
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                      </svg>
+                    <Link href="/profile" onClick={() => setDropdownOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-[rgba(26,26,26,0.7)] dark:text-gray-300 hover:bg-[#FFEAD5] hover:text-[#FA8112] transition-colors">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
                       Mon profil
                     </Link>
-                    <div className="border-t border-[#F0E8E0] dark:border-[#3a3a3a] mt-1 pt-1">
-                      <Link
-                        href="/services/new"
-                        onClick={() => setDropdownOpen(false)}
-                        className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-[#FA8112]/10 hover:text-[#FA8112] transition-colors"
-                      >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                        </svg>
+                    <div className="border-t border-[rgba(26,26,26,0.08)] dark:border-[#3a3a3a] mt-1 pt-1">
+                      <Link href="/services/new" onClick={() => setDropdownOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-[rgba(26,26,26,0.7)] dark:text-gray-300 hover:bg-[#FFEAD5] hover:text-[#FA8112] transition-colors">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
                         Publier un service
                       </Link>
-                      <Link
-                        href="/products/new"
-                        onClick={() => setDropdownOpen(false)}
-                        className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-[#FA8112]/10 hover:text-[#FA8112] transition-colors"
-                      >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                        </svg>
+                      <Link href="/products/new" onClick={() => setDropdownOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-[rgba(26,26,26,0.7)] dark:text-gray-300 hover:bg-[#FFEAD5] hover:text-[#FA8112] transition-colors">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg>
                         Vendre un produit
                       </Link>
                     </div>
-                    <div className="border-t border-[#F0E8E0] dark:border-[#3a3a3a] mt-1 pt-1">
-                      <button
-                        onClick={handleSignOut}
-                        className="flex items-center gap-2.5 w-full px-4 py-2.5 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
-                      >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                        </svg>
+                    <div className="border-t border-[rgba(26,26,26,0.08)] dark:border-[#3a3a3a] mt-1 pt-1">
+                      <button onClick={handleSignOut} className="flex items-center gap-2.5 w-full px-4 py-2.5 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
                         Se déconnecter
                       </button>
                     </div>
@@ -238,19 +195,18 @@ export default function Navbar() {
                 )}
               </div>
             ) : (
-              /* Guest buttons */
               <>
                 <Link
                   href="/login"
-                  className="hidden sm:inline-flex text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-[#FA8112] transition-colors px-3 py-2 rounded-lg hover:bg-[#FA8112]/8 dark:hover:bg-[#FA8112]/10"
+                  className="hidden sm:inline-flex text-sm font-medium text-[rgba(26,26,26,0.7)] dark:text-gray-300 hover:text-[#1A1A1A] dark:hover:text-white transition-colors px-3 py-2 rounded-[10px] font-jakarta"
                 >
                   Connexion
                 </Link>
                 <Link
                   href="/register"
-                  className="inline-flex items-center px-4 py-2 bg-[#FA8112] hover:bg-[#E8730F] active:bg-[#D46A0E] text-white text-sm font-semibold rounded-lg transition-all shadow-sm shadow-[#FA8112]/30 hover:shadow-[#FA8112]/40 hover:scale-105"
+                  className="inline-flex items-center px-4 py-2 bg-[#FA8112] hover:bg-[#E06F05] text-white text-sm font-semibold rounded-[10px] transition-all hover:-translate-y-px shadow-[0_4px_14px_rgba(250,129,18,0.35)] hover:shadow-[0_4px_18px_rgba(250,129,18,0.45)] font-jakarta"
                 >
-                  S'inscrire
+                  S&apos;inscrire
                 </Link>
               </>
             )}
@@ -258,7 +214,7 @@ export default function Navbar() {
             {/* Mobile hamburger */}
             <button
               onClick={() => setMenuOpen(!menuOpen)}
-              className="md:hidden p-2 rounded-lg text-gray-500 hover:bg-[#FFF8F0] dark:hover:bg-[#2a2a2a] transition-colors"
+              className="md:hidden p-2 rounded-lg text-[rgba(26,26,26,0.6)] hover:bg-[#FFEAD5] dark:text-gray-400 dark:hover:bg-[#2a2a2a] transition-colors"
               aria-label="Menu"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -274,28 +230,28 @@ export default function Navbar() {
 
         {/* Mobile menu */}
         {menuOpen && (
-          <div className="md:hidden pb-4 space-y-1 border-t border-[#F0E8E0] dark:border-[#2a2a2a] pt-3">
+          <div className="md:hidden pb-4 space-y-1 border-t border-[rgba(26,26,26,0.08)] dark:border-[#2a2a2a] pt-3">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
                 onClick={() => setMenuOpen(false)}
-                className="block px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-[#FA8112] hover:bg-[#FA8112]/8 dark:hover:bg-[#FA8112]/10 rounded-lg transition-colors"
+                className="block px-3 py-2.5 text-sm font-medium text-[rgba(26,26,26,0.7)] dark:text-gray-400 hover:text-[#1A1A1A] dark:hover:text-[#FAF3E1] hover:bg-[#FFEAD5] dark:hover:bg-[#2a2a2a] rounded-[10px] transition-colors font-jakarta"
               >
                 {link.label}
               </Link>
             ))}
             {user ? (
               <>
-                <Link href="/dashboard" onClick={() => setMenuOpen(false)} className="block px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-[#FA8112] rounded-lg hover:bg-[#FA8112]/8 dark:hover:bg-[#FA8112]/10 transition-colors">
+                <Link href="/dashboard" onClick={() => setMenuOpen(false)} className="block px-3 py-2.5 text-sm font-medium text-[rgba(26,26,26,0.7)] dark:text-gray-400 hover:text-[#FA8112] rounded-[10px] hover:bg-[#FFEAD5] dark:hover:bg-[#2a2a2a] transition-colors font-jakarta">
                   Tableau de bord
                 </Link>
-                <button onClick={handleSignOut} className="block w-full text-left px-3 py-2 text-sm font-medium text-red-600 dark:text-red-400 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
+                <button onClick={handleSignOut} className="block w-full text-left px-3 py-2.5 text-sm font-medium text-red-600 dark:text-red-400 rounded-[10px] hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors font-jakarta">
                   Se déconnecter
                 </button>
               </>
             ) : (
-              <Link href="/login" onClick={() => setMenuOpen(false)} className="block px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-[#FA8112] rounded-lg hover:bg-[#FA8112]/8 dark:hover:bg-[#FA8112]/10 transition-colors">
+              <Link href="/login" onClick={() => setMenuOpen(false)} className="block px-3 py-2.5 text-sm font-medium text-[rgba(26,26,26,0.7)] dark:text-gray-400 hover:text-[#FA8112] rounded-[10px] hover:bg-[#FFEAD5] dark:hover:bg-[#2a2a2a] transition-colors font-jakarta">
                 Connexion
               </Link>
             )}
