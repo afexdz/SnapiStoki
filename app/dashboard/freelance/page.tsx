@@ -136,16 +136,16 @@ export default function FreelanceDashboard() {
       const u = data.user
       setUser(u)
 
-      const role = u.user_metadata?.role ?? u.user_metadata?.account_type ?? "buyer"
-      if (role !== "seller") { router.push("/dashboard/client"); return }
-
-      // Fetch profile
+      // Fetch profile first — profiles.role is the single source of truth
       const { data: profileData } = await sb
         .from("profiles")
         .select("id, full_name, bio, wilaya, role, avatar_url, rating")
         .eq("id", u.id)
         .single()
       if (profileData) setProfile(profileData)
+
+      const role = profileData?.role ?? "buyer"
+      if (role !== "seller" && role !== "both") { router.push("/dashboard/client"); return }
 
       // Parallel stats fetch — tolerant of missing tables
       const now = new Date()
@@ -415,9 +415,10 @@ export default function FreelanceDashboard() {
                 <h2 className="font-bold text-[#1A1A1A] dark:text-[#FAF3E1] mb-4">Actions rapides</h2>
                 <div className="space-y-2">
                   {[
-                    { label: "Créer un service", href: "/dashboard/freelance/services/new", icon: "M12 4v16m8-8H4", primary: true },
-                    { label: "Voir mon profil",  href: "/profile",           icon: "M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" },
-                    { label: "Explorer",         href: "/freelances",        icon: "M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" },
+                    { label: "Publier un service", href: "/services/new",   icon: "M12 4v16m8-8H4", primary: true },
+                    { label: "Vendre un produit",  href: "/products/new",   icon: "M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" },
+                    { label: "Voir mon profil",    href: "/profile",        icon: "M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" },
+                    { label: "Explorer",           href: "/freelances",     icon: "M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" },
                   ].map((a) => (
                     <Link
                       key={a.href}

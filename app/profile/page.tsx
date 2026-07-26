@@ -7,7 +7,7 @@ import "react-image-crop/dist/ReactCrop.css"
 import Navbar from "@/components/Navbar"
 import Footer from "@/components/Footer"
 import { createClient } from "@/lib/supabase/client"
-import { WILAYAS, findNearestWilaya } from "@/lib/wilayas"
+import { WILAYAS } from "@/lib/wilayas"
 import type { User } from "@supabase/supabase-js"
 
 /* ─── Types ─────────────────────────────────────────────────── */
@@ -301,12 +301,11 @@ export default function ProfilePage() {
         // Auto-detect wilaya from IP if user hasn't set one
         if (!profileData.wilaya) {
           try {
-            const res = await fetch('https://ipapi.co/json/')
+            const res = await fetch('/api/geo')
             const geo = await res.json()
-            if (geo.latitude && geo.longitude) {
-              const nearest = findNearestWilaya(geo.latitude, geo.longitude)
-              setDetectedWilaya(nearest.name)
-              setEditForm(prev => ({ ...prev, wilaya: nearest.name }))
+            if (geo.detected && geo.wilaya) {
+              setDetectedWilaya(geo.wilaya)
+              setEditForm(prev => ({ ...prev, wilaya: geo.wilaya }))
             }
           } catch (e) {
             console.log('IP detection failed:', e)
@@ -375,8 +374,8 @@ export default function ProfilePage() {
     const ts       = Date.now()
     const bucket   = cropMode === "avatar" ? "avatars" : "covers"
     const fileName = cropMode === "avatar"
-      ? `${user.id}-avatar-${ts}.jpg`
-      : `${user.id}-cover-${ts}.jpg`
+      ? `${user.id}/avatar-${ts}.jpg`
+      : `${user.id}/cover-${ts}.jpg`
 
     console.log(`[upload] Starting ${cropMode} upload — bucket=${bucket} file=${fileName}`)
 

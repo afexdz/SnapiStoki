@@ -99,15 +99,15 @@ export default function ClientDashboard() {
       const u = data.user
       setUser(u)
 
-      const role = u.user_metadata?.role ?? u.user_metadata?.account_type ?? "buyer"
-      if (role === "seller") { router.push("/dashboard/freelance"); return }
-
       const { data: profileData } = await sb
         .from("profiles")
         .select("id, full_name, avatar_url, wilaya, role")
         .eq("id", u.id)
         .single()
       if (profileData) setProfile(profileData)
+
+      const role = profileData?.role ?? "buyer"
+      if (role === "seller" || role === "both") { router.push("/dashboard/freelance"); return }
 
       const [a, b, c, d, e] = await Promise.allSettled([
         sb.from("orders").select("id", { count: "exact", head: true }).eq("buyer_id", u.id).in("status", ["active", "pending"]),

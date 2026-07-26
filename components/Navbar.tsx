@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { isSeller } from "@/lib/auth/role";
 import type { User } from "@supabase/supabase-js";
 
 const navLinks = [
@@ -20,6 +21,7 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [userRole, setUserRole] = useState<string | null>(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -32,26 +34,28 @@ export default function Navbar() {
 
     const supabase = createClient();
 
-    const fetchAvatar = async (uid: string) => {
+    const fetchProfile = async (uid: string) => {
       const { data } = await supabase
         .from("profiles")
-        .select("avatar_url")
+        .select("avatar_url, role")
         .eq("id", uid)
         .single();
       setAvatarUrl(data?.avatar_url ?? null);
+      setUserRole(data?.role ?? null);
     };
 
     supabase.auth.getUser().then(({ data }) => {
       setUser(data.user);
-      if (data.user) fetchAvatar(data.user.id);
+      if (data.user) fetchProfile(data.user.id);
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
       if (session?.user) {
-        fetchAvatar(session.user.id);
+        fetchProfile(session.user.id);
       } else {
         setAvatarUrl(null);
+        setUserRole(null);
       }
     });
 
@@ -90,6 +94,7 @@ export default function Navbar() {
 
   const displayName = user?.user_metadata?.full_name ?? user?.email?.split("@")[0] ?? "";
   const initials = displayName.split(" ").map((n: string) => n[0]).join("").toUpperCase().slice(0, 2) || "?";
+  const seller = isSeller(userRole);
 
   return (
     <nav className="sticky top-0 z-50 bg-white/92 dark:bg-[#1a1a1a]/92 backdrop-blur-md border-b border-[rgba(26,26,26,0.12)] dark:border-[rgba(255,255,255,0.08)]">
@@ -176,14 +181,23 @@ export default function Navbar() {
                       Mon profil
                     </Link>
                     <div className="border-t border-[rgba(26,26,26,0.08)] dark:border-[#3a3a3a] mt-1 pt-1">
-                      <Link href="/services/new" onClick={() => setDropdownOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-[rgba(26,26,26,0.7)] dark:text-gray-300 hover:bg-[#FFEAD5] hover:text-[#FA8112] transition-colors">
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
-                        Publier un service
-                      </Link>
-                      <Link href="/products/new" onClick={() => setDropdownOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-[rgba(26,26,26,0.7)] dark:text-gray-300 hover:bg-[#FFEAD5] hover:text-[#FA8112] transition-colors">
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg>
-                        Vendre un produit
-                      </Link>
+                      {seller ? (
+                        <>
+                          <Link href="/services/new" onClick={() => setDropdownOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-[rgba(26,26,26,0.7)] dark:text-gray-300 hover:bg-[#FFEAD5] hover:text-[#FA8112] transition-colors">
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
+                            Publier un service
+                          </Link>
+                          <Link href="/products/new" onClick={() => setDropdownOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-[rgba(26,26,26,0.7)] dark:text-gray-300 hover:bg-[#FFEAD5] hover:text-[#FA8112] transition-colors">
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg>
+                            Vendre un produit
+                          </Link>
+                        </>
+                      ) : (
+                        <Link href="/devenir-vendeur" onClick={() => setDropdownOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-[rgba(26,26,26,0.7)] dark:text-gray-300 hover:bg-[#FFEAD5] hover:text-[#FA8112] transition-colors">
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+                          Devenir vendeur
+                        </Link>
+                      )}
                     </div>
                     <div className="border-t border-[rgba(26,26,26,0.08)] dark:border-[#3a3a3a] mt-1 pt-1">
                       <button onClick={handleSignOut} className="flex items-center gap-2.5 w-full px-4 py-2.5 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
@@ -246,6 +260,20 @@ export default function Navbar() {
                 <Link href="/dashboard" onClick={() => setMenuOpen(false)} className="flex items-center px-3 py-3 text-sm font-medium text-[rgba(26,26,26,0.7)] dark:text-gray-400 hover:text-[#FA8112] rounded-[10px] hover:bg-[#FFEAD5] dark:hover:bg-[#2a2a2a] transition-colors font-jakarta min-h-[44px]">
                   Tableau de bord
                 </Link>
+                {seller ? (
+                  <>
+                    <Link href="/services/new" onClick={() => setMenuOpen(false)} className="flex items-center px-3 py-3 text-sm font-medium text-[rgba(26,26,26,0.7)] dark:text-gray-400 hover:text-[#FA8112] rounded-[10px] hover:bg-[#FFEAD5] dark:hover:bg-[#2a2a2a] transition-colors font-jakarta min-h-[44px]">
+                      Publier un service
+                    </Link>
+                    <Link href="/products/new" onClick={() => setMenuOpen(false)} className="flex items-center px-3 py-3 text-sm font-medium text-[rgba(26,26,26,0.7)] dark:text-gray-400 hover:text-[#FA8112] rounded-[10px] hover:bg-[#FFEAD5] dark:hover:bg-[#2a2a2a] transition-colors font-jakarta min-h-[44px]">
+                      Vendre un produit
+                    </Link>
+                  </>
+                ) : (
+                  <Link href="/devenir-vendeur" onClick={() => setMenuOpen(false)} className="flex items-center px-3 py-3 text-sm font-medium text-[#FA8112] rounded-[10px] hover:bg-[#FFEAD5] dark:hover:bg-[#2a2a2a] transition-colors font-jakarta min-h-[44px]">
+                    Devenir vendeur
+                  </Link>
+                )}
                 <button onClick={handleSignOut} className="flex items-center w-full text-left px-3 py-3 text-sm font-medium text-red-600 dark:text-red-400 rounded-[10px] hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors font-jakarta min-h-[44px]">
                   Se déconnecter
                 </button>
