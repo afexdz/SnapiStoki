@@ -87,7 +87,7 @@ export default function MarketplacePage() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen bg-[#FAFAFA] dark:bg-[#1a1a1a]">
+      <main className="min-h-screen bg-[#FAFAFA] dark:bg-[var(--color-bg)]">
         {/* Hero — orange brand */}
         <div className="relative overflow-hidden bg-[#FA8112] py-14 px-4 text-center">
           <div className="absolute inset-0 pointer-events-none overflow-hidden">
@@ -113,7 +113,7 @@ export default function MarketplacePage() {
           <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1 mb-6">
             <button
               onClick={() => setActiveCategory("Tout")}
-              className={`shrink-0 px-4 py-2 rounded-xl text-sm font-medium transition-all ${activeCategory === "Tout" ? "bg-[#FA8112] text-white shadow-md shadow-[#FA8112]/30" : "bg-white dark:bg-[#2a2a2a] text-gray-600 dark:text-gray-300 border border-[#EEEEEE] dark:border-[#3a3a3a] hover:border-[#FA8112]/40 hover:text-[#FA8112]"}`}
+              className={`shrink-0 px-4 py-2 rounded-xl text-sm font-medium transition-all ${activeCategory === "Tout" ? "bg-[#FA8112] text-white shadow-md shadow-[#FA8112]/30" : "bg-white dark:bg-[var(--white)] text-gray-600 dark:text-gray-300 border border-[#EEEEEE] dark:border-[var(--ink-12)] hover:border-[#FA8112]/40 hover:text-[#FA8112]"}`}
             >
               Tout
             </button>
@@ -121,7 +121,7 @@ export default function MarketplacePage() {
               <button
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
-                className={`shrink-0 px-4 py-2 rounded-xl text-sm font-medium transition-all ${activeCategory === cat ? "bg-[#FA8112] text-white shadow-md shadow-[#FA8112]/30" : "bg-white dark:bg-[#2a2a2a] text-gray-600 dark:text-gray-300 border border-[#EEEEEE] dark:border-[#3a3a3a] hover:border-[#FA8112]/40 hover:text-[#FA8112]"}`}
+                className={`shrink-0 px-4 py-2 rounded-xl text-sm font-medium transition-all ${activeCategory === cat ? "bg-[#FA8112] text-white shadow-md shadow-[#FA8112]/30" : "bg-white dark:bg-[var(--white)] text-gray-600 dark:text-gray-300 border border-[#EEEEEE] dark:border-[var(--ink-12)] hover:border-[#FA8112]/40 hover:text-[#FA8112]"}`}
               >
                 {cat}
               </button>
@@ -134,7 +134,7 @@ export default function MarketplacePage() {
               <select
                 value={sort}
                 onChange={e => setSort(e.target.value)}
-                className="pl-3 pr-8 py-2 rounded-xl border border-[#EEEEEE] dark:border-[#3a3a3a] bg-white dark:bg-[#2a2a2a] text-[#1A1A1A] dark:text-[#FAF3E1] text-sm outline-none focus:border-[#FA8112] appearance-none cursor-pointer"
+                className="pl-3 pr-8 py-2 rounded-xl border border-[#EEEEEE] dark:border-[var(--ink-12)] bg-white dark:bg-[var(--white)] text-[#1A1A1A] dark:text-[#FAF3E1] text-sm outline-none focus:border-[#FA8112] appearance-none cursor-pointer"
               >
                 {SORT_OPTIONS.map(o => <option key={o.id} value={o.id}>{o.label}</option>)}
               </select>
@@ -169,12 +169,12 @@ export default function MarketplacePage() {
           {loading ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
               {[1, 2, 3, 4, 5, 6, 7, 8].map(i => (
-                <div key={i} className="h-72 bg-gray-100 dark:bg-[#2a2a2a] rounded-2xl animate-pulse" />
+                <div key={i} className="h-72 bg-gray-100 dark:bg-[var(--white)] rounded-2xl animate-pulse" />
               ))}
             </div>
           ) : filtered.length === 0 ? (
             <div className="text-center py-20">
-              <div className="w-16 h-16 bg-[#FFF8F0] dark:bg-[#2a2a2a] rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <div className="w-16 h-16 bg-[#FFF8F0] dark:bg-[var(--white)] rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <svg className="w-8 h-8 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                 </svg>

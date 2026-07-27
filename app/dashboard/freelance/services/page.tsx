@@ -60,12 +60,12 @@ export default function FreelanceServicesPage() {
   const skeleton = Array.from({ length: 3 })
 
   return (
-    <div className="min-h-screen bg-[#FFF8F0] dark:bg-[#1a1a1a]">
+    <div className="min-h-screen bg-[#FFF8F0] dark:bg-[var(--color-bg)]">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         {/* Header */}
         <div className="flex items-center justify-between gap-4 mb-8">
           <div className="flex items-center gap-4">
-            <Link href="/dashboard/freelance" className="p-2 rounded-xl border border-[#F0E8E0] dark:border-[#3a3a3a] text-gray-500 hover:text-[#FA8112] hover:border-[#FA8112]/40 transition-all">
+            <Link href="/dashboard/freelance" className="p-2 rounded-xl border border-[#F0E8E0] dark:border-[var(--ink-12)] text-gray-500 hover:text-[#FA8112] hover:border-[#FA8112]/40 transition-all">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
@@ -94,11 +94,11 @@ export default function FreelanceServicesPage() {
         <div className="space-y-4">
           {loading
             ? skeleton.map((_, i) => (
-                <div key={i} className="bg-white dark:bg-[#2a2a2a] rounded-2xl border border-[#F0E8E0] dark:border-[#3a3a3a] p-5 animate-pulse">
+                <div key={i} className="bg-white dark:bg-[var(--white)] rounded-2xl border border-[#F0E8E0] dark:border-[var(--ink-12)] p-5 animate-pulse">
                   <div className="flex gap-4">
-                    <div className="w-20 h-16 rounded-xl bg-gray-200 dark:bg-[#3a3a3a] shrink-0" />
+                    <div className="w-20 h-16 rounded-xl bg-gray-200 dark:bg-[var(--cream)] shrink-0" />
                     <div className="flex-1 space-y-2 py-1">
-                      <div className="h-4 w-2/3 bg-gray-200 dark:bg-[#3a3a3a] rounded" />
+                      <div className="h-4 w-2/3 bg-gray-200 dark:bg-[var(--cream)] rounded" />
                       <div className="h-3 w-1/3 bg-gray-100 dark:bg-[#333] rounded" />
                     </div>
                   </div>
@@ -106,8 +106,8 @@ export default function FreelanceServicesPage() {
               ))
             : services.length === 0
               ? (
-                <div className="bg-white dark:bg-[#2a2a2a] rounded-2xl border border-[#F0E8E0] dark:border-[#3a3a3a] p-16 text-center">
-                  <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-[#FFF8F0] dark:bg-[#3a3a3a] flex items-center justify-center">
+                <div className="bg-white dark:bg-[var(--white)] rounded-2xl border border-[#F0E8E0] dark:border-[var(--ink-12)] p-16 text-center">
+                  <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-[#FFF8F0] dark:bg-[var(--cream)] flex items-center justify-center">
                     <svg className="w-8 h-8 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                     </svg>
@@ -125,10 +125,10 @@ export default function FreelanceServicesPage() {
               : services.map(service => {
                   const thumb = service.gallery?.[0] ?? service.images?.[0]
                   return (
-                    <div key={service.id} className="bg-white dark:bg-[#2a2a2a] rounded-2xl border border-[#F0E8E0] dark:border-[#3a3a3a] p-5 hover:border-[#FA8112]/20 transition-all">
+                    <div key={service.id} className="bg-white dark:bg-[var(--white)] rounded-2xl border border-[#F0E8E0] dark:border-[var(--ink-12)] p-5 hover:border-[#FA8112]/20 transition-all">
                       <div className="flex gap-4">
                         {/* Thumbnail */}
-                        <div className="w-20 h-16 rounded-xl bg-[#FFF8F0] dark:bg-[#3a3a3a] overflow-hidden shrink-0 flex items-center justify-center">
+                        <div className="w-20 h-16 rounded-xl bg-[#FFF8F0] dark:bg-[var(--cream)] overflow-hidden shrink-0 flex items-center justify-center">
                           {thumb ? (
                             <img src={thumb} alt="" className="w-full h-full object-cover" />
                           ) : (
@@ -168,13 +168,19 @@ export default function FreelanceServicesPage() {
                           <div className="flex items-center gap-2 mt-3 flex-wrap">
                             <button
                               onClick={() => handleToggleStatus(service.id, service.is_active)}
-                              className="px-3 py-1.5 rounded-lg border border-[#F0E8E0] dark:border-[#3a3a3a] text-xs font-medium text-gray-600 dark:text-gray-400 hover:border-[#FA8112]/40 hover:text-[#FA8112] transition-all"
+                              className="px-3 py-1.5 rounded-lg border border-[#F0E8E0] dark:border-[var(--ink-12)] text-xs font-medium text-gray-600 dark:text-gray-400 hover:border-[#FA8112]/40 hover:text-[#FA8112] transition-all"
                             >
                               {service.is_active ? "Mettre en pause" : "Réactiver"}
                             </button>
                           <Link
+                            href={`/dashboard/freelance/services/${service.id}/edit`}
+                            className="px-3 py-1.5 rounded-lg border border-[#F0E8E0] dark:border-[var(--ink-12)] text-xs font-medium text-gray-600 dark:text-gray-400 hover:border-[#FA8112]/40 hover:text-[#FA8112] transition-all"
+                          >
+                            Modifier
+                          </Link>
+                          <Link
                             href={`/services/${service.id}`}
-                            className="px-3 py-1.5 rounded-lg border border-[#F0E8E0] dark:border-[#3a3a3a] text-xs font-medium text-gray-600 dark:text-gray-400 hover:border-[#FA8112]/40 hover:text-[#FA8112] transition-all"
+                            className="px-3 py-1.5 rounded-lg border border-[#F0E8E0] dark:border-[var(--ink-12)] text-xs font-medium text-gray-600 dark:text-gray-400 hover:border-[#FA8112]/40 hover:text-[#FA8112] transition-all"
                           >
                             Voir la fiche
                           </Link>

@@ -6,7 +6,6 @@ import Link from "next/link"
 import Navbar from "@/components/Navbar"
 import Footer from "@/components/Footer"
 import { createClient } from "@/lib/supabase/client"
-import { WILAYAS } from "@/lib/wilayas"
 
 /* ─── Types ─────────────────────────────────────────────────── */
 type SellerProfile = {
@@ -70,13 +69,13 @@ const SORT_OPTIONS: { value: SortKey; label: string }[] = [
 /* ─── Skeleton ───────────────────────────────────────────────── */
 function SkeletonCard() {
   return (
-    <div className="bg-white dark:bg-[#2a2a2a] rounded-2xl border border-[#F0E8E0] dark:border-[#3a3a3a] overflow-hidden animate-pulse">
-      <div className="h-40 bg-gray-100 dark:bg-[#3a3a3a]" />
+    <div className="bg-white dark:bg-[var(--white)] rounded-2xl border border-[#F0E8E0] dark:border-[var(--ink-12)] overflow-hidden animate-pulse">
+      <div className="h-40 bg-gray-100 dark:bg-[var(--cream)]" />
       <div className="p-4 space-y-2.5">
-        <div className="h-4 bg-gray-100 dark:bg-[#3a3a3a] rounded-lg w-3/4" />
-        <div className="h-3 bg-gray-100 dark:bg-[#3a3a3a] rounded-lg w-1/2" />
-        <div className="h-3 bg-gray-100 dark:bg-[#3a3a3a] rounded-lg w-2/3" />
-        <div className="h-9 bg-gray-100 dark:bg-[#3a3a3a] rounded-xl mt-3" />
+        <div className="h-4 bg-gray-100 dark:bg-[var(--cream)] rounded-lg w-3/4" />
+        <div className="h-3 bg-gray-100 dark:bg-[var(--cream)] rounded-lg w-1/2" />
+        <div className="h-3 bg-gray-100 dark:bg-[var(--cream)] rounded-lg w-2/3" />
+        <div className="h-9 bg-gray-100 dark:bg-[var(--cream)] rounded-xl mt-3" />
       </div>
     </div>
   )
@@ -85,7 +84,7 @@ function SkeletonCard() {
 function SkeletonSection() {
   return (
     <div className="space-y-4">
-      <div className="h-6 w-48 bg-gray-100 dark:bg-[#3a3a3a] rounded-lg animate-pulse" />
+      <div className="h-6 w-48 bg-gray-100 dark:bg-[var(--cream)] rounded-lg animate-pulse" />
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
         {[1, 2, 3].map((i) => <SkeletonCard key={i} />)}
       </div>
@@ -122,7 +121,7 @@ function Avatar({ url, name, size = 10 }: { url: string | null; name: string | n
 function EmptyState({ label }: { label: string }) {
   return (
     <div className="flex flex-col items-center justify-center py-14 text-center">
-      <div className="w-16 h-16 mb-4 rounded-2xl bg-[#FFF8F0] dark:bg-[#2a2a2a] flex items-center justify-center">
+      <div className="w-16 h-16 mb-4 rounded-2xl bg-[#FFF8F0] dark:bg-[var(--white)] flex items-center justify-center">
         <svg className="w-8 h-8 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
         </svg>
@@ -137,7 +136,7 @@ function FreelancerCard({ svc, index }: { svc: ServiceResult; index: number }) {
   const img = svc.images?.[0]
   const name = svc.profile?.full_name ?? "Freelance"
   return (
-    <div className="group bg-white dark:bg-[#2a2a2a] rounded-2xl border border-[#F0E8E0] dark:border-[#3a3a3a] hover:border-[#FA8112]/30 hover:shadow-xl hover:shadow-[#FA8112]/10 transition-all overflow-hidden flex flex-col">
+    <div className="group bg-white dark:bg-[var(--white)] rounded-2xl border border-[#F0E8E0] dark:border-[var(--ink-12)] hover:border-[#FA8112]/30 hover:shadow-xl hover:shadow-[#FA8112]/10 transition-all overflow-hidden flex flex-col">
       {/* Cover */}
       <div className={`h-36 relative overflow-hidden shrink-0 ${!img ? `bg-gradient-to-br ${GRADIENTS[index % GRADIENTS.length]}` : ""}`}>
         {img && <img src={img} alt={svc.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />}
@@ -200,7 +199,7 @@ function FreelancerCard({ svc, index }: { svc: ServiceResult; index: number }) {
 function ProductCard({ product, index }: { product: ProductResult; index: number }) {
   const coverImg = product.preview_urls?.[0] ?? product.preview_images?.[0] ?? null
   return (
-    <div className="group bg-white dark:bg-[#2a2a2a] rounded-2xl border border-[#F0E8E0] dark:border-[#3a3a3a] hover:border-[#FA8112]/30 hover:shadow-xl hover:shadow-[#FA8112]/10 transition-all overflow-hidden flex flex-col">
+    <div className="group bg-white dark:bg-[var(--white)] rounded-2xl border border-[#F0E8E0] dark:border-[var(--ink-12)] hover:border-[#FA8112]/30 hover:shadow-xl hover:shadow-[#FA8112]/10 transition-all overflow-hidden flex flex-col">
       {/* Thumbnail */}
       <div className={`h-36 relative overflow-hidden shrink-0 ${!coverImg ? `bg-gradient-to-br ${GRADIENTS[(index + 2) % GRADIENTS.length]}` : ""}`}>
         {coverImg && (
@@ -256,20 +255,17 @@ function ProductCard({ product, index }: { product: ProductResult; index: number
 /* ─── Filter bar ─────────────────────────────────────────────── */
 function FilterBar({
   sort, onSort,
-  filterWilaya, onWilaya,
   filterCategory, onCategory,
   categories,
 }: {
   sort: SortKey
   onSort: (v: SortKey) => void
-  filterWilaya: string
-  onWilaya: (v: string) => void
   filterCategory: string
   onCategory: (v: string) => void
   categories: string[]
 }) {
   return (
-    <div className="flex flex-wrap gap-3 items-center py-4 border-y border-[#F0E8E0] dark:border-[#3a3a3a]">
+    <div className="flex flex-wrap gap-3 items-center py-4 border-y border-[#F0E8E0] dark:border-[var(--ink-12)]">
       <div className="flex items-center gap-2">
         <svg className="w-4 h-4 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L13 13.414V19a1 1 0 01-.553.894l-4 2A1 1 0 017 21v-7.586L3.293 6.707A1 1 0 013 6V4z" />
@@ -280,34 +276,25 @@ function FilterBar({
       <select
         value={sort}
         onChange={(e) => onSort(e.target.value as SortKey)}
-        className="text-sm px-3 py-1.5 rounded-xl border border-[#F0E8E0] dark:border-[#3a3a3a] bg-white dark:bg-[#2a2a2a] text-[#1A1A1A] dark:text-[#FAF3E1] outline-none focus:border-[#FA8112] transition-colors cursor-pointer"
+        className="text-sm px-3 py-1.5 rounded-xl border border-[#F0E8E0] dark:border-[var(--ink-12)] bg-white dark:bg-[var(--white)] text-[#1A1A1A] dark:text-[#FAF3E1] outline-none focus:border-[#FA8112] transition-colors cursor-pointer"
       >
         {SORT_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
-      </select>
-
-      <select
-        value={filterWilaya}
-        onChange={(e) => onWilaya(e.target.value)}
-        className="text-sm px-3 py-1.5 rounded-xl border border-[#F0E8E0] dark:border-[#3a3a3a] bg-white dark:bg-[#2a2a2a] text-[#1A1A1A] dark:text-[#FAF3E1] outline-none focus:border-[#FA8112] transition-colors cursor-pointer"
-      >
-        <option value="">Toutes les wilayas</option>
-        {WILAYAS.map(w => <option key={w.id} value={w.name}>{w.name}</option>)}
       </select>
 
       {categories.length > 0 && (
         <select
           value={filterCategory}
           onChange={(e) => onCategory(e.target.value)}
-          className="text-sm px-3 py-1.5 rounded-xl border border-[#F0E8E0] dark:border-[#3a3a3a] bg-white dark:bg-[#2a2a2a] text-[#1A1A1A] dark:text-[#FAF3E1] outline-none focus:border-[#FA8112] transition-colors cursor-pointer"
+          className="text-sm px-3 py-1.5 rounded-xl border border-[#F0E8E0] dark:border-[var(--ink-12)] bg-white dark:bg-[var(--white)] text-[#1A1A1A] dark:text-[#FAF3E1] outline-none focus:border-[#FA8112] transition-colors cursor-pointer"
         >
           <option value="">Toutes les catégories</option>
           {categories.map(c => <option key={c} value={c}>{c}</option>)}
         </select>
       )}
 
-      {(filterWilaya || filterCategory) && (
+      {filterCategory && (
         <button
-          onClick={() => { onWilaya(""); onCategory("") }}
+          onClick={() => { onCategory("") }}
           className="text-xs text-[#FA8112] hover:text-[#E8730F] font-medium transition-colors"
         >
           Réinitialiser
@@ -329,7 +316,6 @@ function SearchResults() {
   const [loading, setLoading]       = useState(true)
 
   const [sort, setSort]                     = useState<SortKey>("relevance")
-  const [filterWilaya, setFilterWilaya]     = useState("")
   const [filterCategory, setFilterCategory] = useState("")
 
   /* Fetch on query change */
@@ -396,12 +382,9 @@ function SearchResults() {
     })
 
   const filteredServices = useMemo(() =>
-    sortFn(services.filter(s =>
-      (!filterWilaya   || s.profile?.wilaya === filterWilaya) &&
-      (!filterCategory || s.category === filterCategory)
-    )),
+    sortFn(services.filter(s => !filterCategory || s.category === filterCategory)),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [services, sort, filterWilaya, filterCategory]
+    [services, sort, filterCategory]
   )
 
   const filteredProducts = useMemo(() =>
@@ -421,12 +404,12 @@ function SearchResults() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen bg-[#FFF8F0] dark:bg-[#1a1a1a]">
+      <main className="min-h-screen bg-[#FFF8F0] dark:bg-[var(--color-bg)]">
 
         {/* Search header */}
-        <div className="bg-white dark:bg-[#2a2a2a] border-b border-[#F0E8E0] dark:border-[#3a3a3a] py-6">
+        <div className="bg-white dark:bg-[var(--white)] border-b border-[#F0E8E0] dark:border-[var(--ink-12)] py-6">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <form onSubmit={handleSearch} className="flex items-center gap-3 bg-[#FFF8F0] dark:bg-[#1a1a1a] rounded-xl border border-[#F0E8E0] dark:border-[#3a3a3a] overflow-hidden focus-within:border-[#FA8112] focus-within:ring-2 focus-within:ring-[#FA8112]/20 transition-all">
+            <form onSubmit={handleSearch} className="flex items-center gap-3 bg-[#FFF8F0] dark:bg-[var(--color-bg)] rounded-xl border border-[#F0E8E0] dark:border-[var(--ink-12)] overflow-hidden focus-within:border-[#FA8112] focus-within:ring-2 focus-within:ring-[#FA8112]/20 transition-all">
               <div className="pl-4 text-gray-400 shrink-0">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
@@ -465,7 +448,6 @@ function SearchResults() {
           {!loading && totalCount > 0 && (
             <FilterBar
               sort={sort} onSort={setSort}
-              filterWilaya={filterWilaya} onWilaya={setFilterWilaya}
               filterCategory={filterCategory} onCategory={setFilterCategory}
               categories={categories}
             />
@@ -506,7 +488,7 @@ function SearchResults() {
                 </div>
 
                 {filteredServices.length === 0 ? (
-                  <div className="bg-white dark:bg-[#2a2a2a] rounded-2xl border border-[#F0E8E0] dark:border-[#3a3a3a]">
+                  <div className="bg-white dark:bg-[var(--white)] rounded-2xl border border-[#F0E8E0] dark:border-[var(--ink-12)]">
                     <EmptyState label="Aucun freelance trouvé pour cette recherche" />
                   </div>
                 ) : (
@@ -520,9 +502,9 @@ function SearchResults() {
 
               {/* Divider */}
               <div className="flex items-center gap-4">
-                <div className="flex-1 h-px bg-[#F0E8E0] dark:bg-[#3a3a3a]" />
+                <div className="flex-1 h-px bg-[#F0E8E0] dark:bg-[var(--cream)]" />
                 <span className="text-xs font-semibold text-gray-400 uppercase tracking-widest">Produits digitaux</span>
-                <div className="flex-1 h-px bg-[#F0E8E0] dark:bg-[#3a3a3a]" />
+                <div className="flex-1 h-px bg-[#F0E8E0] dark:bg-[var(--cream)]" />
               </div>
 
               {/* ── Section 2: Marketplace ── */}
@@ -542,7 +524,7 @@ function SearchResults() {
                 </div>
 
                 {filteredProducts.length === 0 ? (
-                  <div className="bg-white dark:bg-[#2a2a2a] rounded-2xl border border-[#F0E8E0] dark:border-[#3a3a3a]">
+                  <div className="bg-white dark:bg-[var(--white)] rounded-2xl border border-[#F0E8E0] dark:border-[var(--ink-12)]">
                     <EmptyState label="Aucun produit trouvé pour cette recherche" />
                   </div>
                 ) : (
@@ -566,7 +548,7 @@ function SearchResults() {
 export default function SearchPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-[#FFF8F0] dark:bg-[#1a1a1a] flex items-center justify-center">
+      <div className="min-h-screen bg-[#FFF8F0] dark:bg-[var(--color-bg)] flex items-center justify-center">
         <div className="w-8 h-8 border-[3px] border-[#FA8112] border-t-transparent rounded-full animate-spin" />
       </div>
     }>

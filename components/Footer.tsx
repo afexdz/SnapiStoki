@@ -40,7 +40,7 @@ export default function Footer() {
               <span className="text-2xl font-extrabold" style={{ color: "var(--ink)" }}>Raise</span>
             </a>
             <p className="text-[14px] leading-relaxed max-w-[280px] mt-3" style={{ color: "var(--ink-60)" }}>
-              La marketplace algérienne des freelances et des produits digitaux. Fait en Algérie, pour l&apos;Algérie.
+              La marketplace des freelances et des produits digitaux, pour les créatifs du monde entier. Conçu et développé en Algérie.
             </p>
           </div>
 

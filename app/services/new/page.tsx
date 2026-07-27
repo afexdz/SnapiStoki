@@ -28,6 +28,55 @@ const DEFAULT_PKG = (name: string, price: number): Package => ({
   name, description: "", delivery_days: 3, revisions: 1, price,
 })
 
+const inputCls = "w-full px-4 py-2.5 border border-[var(--ink-12)] rounded-xl text-sm text-[var(--ink)] bg-[var(--white)] outline-none focus:border-[#FA8112] focus:ring-2 focus:ring-[#FA8112]/10 transition-all"
+const labelCls = "block text-sm font-semibold text-[var(--ink)] mb-1.5"
+
+const PkgColumn = ({
+  pkg, setPkgFn, label, disabled = false,
+}: { pkg: Package; setPkgFn: (f: keyof Package, v: string | number) => void; label: string; disabled?: boolean }) => (
+  <div className={`flex-1 min-w-0 p-4 border border-[var(--ink-12)] rounded-xl space-y-3 ${disabled ? "opacity-40 pointer-events-none" : ""}`}>
+    <p className="text-sm font-bold text-[var(--ink)]">{label}</p>
+    <div>
+      <label className="text-xs text-gray-500 mb-1 block">Description</label>
+      <textarea
+        value={pkg.description}
+        onChange={e => setPkgFn("description", e.target.value)}
+        maxLength={100}
+        rows={2}
+        placeholder="Ce que comprend ce package..."
+        className={inputCls + " resize-none text-xs"}
+      />
+      <p className="text-[10px] text-gray-400 text-right">{pkg.description.length}/100</p>
+    </div>
+    <div className="grid grid-cols-2 gap-2">
+      <div>
+        <label className="text-xs text-gray-500 mb-1 block">Délai</label>
+        <select value={pkg.delivery_days} onChange={e => setPkgFn("delivery_days", Number(e.target.value))} className={inputCls + " text-xs"}>
+          {DELIVERY_OPTIONS.map(d => <option key={d} value={d}>{d} jour{d > 1 ? "s" : ""}</option>)}
+        </select>
+      </div>
+      <div>
+        <label className="text-xs text-gray-500 mb-1 block">Révisions</label>
+        <select value={pkg.revisions} onChange={e => setPkgFn("revisions", Number(e.target.value))} className={inputCls + " text-xs"}>
+          {REVISION_OPTIONS.map(r => <option key={r} value={r}>{r === -1 ? "Illimité" : r}</option>)}
+        </select>
+      </div>
+    </div>
+    <div>
+      <label className="text-xs text-gray-500 mb-1 block">Prix (DA)</label>
+      <input
+        type="number"
+        value={pkg.price}
+        min={1000}
+        step={100}
+        onChange={e => setPkgFn("price", Number(e.target.value))}
+        className={inputCls + " text-sm font-bold"}
+      />
+      {pkg.price < 1000 && <p className="text-xs text-red-500 mt-1">Minimum 1 000 DA</p>}
+    </div>
+  </div>
+)
+
 function StepBar({ step }: { step: number }) {
   const steps = ["Aperçu", "Tarifs", "Description & FAQ", "Galerie"]
   return (
@@ -221,55 +270,6 @@ export default function NewServicePage() {
       </div>
     )
   }
-
-  const inputCls = "w-full px-4 py-2.5 border border-[var(--ink-12)] rounded-xl text-sm text-[var(--ink)] bg-[var(--white)] outline-none focus:border-[#FA8112] focus:ring-2 focus:ring-[#FA8112]/10 transition-all"
-  const labelCls = "block text-sm font-semibold text-[var(--ink)] mb-1.5"
-
-  const PkgColumn = ({
-    pkg, setPkgFn, label, disabled = false,
-  }: { pkg: Package; setPkgFn: (f: keyof Package, v: string | number) => void; label: string; disabled?: boolean }) => (
-    <div className={`flex-1 min-w-0 p-4 border border-[var(--ink-12)] rounded-xl space-y-3 ${disabled ? "opacity-40 pointer-events-none" : ""}`}>
-      <p className="text-sm font-bold text-[var(--ink)]">{label}</p>
-      <div>
-        <label className="text-xs text-gray-500 mb-1 block">Description</label>
-        <textarea
-          value={pkg.description}
-          onChange={e => setPkgFn("description", e.target.value)}
-          maxLength={100}
-          rows={2}
-          placeholder="Ce que comprend ce package..."
-          className={inputCls + " resize-none text-xs"}
-        />
-        <p className="text-[10px] text-gray-400 text-right">{pkg.description.length}/100</p>
-      </div>
-      <div className="grid grid-cols-2 gap-2">
-        <div>
-          <label className="text-xs text-gray-500 mb-1 block">Délai</label>
-          <select value={pkg.delivery_days} onChange={e => setPkgFn("delivery_days", Number(e.target.value))} className={inputCls + " text-xs"}>
-            {DELIVERY_OPTIONS.map(d => <option key={d} value={d}>{d} jour{d > 1 ? "s" : ""}</option>)}
-          </select>
-        </div>
-        <div>
-          <label className="text-xs text-gray-500 mb-1 block">Révisions</label>
-          <select value={pkg.revisions} onChange={e => setPkgFn("revisions", Number(e.target.value))} className={inputCls + " text-xs"}>
-            {REVISION_OPTIONS.map(r => <option key={r} value={r}>{r === -1 ? "Illimité" : r}</option>)}
-          </select>
-        </div>
-      </div>
-      <div>
-        <label className="text-xs text-gray-500 mb-1 block">Prix (DA)</label>
-        <input
-          type="number"
-          value={pkg.price}
-          min={1000}
-          step={100}
-          onChange={e => setPkgFn("price", Number(e.target.value))}
-          className={inputCls + " text-sm font-bold"}
-        />
-        {pkg.price < 1000 && <p className="text-xs text-red-500 mt-1">Minimum 1 000 DA</p>}
-      </div>
-    </div>
-  )
 
   return (
     <>

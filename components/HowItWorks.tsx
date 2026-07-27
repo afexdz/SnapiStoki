@@ -36,7 +36,7 @@ const steps = [
 
 export default function HowItWorks() {
   return (
-    <section id="how-it-works" className="py-[88px] bg-[#FFF8F0] dark:bg-[#2a2a2a]">
+    <section id="how-it-works" className="py-[88px] bg-[#FFF8F0] dark:bg-[var(--white)]">
       <div className="max-w-[1180px] mx-auto px-6">
 
         {/* Section head */}
@@ -59,14 +59,14 @@ export default function HowItWorks() {
           {steps.map((step, i) => (
             <div
               key={step.title}
-              className="relative bg-white dark:bg-[#1a1a1a] rounded-[14px] border border-[rgba(26,26,26,0.08)] dark:border-[#3a3a3a] p-8 hover:shadow-[0_6px_24px_rgba(250,129,18,0.10)] hover:-translate-y-1 transition-all duration-200"
+              className="relative bg-white dark:bg-[var(--color-bg)] rounded-[14px] border border-[rgba(26,26,26,0.08)] dark:border-[var(--ink-12)] p-8 hover:shadow-[0_6px_24px_rgba(250,129,18,0.10)] hover:-translate-y-1 transition-all duration-200"
             >
               {/* Number */}
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-10 h-10 rounded-full bg-[#FFEAD5] dark:bg-[#FA8112]/20 flex items-center justify-center shrink-0">
                   <span className="text-[#FA8112] text-sm font-extrabold font-jakarta">{step.number}</span>
                 </div>
-                <div className="flex-1 h-px bg-[rgba(26,26,26,0.08)] dark:bg-[#3a3a3a]" />
+                <div className="flex-1 h-px bg-[rgba(26,26,26,0.08)] dark:bg-[var(--cream)]" />
                 {i < steps.length - 1 && (
                   <svg className="w-4 h-4 text-[rgba(26,26,26,0.20)] dark:text-gray-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />

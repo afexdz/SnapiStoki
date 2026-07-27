@@ -9,7 +9,7 @@ type AccountType = "buyer" | "seller"
 function PasswordRule({ met, label }: { met: boolean; label: string }) {
   return (
     <li className={`flex items-center gap-2 text-xs transition-colors duration-200 ${met ? "text-emerald-600 dark:text-emerald-400" : "text-gray-400 dark:text-gray-500"}`}>
-      <span className={`w-4 h-4 rounded-full flex items-center justify-center shrink-0 transition-all duration-200 ${met ? "bg-emerald-100 dark:bg-emerald-900/40" : "bg-[#FFF8F0] dark:bg-[#2a2a2a]"}`}>
+      <span className={`w-4 h-4 rounded-full flex items-center justify-center shrink-0 transition-all duration-200 ${met ? "bg-emerald-100 dark:bg-emerald-900/40" : "bg-[#FFF8F0] dark:bg-[var(--white)]"}`}>
         {met ? (
           <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
@@ -77,7 +77,19 @@ export default function RegisterPage() {
     })
 
     if (error) {
-      setError(error.message)
+      const msg = error.message ?? ""
+      if (msg.toLowerCase().includes("already registered") || msg.toLowerCase().includes("user already exists") || msg.toLowerCase().includes("email already")) {
+        setError(`__DUPLICATE__${email}`)
+      } else {
+        setError(msg)
+      }
+      setLoading(false)
+      return
+    }
+
+    // Supabase anti-enumeration: signUp succeeds but returns user with no identities
+    if (data.user && (data.user.identities ?? []).length === 0) {
+      setError(`__DUPLICATE__${email}`)
       setLoading(false)
       return
     }
@@ -92,7 +104,7 @@ export default function RegisterPage() {
   if (success) {
     return (
       <div className="min-h-screen bg-white dark:from-[#1a1a1a] dark:via-[#2a2a2a] dark:to-[#1a1a1a] flex items-center justify-center px-4">
-        <div className="w-full max-w-md bg-white dark:bg-[#2a2a2a] rounded-3xl border border-[#F0E8E0] dark:border-[#3a3a3a] shadow-2xl shadow-[#FA8112]/10 p-10 text-center">
+        <div className="w-full max-w-md bg-white dark:bg-[var(--white)] rounded-3xl border border-[#F0E8E0] dark:border-[var(--ink-12)] shadow-2xl shadow-[#FA8112]/10 p-10 text-center">
           <div className="w-16 h-16 bg-emerald-100 dark:bg-emerald-900/40 rounded-2xl flex items-center justify-center mx-auto mb-5">
             <svg className="w-8 h-8 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
@@ -134,7 +146,7 @@ export default function RegisterPage() {
 
       <div className="flex-1 flex items-center justify-center px-4 py-8">
         <div className="relative w-full max-w-lg">
-          <div className="bg-white dark:bg-[#2a2a2a] rounded-3xl shadow-2xl shadow-[#FA8112]/10 dark:shadow-[#FA8112]/5 border border-[#F0E8E0] dark:border-[#3a3a3a] p-8 sm:p-10">
+          <div className="bg-white dark:bg-[var(--white)] rounded-3xl shadow-2xl shadow-[#FA8112]/10 dark:shadow-[#FA8112]/5 border border-[#F0E8E0] dark:border-[var(--ink-12)] p-8 sm:p-10">
 
             <div className="text-center mb-8">
               <div className="w-14 h-14 bg-gradient-to-br from-[#FA8112] to-[#E8730F] rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-[#FA8112]/30">
@@ -147,12 +159,26 @@ export default function RegisterPage() {
             </div>
 
             {error && typeof error === 'string' && error.length > 0 && (
-              <div className="mb-5 flex items-start gap-3 p-3.5 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl">
-                <svg className="w-4 h-4 text-red-500 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
-              </div>
+              error.startsWith("__DUPLICATE__") ? (
+                <div className="mb-5 flex items-start gap-3 p-3.5 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl">
+                  <svg className="w-4 h-4 text-amber-500 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <p className="text-sm text-amber-700 dark:text-amber-400">
+                    Un compte existe déjà avec cet email.{" "}
+                    <Link href={`/login?email=${encodeURIComponent(error.replace("__DUPLICATE__", ""))}`} className="underline font-semibold hover:text-[#FA8112]">
+                      Se connecter →
+                    </Link>
+                  </p>
+                </div>
+              ) : (
+                <div className="mb-5 flex items-start gap-3 p-3.5 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl">
+                  <svg className="w-4 h-4 text-red-500 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+                </div>
+              )
             )}
 
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -173,7 +199,7 @@ export default function RegisterPage() {
                     onChange={(e) => setFullName(e.target.value)}
                     placeholder="Karim Bensalem"
                     required
-                    className="w-full pl-10 pr-4 py-3 rounded-xl border border-[#F0E8E0] dark:border-[#3a3a3a] bg-[#FFF8F0] dark:bg-[#1a1a1a] text-[#1A1A1A] dark:text-[#FAF3E1] placeholder-gray-400 dark:placeholder-gray-500 outline-none focus:border-[#FA8112] focus:ring-2 focus:ring-[#FA8112]/20 transition-all text-sm"
+                    className="w-full pl-10 pr-4 py-3 rounded-xl border border-[#F0E8E0] dark:border-[var(--ink-12)] bg-[#FFF8F0] dark:bg-[var(--color-bg)] text-[#1A1A1A] dark:text-[#FAF3E1] placeholder-gray-400 dark:placeholder-gray-500 outline-none focus:border-[#FA8112] focus:ring-2 focus:ring-[#FA8112]/20 transition-all text-sm"
                   />
                 </div>
               </div>
@@ -195,7 +221,7 @@ export default function RegisterPage() {
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="vous@exemple.com"
                     required
-                    className="w-full pl-10 pr-4 py-3 rounded-xl border border-[#F0E8E0] dark:border-[#3a3a3a] bg-[#FFF8F0] dark:bg-[#1a1a1a] text-[#1A1A1A] dark:text-[#FAF3E1] placeholder-gray-400 dark:placeholder-gray-500 outline-none focus:border-[#FA8112] focus:ring-2 focus:ring-[#FA8112]/20 transition-all text-sm"
+                    className="w-full pl-10 pr-4 py-3 rounded-xl border border-[#F0E8E0] dark:border-[var(--ink-12)] bg-[#FFF8F0] dark:bg-[var(--color-bg)] text-[#1A1A1A] dark:text-[#FAF3E1] placeholder-gray-400 dark:placeholder-gray-500 outline-none focus:border-[#FA8112] focus:ring-2 focus:ring-[#FA8112]/20 transition-all text-sm"
                   />
                 </div>
               </div>
@@ -218,7 +244,7 @@ export default function RegisterPage() {
                     placeholder="••••••••"
                     required
                     minLength={8}
-                    className="w-full pl-10 pr-12 py-3 rounded-xl border border-[#F0E8E0] dark:border-[#3a3a3a] bg-[#FFF8F0] dark:bg-[#1a1a1a] text-[#1A1A1A] dark:text-[#FAF3E1] placeholder-gray-400 outline-none focus:border-[#FA8112] focus:ring-2 focus:ring-[#FA8112]/20 transition-all text-sm"
+                    className="w-full pl-10 pr-12 py-3 rounded-xl border border-[#F0E8E0] dark:border-[var(--ink-12)] bg-[#FFF8F0] dark:bg-[var(--color-bg)] text-[#1A1A1A] dark:text-[#FAF3E1] placeholder-gray-400 outline-none focus:border-[#FA8112] focus:ring-2 focus:ring-[#FA8112]/20 transition-all text-sm"
                   />
                   <button
                     type="button"
@@ -246,7 +272,7 @@ export default function RegisterPage() {
                         {strengthCount <= 1 ? "Faible" : strengthCount === 2 ? "Moyen" : strengthCount === 3 ? "Bon" : "Excellent"}
                       </span>
                     </div>
-                    <div className="h-1.5 w-full bg-[#FFF8F0] dark:bg-[#3a3a3a] rounded-full overflow-hidden">
+                    <div className="h-1.5 w-full bg-[#FFF8F0] dark:bg-[var(--cream)] rounded-full overflow-hidden">
                       <div
                         className={`h-full rounded-full transition-all duration-300 ${strengthColor}`}
                         style={{ width: `${strengthPercent}%` }}
@@ -279,9 +305,9 @@ export default function RegisterPage() {
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     placeholder="••••••••"
                     required
-                    className={`w-full pl-10 pr-12 py-3 rounded-xl border bg-[#FFF8F0] dark:bg-[#1a1a1a] text-[#1A1A1A] dark:text-[#FAF3E1] placeholder-gray-400 outline-none focus:ring-2 transition-all text-sm ${
+                    className={`w-full pl-10 pr-12 py-3 rounded-xl border bg-[#FFF8F0] dark:bg-[var(--color-bg)] text-[#1A1A1A] dark:text-[#FAF3E1] placeholder-gray-400 outline-none focus:ring-2 transition-all text-sm ${
                       passwordsMatch
-                        ? "border-[#F0E8E0] dark:border-[#3a3a3a] focus:border-[#FA8112] focus:ring-[#FA8112]/20"
+                        ? "border-[#F0E8E0] dark:border-[var(--ink-12)] focus:border-[#FA8112] focus:ring-[#FA8112]/20"
                         : "border-red-400 focus:border-red-400 focus:ring-red-400/20"
                     }`}
                   />
@@ -342,10 +368,10 @@ export default function RegisterPage() {
                       className={`relative flex flex-col items-center text-center p-4 rounded-2xl border-2 transition-all duration-200 ${
                         accountType === opt.type
                           ? "border-[#FA8112] bg-[#FA8112]/10 dark:bg-[#FA8112]/15 shadow-md shadow-[#FA8112]/20"
-                          : "border-[#F0E8E0] dark:border-[#3a3a3a] hover:border-[#FA8112]/40 hover:bg-[#FA8112]/5 dark:hover:bg-[#FA8112]/10"
+                          : "border-[#F0E8E0] dark:border-[var(--ink-12)] hover:border-[#FA8112]/40 hover:bg-[#FA8112]/5 dark:hover:bg-[#FA8112]/10"
                       }`}
                     >
-                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-2.5 transition-colors ${accountType === opt.type ? "bg-[#FA8112]/20 text-[#FA8112]" : "bg-[#FFF8F0] dark:bg-[#2a2a2a] text-gray-500"}`}>
+                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-2.5 transition-colors ${accountType === opt.type ? "bg-[#FA8112]/20 text-[#FA8112]" : "bg-[#FFF8F0] dark:bg-[var(--white)] text-gray-500"}`}>
                         {opt.icon}
                       </div>
                       <span className={`text-sm font-semibold ${accountType === opt.type ? "text-[#FA8112]" : "text-[#1A1A1A] dark:text-[#FAF3E1]"}`}>
@@ -365,6 +391,10 @@ export default function RegisterPage() {
                   ))}
                 </div>
               </div>
+
+              <p className="text-xs text-gray-400 dark:text-gray-500 text-center -mt-1">
+                Vous pourrez activer l'autre rôle à tout moment depuis votre compte.
+              </p>
 
               {/* Terms */}
               <label className="flex items-start gap-3 cursor-pointer group">

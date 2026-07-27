@@ -30,18 +30,18 @@ html {
 html.dark {
   color-scheme: dark;
 
-  --white: #141414;
-  --cream: #1E1E1E;
+  --background: #16181D;
+  --white: #1E222B;
+  --cream: #262B36;
   --orange: #FA8112;
   --orange-dark: #FF9633;
-  --orange-soft: rgba(250, 129, 18, 0.16);
-  --ink: #F5EFE6;
-  --ink-60: rgba(245, 239, 230, 0.62);
-  --ink-12: rgba(245, 239, 230, 0.14);
-  --background: #141414;
-  --foreground: #F5EFE6;
-  --color-bg: #141414;
-  --color-surface: #1E1E1E;
+  --orange-soft: rgba(250, 129, 18, 0.14);
+  --ink: #EDEAE4;
+  --ink-60: rgba(237, 234, 228, 0.66);
+  --ink-12: rgba(237, 234, 228, 0.10);
+  --foreground: #EDEAE4;
+  --color-bg: #16181D;
+  --color-surface: #1E222B;
 }
 
 body {

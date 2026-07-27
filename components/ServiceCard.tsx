@@ -55,7 +55,7 @@ export default function ServiceCard({
   return (
     <Link
       href={`/services/${service.id}`}
-      className="group flex flex-col bg-white dark:bg-[#2a2a2a] rounded-[14px] border border-[rgba(26,26,26,0.10)] dark:border-[#3a3a3a] hover:shadow-[0_8px_30px_rgba(0,0,0,0.10)] hover:-translate-y-1 transition-all duration-200 overflow-hidden"
+      className="group flex flex-col bg-white dark:bg-[var(--white)] rounded-[14px] border border-[rgba(26,26,26,0.10)] dark:border-[var(--ink-12)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.10)] hover:-translate-y-1 transition-all duration-200 overflow-hidden"
     >
       {/* Thumbnail – 150px fixed height */}
       <div className="relative h-[150px] shrink-0 overflow-hidden">
@@ -113,7 +113,7 @@ export default function ServiceCard({
         </h3>
 
         {/* Footer: rating + price */}
-        <div className="pt-3 border-t border-[rgba(26,26,26,0.07)] dark:border-[#3a3a3a] flex items-center justify-between">
+        <div className="pt-3 border-t border-[rgba(26,26,26,0.07)] dark:border-[var(--ink-12)] flex items-center justify-between">
           <div>
             {reviews > 0 ? (
               <div className="flex items-center gap-1">

@@ -23,7 +23,7 @@ function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const next = searchParams.get("next") || "/dashboard";
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(searchParams.get("email") ?? "");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -86,7 +86,7 @@ function LoginForm() {
       {/* Card */}
       <div className="flex-1 flex items-center justify-center px-4 py-8">
         <div className="relative w-full max-w-md">
-          <div className="bg-white dark:bg-[#2a2a2a] rounded-3xl shadow-2xl shadow-[#FA8112]/10 dark:shadow-[#FA8112]/5 border border-[#F0E8E0] dark:border-[#3a3a3a] p-8 sm:p-10">
+          <div className="bg-white dark:bg-[var(--white)] rounded-3xl shadow-2xl shadow-[#FA8112]/10 dark:shadow-[#FA8112]/5 border border-[#F0E8E0] dark:border-[var(--ink-12)] p-8 sm:p-10">
 
             {/* Header */}
             <div className="text-center mb-8">
@@ -113,7 +113,7 @@ function LoginForm() {
             <button
               onClick={handleGoogle}
               disabled={googleLoading}
-              className="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-xl border-2 border-[#F0E8E0] dark:border-[#3a3a3a] bg-white dark:bg-[#2a2a2a] text-gray-700 dark:text-gray-200 text-sm font-semibold hover:border-[#FA8112]/30 dark:hover:border-[#FA8112]/30 hover:bg-[#FFF8F0] dark:hover:bg-[#3a3a3a] transition-all mb-6 disabled:opacity-60 disabled:cursor-not-allowed"
+              className="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-xl border-2 border-[#F0E8E0] dark:border-[var(--ink-12)] bg-white dark:bg-[var(--white)] text-gray-700 dark:text-gray-200 text-sm font-semibold hover:border-[#FA8112]/30 dark:hover:border-[#FA8112]/30 hover:bg-[#FFF8F0] dark:hover:bg-[#3a3a3a] transition-all mb-6 disabled:opacity-60 disabled:cursor-not-allowed"
             >
               {googleLoading ? (
                 <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
@@ -132,9 +132,9 @@ function LoginForm() {
             </button>
 
             <div className="flex items-center gap-3 mb-6">
-              <div className="flex-1 h-px bg-[#FFF8F0] dark:bg-[#3a3a3a]" />
+              <div className="flex-1 h-px bg-[#FFF8F0] dark:bg-[var(--cream)]" />
               <span className="text-xs text-gray-400 dark:text-gray-500 font-medium">ou par email</span>
-              <div className="flex-1 h-px bg-[#FFF8F0] dark:bg-[#3a3a3a]" />
+              <div className="flex-1 h-px bg-[#FFF8F0] dark:bg-[var(--cream)]" />
             </div>
 
             {/* Form */}
@@ -155,7 +155,7 @@ function LoginForm() {
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="vous@exemple.com"
                     required
-                    className="w-full pl-10 pr-4 py-3 rounded-xl border border-[#F0E8E0] dark:border-[#3a3a3a] bg-[#FFF8F0] dark:bg-[#1a1a1a] text-[#1A1A1A] dark:text-[#FAF3E1] placeholder-gray-400 dark:placeholder-gray-500 outline-none focus:border-[#FA8112] focus:ring-2 focus:ring-[#FA8112]/20 transition-all text-sm"
+                    className="w-full pl-10 pr-4 py-3 rounded-xl border border-[#F0E8E0] dark:border-[var(--ink-12)] bg-[#FFF8F0] dark:bg-[var(--color-bg)] text-[#1A1A1A] dark:text-[#FAF3E1] placeholder-gray-400 dark:placeholder-gray-500 outline-none focus:border-[#FA8112] focus:ring-2 focus:ring-[#FA8112]/20 transition-all text-sm"
                   />
                 </div>
               </div>
@@ -181,7 +181,7 @@ function LoginForm() {
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
                     required
-                    className="w-full pl-10 pr-12 py-3 rounded-xl border border-[#F0E8E0] dark:border-[#3a3a3a] bg-[#FFF8F0] dark:bg-[#1a1a1a] text-[#1A1A1A] dark:text-[#FAF3E1] placeholder-gray-400 dark:placeholder-gray-500 outline-none focus:border-[#FA8112] focus:ring-2 focus:ring-[#FA8112]/20 transition-all text-sm"
+                    className="w-full pl-10 pr-12 py-3 rounded-xl border border-[#F0E8E0] dark:border-[var(--ink-12)] bg-[#FFF8F0] dark:bg-[var(--color-bg)] text-[#1A1A1A] dark:text-[#FAF3E1] placeholder-gray-400 dark:placeholder-gray-500 outline-none focus:border-[#FA8112] focus:ring-2 focus:ring-[#FA8112]/20 transition-all text-sm"
                   />
                   <button
                     type="button"

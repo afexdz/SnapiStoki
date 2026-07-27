@@ -59,6 +59,7 @@ export default function ProductDetailPage() {
   const [galleryIdx, setGalleryIdx] = useState(0)
   const [showToast, setShowToast]   = useState(justCreated)
   const [downloading, setDownloading] = useState(false)
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null)
 
   useEffect(() => {
     if (showToast) setTimeout(() => setShowToast(false), 4000)
@@ -68,6 +69,9 @@ export default function ProductDetailPage() {
     async function load() {
       setLoading(true)
       const sb = createClient()
+
+      const { data: { user } } = await sb.auth.getUser()
+      setCurrentUserId(user?.id ?? null)
 
       const { data: prod, error: err } = await sb
         .from("digital_products")
@@ -137,6 +141,7 @@ export default function ProductDetailPage() {
   const sellerName  = product.seller?.full_name ?? "Vendeur"
   const sellerInitials = sellerName.trim().split(/\s+/).map(n => n[0]).join("").toUpperCase().slice(0, 2) || "?"
   const fmt         = product.format ?? product.file_format ?? null
+  const isOwner     = currentUserId !== null && currentUserId === product.seller_id
 
   function StarBar({ rating }: { rating: number }) {
     return (
@@ -322,69 +327,104 @@ export default function ProductDetailPage() {
               )}
             </div>
 
-            {/* ── RIGHT: Buy Box ── */}
+            {/* ── RIGHT: Buy Box / Owner Panel ── */}
             <div className="lg:col-span-1">
-              <div className="hidden lg:block sticky top-6 bg-white rounded-2xl border border-[#EEEEEE] p-5 shadow-sm space-y-4">
-                {/* Price */}
-                <div>
-                  {product.is_free ? (
-                    <p className="text-2xl font-bold text-green-600">Gratuit</p>
-                  ) : (
-                    <>
-                      <p className="text-xs text-gray-400">Prix</p>
-                      <p className="text-2xl font-bold text-[#1A1A1A]">{product.price.toLocaleString("fr-DZ")} <span className="text-base text-[#FA8112]">DA</span></p>
-                    </>
-                  )}
-                </div>
-
-                {/* File info */}
-                <div className="border border-[#F5F5F5] rounded-xl p-3 space-y-2 text-xs text-gray-600">
-                  {fmt && (
-                    <div className="flex items-center justify-between">
-                      <span className="text-gray-400">Format</span>
-                      <span className="font-semibold px-2 py-0.5 bg-[#F5F5F5] rounded">{fmt}</span>
+              <div className="hidden lg:block sticky top-6">
+                {isOwner ? (
+                  <div className="bg-white rounded-2xl border border-[#FA8112]/30 p-5 shadow-sm space-y-4">
+                    <div className="flex items-center gap-2">
+                      <span className="px-2.5 py-1 bg-[#FA8112]/10 text-[#FA8112] text-xs font-bold rounded-lg">Votre produit</span>
                     </div>
-                  )}
-                  {product.file_size && (
-                    <div className="flex items-center justify-between">
-                      <span className="text-gray-400">Taille</span>
-                      <span className="font-medium">{product.file_size}</span>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="p-3 bg-gray-50 rounded-xl text-center">
+                        <p className="text-lg font-black text-[#FA8112]">{sales}</p>
+                        <p className="text-xs text-gray-500">ventes</p>
+                      </div>
+                      <div className="p-3 bg-gray-50 rounded-xl text-center">
+                        <p className="text-lg font-black text-[#1A1A1A]">{avgRating > 0 ? avgRating.toFixed(1) : "—"}</p>
+                        <p className="text-xs text-gray-500">note moy.</p>
+                      </div>
+                      <div className="p-3 bg-gray-50 rounded-xl text-center">
+                        <p className="text-lg font-black text-[#1A1A1A]">{reviewCount}</p>
+                        <p className="text-xs text-gray-500">avis</p>
+                      </div>
+                      <div className="p-3 bg-gray-50 rounded-xl text-center">
+                        <p className="text-lg font-black text-[#1A1A1A]">{product.is_free ? "Gratuit" : `${product.price.toLocaleString("fr-DZ")}`}</p>
+                        <p className="text-xs text-gray-500">{product.is_free ? "" : "DA"}</p>
+                      </div>
                     </div>
-                  )}
-                  {product.license && (
-                    <div className="flex items-center justify-between">
-                      <span className="text-gray-400">Licence</span>
-                      <span className="font-medium">{product.license}</span>
-                    </div>
-                  )}
-                  {sales > 0 && (
-                    <div className="flex items-center justify-between">
-                      <span className="text-gray-400">Téléchargements</span>
-                      <span className="font-medium">{sales.toLocaleString()}</span>
-                    </div>
-                  )}
-                </div>
-
-                {/* CTA */}
-                {product.is_free ? (
-                  <button
-                    onClick={handleDownload}
-                    disabled={downloading}
-                    className="w-full py-3 bg-green-600 text-white font-bold text-sm rounded-xl hover:bg-green-700 transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
-                  >
-                    {downloading ? (
-                      <><div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> Téléchargement...</>
-                    ) : (
-                      <><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" /></svg> Télécharger gratuitement</>
-                    )}
-                  </button>
+                    <Link href={`/dashboard/freelance/products/${product.id}/edit`} className="flex items-center justify-center gap-2 w-full py-3 bg-[#FA8112] text-white font-bold text-sm rounded-xl hover:bg-[#E8730F] transition-colors">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                      Modifier ce produit
+                    </Link>
+                    <Link href="/dashboard/freelance/products" className="flex items-center justify-center gap-2 w-full py-2.5 border border-[#EEEEEE] text-[#1A1A1A] text-sm font-semibold rounded-xl hover:border-[#FA8112]/40 transition-colors">
+                      Gérer mes produits
+                    </Link>
+                  </div>
                 ) : (
-                  <button className="w-full py-3 bg-[#FA8112] text-white font-bold text-sm rounded-xl hover:bg-[#E8730F] transition-colors">
-                    Acheter maintenant
-                  </button>
-                )}
+                  <div className="bg-white rounded-2xl border border-[#EEEEEE] p-5 shadow-sm space-y-4">
+                    {/* Price */}
+                    <div>
+                      {product.is_free ? (
+                        <p className="text-2xl font-bold text-green-600">Gratuit</p>
+                      ) : (
+                        <>
+                          <p className="text-xs text-gray-400">Prix</p>
+                          <p className="text-2xl font-bold text-[#1A1A1A]">{product.price.toLocaleString("fr-DZ")} <span className="text-base text-[#FA8112]">DA</span></p>
+                        </>
+                      )}
+                    </div>
 
-                <p className="text-center text-[10px] text-gray-400">Paiement sécurisé · Téléchargement instantané</p>
+                    {/* File info */}
+                    <div className="border border-[#F5F5F5] rounded-xl p-3 space-y-2 text-xs text-gray-600">
+                      {fmt && (
+                        <div className="flex items-center justify-between">
+                          <span className="text-gray-400">Format</span>
+                          <span className="font-semibold px-2 py-0.5 bg-[#F5F5F5] rounded">{fmt}</span>
+                        </div>
+                      )}
+                      {product.file_size && (
+                        <div className="flex items-center justify-between">
+                          <span className="text-gray-400">Taille</span>
+                          <span className="font-medium">{product.file_size}</span>
+                        </div>
+                      )}
+                      {product.license && (
+                        <div className="flex items-center justify-between">
+                          <span className="text-gray-400">Licence</span>
+                          <span className="font-medium">{product.license}</span>
+                        </div>
+                      )}
+                      {sales > 0 && (
+                        <div className="flex items-center justify-between">
+                          <span className="text-gray-400">Téléchargements</span>
+                          <span className="font-medium">{sales.toLocaleString()}</span>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* CTA */}
+                    {product.is_free ? (
+                      <button
+                        onClick={handleDownload}
+                        disabled={downloading}
+                        className="w-full py-3 bg-green-600 text-white font-bold text-sm rounded-xl hover:bg-green-700 transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
+                      >
+                        {downloading ? (
+                          <><div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> Téléchargement...</>
+                        ) : (
+                          <><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" /></svg> Télécharger gratuitement</>
+                        )}
+                      </button>
+                    ) : (
+                      <button className="w-full py-3 bg-[#FA8112] text-white font-bold text-sm rounded-xl hover:bg-[#E8730F] transition-colors">
+                        Acheter maintenant
+                      </button>
+                    )}
+
+                    <p className="text-center text-[10px] text-gray-400">Paiement sécurisé · Téléchargement instantané</p>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -403,28 +443,39 @@ export default function ProductDetailPage() {
 
       {/* Mobile sticky bottom buy bar */}
       <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-[#EEEEEE] px-4 py-3 flex items-center justify-between gap-4 shadow-[0_-4px_20px_rgba(0,0,0,0.08)]">
-        <div>
-          {product.is_free ? (
-            <p className="text-xl font-bold text-green-600">Gratuit</p>
-          ) : (
-            <>
-              <p className="text-xs text-gray-400">Prix</p>
-              <p className="text-xl font-bold text-[#1A1A1A]">{product.price.toLocaleString("fr-DZ")} <span className="text-sm text-[#FA8112]">DA</span></p>
-            </>
-          )}
-        </div>
-        {product.is_free ? (
-          <button
-            onClick={handleDownload}
-            disabled={downloading}
-            className="flex-1 max-w-[220px] py-3 bg-green-600 text-white font-bold text-sm rounded-xl hover:bg-green-700 transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
-          >
-            {downloading ? "Téléchargement..." : "Télécharger gratuitement"}
-          </button>
+        {isOwner ? (
+          <>
+            <span className="px-2.5 py-1 bg-[#FA8112]/10 text-[#FA8112] text-xs font-bold rounded-lg">Votre produit</span>
+            <Link href={`/dashboard/freelance/products/${product.id}/edit`} className="flex-1 max-w-[220px] py-3 bg-[#FA8112] text-white font-bold text-sm rounded-xl hover:bg-[#E8730F] transition-colors text-center">
+              Modifier
+            </Link>
+          </>
         ) : (
-          <button className="flex-1 max-w-[220px] py-3 bg-[#FA8112] text-white font-bold text-sm rounded-xl hover:bg-[#E8730F] transition-colors">
-            Acheter maintenant
-          </button>
+          <>
+            <div>
+              {product.is_free ? (
+                <p className="text-xl font-bold text-green-600">Gratuit</p>
+              ) : (
+                <>
+                  <p className="text-xs text-gray-400">Prix</p>
+                  <p className="text-xl font-bold text-[#1A1A1A]">{product.price.toLocaleString("fr-DZ")} <span className="text-sm text-[#FA8112]">DA</span></p>
+                </>
+              )}
+            </div>
+            {product.is_free ? (
+              <button
+                onClick={handleDownload}
+                disabled={downloading}
+                className="flex-1 max-w-[220px] py-3 bg-green-600 text-white font-bold text-sm rounded-xl hover:bg-green-700 transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
+              >
+                {downloading ? "Téléchargement..." : "Télécharger gratuitement"}
+              </button>
+            ) : (
+              <button className="flex-1 max-w-[220px] py-3 bg-[#FA8112] text-white font-bold text-sm rounded-xl hover:bg-[#E8730F] transition-colors">
+                Acheter maintenant
+              </button>
+            )}
+          </>
         )}
       </div>
 

@@ -8,18 +8,18 @@ const points = [
     desc: "Recevez vos gains directement, sans compte étranger",
   },
   {
-    title: "Clients dans les 58 wilayas",
-    desc: "Une audience nationale dès le premier jour",
+    title: "Des clients partout dans le monde",
+    desc: "Une audience internationale dès le premier jour",
   },
 ];
 
 export default function GetStarted() {
   return (
-    <section className="py-[88px] bg-white dark:bg-[#1a1a1a]">
+    <section className="py-[88px] bg-white dark:bg-[var(--color-bg)]">
       <div className="max-w-[1180px] mx-auto px-4 sm:px-6">
         <div
           id="vendre"
-          className="relative overflow-hidden rounded-[22px] grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] items-center gap-8 lg:gap-11 bg-[#1A1A1A] dark:bg-[#1E1E1E]"
+          className="relative overflow-hidden rounded-[22px] grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] items-center gap-8 lg:gap-11 bg-[#1A1A1A] dark:bg-[var(--white)]"
           style={{
             padding: "clamp(32px, 5vw, 64px) clamp(20px, 5vw, 56px)",
           }}

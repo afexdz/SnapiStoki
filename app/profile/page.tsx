@@ -2,12 +2,13 @@
 
 import { useState, useEffect, useRef, useCallback } from "react"
 import { useRouter } from "next/navigation"
+import Link from "next/link"
 import ReactCrop, { type Crop, type PixelCrop, centerCrop, makeAspectCrop } from "react-image-crop"
 import "react-image-crop/dist/ReactCrop.css"
 import Navbar from "@/components/Navbar"
 import Footer from "@/components/Footer"
 import { createClient } from "@/lib/supabase/client"
-import { WILAYAS } from "@/lib/wilayas"
+import { formatLocation } from "@/lib/location"
 import type { User } from "@supabase/supabase-js"
 
 /* ─── Types ─────────────────────────────────────────────────── */
@@ -16,6 +17,8 @@ type Profile = {
   full_name: string | null
   bio: string | null
   wilaya: string | null
+  location_city: string | null
+  location_country: string | null
   role: string | null
   avatar_url: string | null
   cover_url: string | null
@@ -231,9 +234,10 @@ export default function ProfilePage() {
   const [uploading, setUploading]   = useState(false)
   const [showEdit, setShowEdit] = useState(false)
   const [saving, setSaving]     = useState(false)
-  const [editForm, setEditForm] = useState({ full_name: "", bio: "", wilaya: "", role: "" })
+  const [editForm, setEditForm] = useState({ full_name: "", bio: "", wilaya: "", location_city: "", location_country: "", role: "" })
 
-  const [detectedWilaya, setDetectedWilaya] = useState("")
+  const [detectedCity, setDetectedCity] = useState("")
+  const [detectedCountry, setDetectedCountry] = useState("")
 
   const [cropSrc, setCropSrc]   = useState<string | null>(null)
   const [cropMode, setCropMode] = useState<CropMode>("avatar")
@@ -299,14 +303,15 @@ export default function ProfilePage() {
           if (match) setPositionPercent(parseInt(match[1]))
         }
 
-        // Auto-detect wilaya from IP if user hasn't set one
-        if (!profileData.wilaya) {
+        // Auto-detect city/country from IP if not set
+        if (!profileData.location_city) {
           try {
             const res = await fetch('/api/geo')
             const geo = await res.json()
-            if (geo.detected && geo.wilaya) {
-              setDetectedWilaya(geo.wilaya)
-              setEditForm(prev => ({ ...prev, wilaya: geo.wilaya }))
+            if (geo.detected) {
+              if (geo.city) setDetectedCity(geo.city)
+              if (geo.country) setDetectedCountry(geo.country)
+              setEditForm(prev => ({ ...prev, location_city: geo.city ?? prev.location_city, location_country: geo.country ?? prev.location_country }))
             }
           } catch (e) {
             console.log('IP detection failed:', e)
@@ -484,10 +489,12 @@ export default function ProfilePage() {
   /* ── Save profile edit ── */
   const openEdit = () => {
     setEditForm({
-      full_name: profile?.full_name || "",
-      bio:       profile?.bio       || "",
-      wilaya:    profile?.wilaya    || detectedWilaya || "",
-      role:      profile?.role      || "",
+      full_name:        profile?.full_name        || "",
+      bio:              profile?.bio              || "",
+      wilaya:           profile?.wilaya           || "",
+      location_city:    profile?.location_city    || detectedCity    || "",
+      location_country: profile?.location_country || detectedCountry || "",
+      role:             profile?.role             || "",
     })
     setShowEdit(true)
   }
@@ -499,20 +506,24 @@ export default function ProfilePage() {
     const { error } = await sb
       .from("profiles")
       .update({
-        full_name:  editForm.full_name,
-        bio:        editForm.bio,
-        wilaya:     editForm.wilaya,
-        role:       editForm.role,
-        updated_at: new Date().toISOString(),
+        full_name:        editForm.full_name,
+        bio:              editForm.bio,
+        wilaya:           editForm.wilaya || null,
+        location_city:    editForm.location_city    || null,
+        location_country: editForm.location_country || null,
+        role:             editForm.role,
+        updated_at:       new Date().toISOString(),
       })
       .eq("id", user.id)
     if (!error) {
       setProfile(prev => prev ? {
         ...prev,
-        full_name: editForm.full_name,
-        bio:       editForm.bio,
-        wilaya:    editForm.wilaya,
-        role:      editForm.role,
+        full_name:        editForm.full_name,
+        bio:              editForm.bio,
+        wilaya:           editForm.wilaya || null,
+        location_city:    editForm.location_city    || null,
+        location_country: editForm.location_country || null,
+        role:             editForm.role,
       } : null)
     }
     setSaving(false)
@@ -524,7 +535,7 @@ export default function ProfilePage() {
     return (
       <>
         <Navbar />
-        <main className="min-h-screen bg-white dark:bg-[#1a1a1a] flex items-center justify-center">
+        <main className="min-h-screen bg-white dark:bg-[var(--color-bg)] flex items-center justify-center">
           <Spinner cls="w-10 h-10" />
         </main>
         <Footer />
@@ -559,7 +570,7 @@ export default function ProfilePage() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen bg-[#FFF8F0] dark:bg-[#1a1a1a] pb-20">
+      <main className="min-h-screen bg-[#FFF8F0] dark:bg-[var(--color-bg)] pb-20">
 
         {/* Hidden file inputs */}
         <input ref={avatarRef} type="file" accept="image/*" className="hidden" onChange={handleAvatarSelect} />
@@ -626,7 +637,7 @@ export default function ProfilePage() {
                   {uploading ? <Spinner cls="w-3.5 h-3.5" /> : <span className="text-base font-bold leading-none tracking-widest">···</span>}
                 </button>
                 {showCoverMenu && (
-                  <div className="absolute right-0 top-10 w-52 bg-white dark:bg-[#2a2a2a] rounded-xl shadow-xl border border-[#F0E8E0] dark:border-[#3a3a3a] overflow-hidden">
+                  <div className="absolute right-0 top-10 w-52 bg-white dark:bg-[var(--white)] rounded-xl shadow-xl border border-[#F0E8E0] dark:border-[var(--ink-12)] overflow-hidden">
                     <button
                       onClick={() => { coverRef.current?.click(); setShowCoverMenu(false) }}
                       className="w-full text-left px-4 py-2.5 text-sm text-[#1A1A1A] dark:text-[#FAF3E1] hover:bg-[#FA8112] hover:text-white transition-colors"
@@ -689,7 +700,7 @@ export default function ProfilePage() {
                   <span className="text-sm font-bold leading-none tracking-widest">···</span>
                 </button>
                 {showAvatarMenu && (
-                  <div className="absolute left-0 bottom-10 w-44 bg-white dark:bg-[#2a2a2a] rounded-xl shadow-xl border border-[#F0E8E0] dark:border-[#3a3a3a] overflow-hidden">
+                  <div className="absolute left-0 bottom-10 w-44 bg-white dark:bg-[var(--white)] rounded-xl shadow-xl border border-[#F0E8E0] dark:border-[var(--ink-12)] overflow-hidden">
                     <button
                       onClick={() => { avatarRef.current?.click(); setShowAvatarMenu(false) }}
                       className="w-full text-left px-4 py-2.5 text-sm text-[#1A1A1A] dark:text-[#FAF3E1] hover:bg-[#FA8112] hover:text-white transition-colors"
@@ -745,13 +756,13 @@ export default function ProfilePage() {
                     <span>({stats.reviews} avis)</span>
                   </div>
                 )}
-                {profile?.wilaya && (
+                {(profile?.location_city || profile?.location_country || profile?.wilaya) && (
                   <div className="flex items-center gap-1">
                     <svg className="w-4 h-4 text-[#FA8112]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                     </svg>
-                    {profile.wilaya}, Algérie
+                    {formatLocation(profile.location_city, profile.location_country) ?? profile.wilaya}
                   </div>
                 )}
                 {profile?.created_at && (
@@ -766,9 +777,6 @@ export default function ProfilePage() {
             </div>
 
             <div className="flex gap-3 shrink-0">
-              <button className="px-5 py-2.5 border-2 border-[#F0E8E0] dark:border-[#3a3a3a] text-[#1A1A1A] dark:text-[#FAF3E1] text-sm font-semibold rounded-xl hover:border-[#FA8112]/40 hover:text-[#FA8112] transition-all">
-                Message
-              </button>
               <button
                 onClick={openEdit}
                 className="px-5 py-2.5 bg-[#FA8112] hover:bg-[#E8730F] text-white text-sm font-semibold rounded-xl transition-all hover:scale-105 shadow-lg shadow-[#FA8112]/30"
@@ -783,7 +791,7 @@ export default function ProfilePage() {
             {statsCards.map((s) => (
               <div
                 key={s.label}
-                className="bg-white dark:bg-[#2a2a2a] rounded-2xl border border-[#F0E8E0] dark:border-[#3a3a3a] p-4 text-center hover:border-[#FA8112]/30 hover:shadow-lg hover:shadow-[#FA8112]/10 transition-all"
+                className="bg-white dark:bg-[var(--white)] rounded-2xl border border-[#F0E8E0] dark:border-[var(--ink-12)] p-4 text-center hover:border-[#FA8112]/30 hover:shadow-lg hover:shadow-[#FA8112]/10 transition-all"
               >
                 <div className="text-2xl mb-1">{s.icon}</div>
                 <div className="text-xl sm:text-2xl font-extrabold text-[#1A1A1A] dark:text-[#FAF3E1]">{s.value}</div>
@@ -793,14 +801,14 @@ export default function ProfilePage() {
           </div>
 
           {/* ── Tabs nav ── */}
-          <div className="flex gap-1 bg-[#F0E8E0] dark:bg-[#2a2a2a] p-1 rounded-2xl mb-8 overflow-x-auto scrollbar-hide">
+          <div className="flex gap-1 bg-[#F0E8E0] dark:bg-[var(--white)] p-1 rounded-2xl mb-8 overflow-x-auto scrollbar-hide">
             {TABS.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex-1 min-w-max flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 ${
                   activeTab === tab.id
-                    ? "bg-white dark:bg-[#1a1a1a] text-[#FA8112] shadow-sm"
+                    ? "bg-white dark:bg-[var(--color-bg)] text-[#FA8112] shadow-sm"
                     : "text-gray-500 dark:text-gray-400 hover:text-[#1A1A1A] dark:hover:text-[#FAF3E1]"
                 }`}
               >
@@ -809,7 +817,7 @@ export default function ProfilePage() {
                   <span className={`w-5 h-5 flex items-center justify-center rounded-full text-xs font-bold ${
                     activeTab === tab.id
                       ? "bg-[#FA8112]/15 text-[#FA8112]"
-                      : "bg-white dark:bg-[#3a3a3a] text-gray-500 dark:text-gray-400"
+                      : "bg-white dark:bg-[var(--cream)] text-gray-500 dark:text-gray-400"
                   }`}>
                     {tab.count}
                   </span>
@@ -827,7 +835,7 @@ export default function ProfilePage() {
               {activeTab === "services" && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                   {services.map((s, i) => (
-                    <div key={s.id} className="group bg-white dark:bg-[#2a2a2a] rounded-2xl border border-[#F0E8E0] dark:border-[#3a3a3a] hover:border-[#FA8112]/30 hover:shadow-xl hover:shadow-[#FA8112]/10 transition-all overflow-hidden">
+                    <div key={s.id} className="group bg-white dark:bg-[var(--white)] rounded-2xl border border-[#F0E8E0] dark:border-[var(--ink-12)] hover:border-[#FA8112]/30 hover:shadow-xl hover:shadow-[#FA8112]/10 transition-all overflow-hidden">
                       <div
                         className={`h-36 relative overflow-hidden ${!(s.gallery?.[0] ?? s.images?.[0]) ? `bg-gradient-to-br ${GRADIENTS[i % GRADIENTS.length]}` : ""}`}
                         style={(s.gallery?.[0] ?? s.images?.[0]) ? { backgroundImage: `url(${s.gallery?.[0] ?? s.images?.[0]})`, backgroundSize: "cover", backgroundPosition: "center" } : undefined}
@@ -848,23 +856,23 @@ export default function ProfilePage() {
                           <span className="text-sm font-bold text-[#1A1A1A] dark:text-[#FAF3E1]">
                             {s.price.toLocaleString("fr-FR")} <span className="text-[#FA8112]">DA</span>
                           </span>
-                          <button className="px-3 py-1.5 text-xs font-medium text-gray-600 dark:text-gray-400 border border-[#F0E8E0] dark:border-[#3a3a3a] rounded-lg hover:border-[#FA8112]/40 hover:text-[#FA8112] transition-all">
+                          <Link href={`/dashboard/freelance/services/${s.id}/edit`} className="px-3 py-1.5 text-xs font-medium text-gray-600 dark:text-gray-400 border border-[#F0E8E0] dark:border-[var(--ink-12)] rounded-lg hover:border-[#FA8112]/40 hover:text-[#FA8112] transition-all">
                             Modifier
-                          </button>
+                          </Link>
                         </div>
                       </div>
                     </div>
                   ))}
 
                   {/* Add service card */}
-                  <button className="flex flex-col items-center justify-center gap-3 bg-white dark:bg-[#2a2a2a] rounded-2xl border-2 border-dashed border-[#F0E8E0] dark:border-[#3a3a3a] hover:border-[#FA8112]/40 hover:bg-[#FA8112]/5 dark:hover:bg-[#FA8112]/10 transition-all p-8 group min-h-[180px]">
-                    <div className="w-12 h-12 rounded-xl bg-[#FFF8F0] dark:bg-[#1a1a1a] group-hover:bg-[#FA8112]/15 flex items-center justify-center transition-colors">
+                  <Link href="/services/new" className="flex flex-col items-center justify-center gap-3 bg-white dark:bg-[var(--white)] rounded-2xl border-2 border-dashed border-[#F0E8E0] dark:border-[var(--ink-12)] hover:border-[#FA8112]/40 hover:bg-[#FA8112]/5 dark:hover:bg-[#FA8112]/10 transition-all p-8 group min-h-[180px]">
+                    <div className="w-12 h-12 rounded-xl bg-[#FFF8F0] dark:bg-[var(--color-bg)] group-hover:bg-[#FA8112]/15 flex items-center justify-center transition-colors">
                       <svg className="w-6 h-6 text-gray-400 group-hover:text-[#FA8112] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                       </svg>
                     </div>
                     <span className="text-sm font-medium text-gray-500 dark:text-gray-400 group-hover:text-[#FA8112] transition-colors">Ajouter un service</span>
-                  </button>
+                  </Link>
                 </div>
               )}
 
@@ -872,7 +880,7 @@ export default function ProfilePage() {
               {activeTab === "produits" && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                   {products.map((p, i) => (
-                    <div key={p.id} className="group bg-white dark:bg-[#2a2a2a] rounded-2xl border border-[#F0E8E0] dark:border-[#3a3a3a] hover:border-[#FA8112]/30 hover:shadow-xl hover:shadow-[#FA8112]/10 transition-all overflow-hidden">
+                    <div key={p.id} className="group bg-white dark:bg-[var(--white)] rounded-2xl border border-[#F0E8E0] dark:border-[var(--ink-12)] hover:border-[#FA8112]/30 hover:shadow-xl hover:shadow-[#FA8112]/10 transition-all overflow-hidden">
                       <div
                         className={`h-36 relative overflow-hidden ${!(p.preview_urls?.[0] ?? p.preview_images?.[0]) ? `bg-gradient-to-br ${GRADIENTS[i % GRADIENTS.length]}` : ""}`}
                         style={(p.preview_urls?.[0] ?? p.preview_images?.[0]) ? { backgroundImage: `url(${p.preview_urls?.[0] ?? p.preview_images?.[0]})`, backgroundSize: "cover", backgroundPosition: "center" } : undefined}
@@ -890,22 +898,22 @@ export default function ProfilePage() {
                           <span className="text-sm font-bold text-[#1A1A1A] dark:text-[#FAF3E1]">
                             {p.price.toLocaleString("fr-FR")} <span className="text-[#FA8112]">DA</span>
                           </span>
-                          <button className="px-3 py-1.5 text-xs font-medium text-gray-600 dark:text-gray-400 border border-[#F0E8E0] dark:border-[#3a3a3a] rounded-lg hover:border-[#FA8112]/40 hover:text-[#FA8112] transition-all">
+                          <Link href={`/dashboard/freelance/products/${p.id}/edit`} className="px-3 py-1.5 text-xs font-medium text-gray-600 dark:text-gray-400 border border-[#F0E8E0] dark:border-[var(--ink-12)] rounded-lg hover:border-[#FA8112]/40 hover:text-[#FA8112] transition-all">
                             Modifier
-                          </button>
+                          </Link>
                         </div>
                       </div>
                     </div>
                   ))}
 
-                  <button className="flex flex-col items-center justify-center gap-3 bg-white dark:bg-[#2a2a2a] rounded-2xl border-2 border-dashed border-[#F0E8E0] dark:border-[#3a3a3a] hover:border-[#FA8112]/40 hover:bg-[#FA8112]/5 dark:hover:bg-[#FA8112]/10 transition-all p-8 group min-h-[180px]">
-                    <div className="w-12 h-12 rounded-xl bg-[#FFF8F0] dark:bg-[#1a1a1a] group-hover:bg-[#FA8112]/15 flex items-center justify-center transition-colors">
+                  <Link href="/products/new" className="flex flex-col items-center justify-center gap-3 bg-white dark:bg-[var(--white)] rounded-2xl border-2 border-dashed border-[#F0E8E0] dark:border-[var(--ink-12)] hover:border-[#FA8112]/40 hover:bg-[#FA8112]/5 dark:hover:bg-[#FA8112]/10 transition-all p-8 group min-h-[180px]">
+                    <div className="w-12 h-12 rounded-xl bg-[#FFF8F0] dark:bg-[var(--color-bg)] group-hover:bg-[#FA8112]/15 flex items-center justify-center transition-colors">
                       <svg className="w-6 h-6 text-gray-400 group-hover:text-[#FA8112] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                       </svg>
                     </div>
                     <span className="text-sm font-medium text-gray-500 dark:text-gray-400 group-hover:text-[#FA8112] transition-colors">Ajouter un produit</span>
-                  </button>
+                  </Link>
                 </div>
               )}
 
@@ -918,7 +926,7 @@ export default function ProfilePage() {
                       <p className="text-gray-500 dark:text-gray-400 text-sm">Aucun avis reçu pour l'instant.</p>
                     </div>
                   ) : reviews.map((r) => (
-                    <div key={r.id} className="bg-white dark:bg-[#2a2a2a] rounded-2xl border border-[#F0E8E0] dark:border-[#3a3a3a] p-6 hover:border-[#FA8112]/30 hover:shadow-lg hover:shadow-[#FA8112]/10 transition-all">
+                    <div key={r.id} className="bg-white dark:bg-[var(--white)] rounded-2xl border border-[#F0E8E0] dark:border-[var(--ink-12)] p-6 hover:border-[#FA8112]/30 hover:shadow-lg hover:shadow-[#FA8112]/10 transition-all">
                       <div className="flex items-start gap-4">
                         <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#FA8112] to-[#E8730F] flex items-center justify-center text-white text-sm font-bold shrink-0 overflow-hidden">
                           {r.reviewer?.avatar_url
@@ -950,7 +958,7 @@ export default function ProfilePage() {
               {/* Settings */}
               {activeTab === "parametres" && (
                 <div className="max-w-2xl space-y-6">
-                  <div className="bg-white dark:bg-[#2a2a2a] rounded-2xl border border-[#F0E8E0] dark:border-[#3a3a3a] p-6">
+                  <div className="bg-white dark:bg-[var(--white)] rounded-2xl border border-[#F0E8E0] dark:border-[var(--ink-12)] p-6">
                     <h3 className="font-bold text-[#1A1A1A] dark:text-[#FAF3E1] mb-5">Informations du compte</h3>
                     <div className="space-y-4">
                       <div>
@@ -961,7 +969,7 @@ export default function ProfilePage() {
                           type="email"
                           readOnly
                           value={user?.email || ""}
-                          className="w-full px-4 py-3 rounded-xl border border-[#F0E8E0] dark:border-[#3a3a3a] bg-[#FFF8F0] dark:bg-[#1a1a1a] text-[#1A1A1A] dark:text-[#FAF3E1] text-sm outline-none opacity-70 cursor-not-allowed"
+                          className="w-full px-4 py-3 rounded-xl border border-[#F0E8E0] dark:border-[var(--ink-12)] bg-[#FFF8F0] dark:bg-[var(--color-bg)] text-[#1A1A1A] dark:text-[#FAF3E1] text-sm outline-none opacity-70 cursor-not-allowed"
                         />
                         <p className="text-xs text-gray-400 mt-1">L'adresse email ne peut pas être modifiée ici.</p>
                       </div>
@@ -973,7 +981,7 @@ export default function ProfilePage() {
                           <input
                             readOnly
                             value={memberSince(profile.created_at)}
-                            className="w-full px-4 py-3 rounded-xl border border-[#F0E8E0] dark:border-[#3a3a3a] bg-[#FFF8F0] dark:bg-[#1a1a1a] text-[#1A1A1A] dark:text-[#FAF3E1] text-sm outline-none opacity-70 cursor-not-allowed"
+                            className="w-full px-4 py-3 rounded-xl border border-[#F0E8E0] dark:border-[var(--ink-12)] bg-[#FFF8F0] dark:bg-[var(--color-bg)] text-[#1A1A1A] dark:text-[#FAF3E1] text-sm outline-none opacity-70 cursor-not-allowed"
                           />
                         </div>
                       )}
@@ -986,7 +994,7 @@ export default function ProfilePage() {
                     </button>
                   </div>
 
-                  <div className="bg-white dark:bg-[#2a2a2a] rounded-2xl border border-red-100 dark:border-red-900/30 p-6">
+                  <div className="bg-white dark:bg-[var(--white)] rounded-2xl border border-red-100 dark:border-red-900/30 p-6">
                     <h3 className="font-bold text-red-600 dark:text-red-400 mb-2">Zone de danger</h3>
                     <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
                       Une fois votre compte supprimé, toutes vos données seront définitivement perdues.
@@ -1008,7 +1016,7 @@ export default function ProfilePage() {
               className="absolute inset-0 bg-black/60 backdrop-blur-sm"
               onClick={() => setShowEdit(false)}
             />
-            <div className="relative w-full max-w-md bg-white dark:bg-[#2a2a2a] rounded-3xl shadow-2xl shadow-[#FA8112]/10 border border-[#F0E8E0] dark:border-[#3a3a3a] p-8 z-10 max-h-[90vh] overflow-y-auto">
+            <div className="relative w-full max-w-md bg-white dark:bg-[var(--white)] rounded-3xl shadow-2xl shadow-[#FA8112]/10 border border-[#F0E8E0] dark:border-[var(--ink-12)] p-8 z-10 max-h-[90vh] overflow-y-auto">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-extrabold text-[#1A1A1A] dark:text-[#FAF3E1]">Modifier le profil</h2>
                 <button
@@ -1030,7 +1038,7 @@ export default function ProfilePage() {
                     value={editForm.full_name}
                     onChange={(e) => setEditForm((f) => ({ ...f, full_name: e.target.value }))}
                     placeholder="Votre nom complet"
-                    className="w-full px-4 py-3 rounded-xl border border-[#F0E8E0] dark:border-[#3a3a3a] bg-[#FFF8F0] dark:bg-[#1a1a1a] text-[#1A1A1A] dark:text-[#FAF3E1] placeholder-gray-400 outline-none focus:border-[#FA8112] focus:ring-2 focus:ring-[#FA8112]/20 transition-all text-sm"
+                    className="w-full px-4 py-3 rounded-xl border border-[#F0E8E0] dark:border-[var(--ink-12)] bg-[#FFF8F0] dark:bg-[var(--color-bg)] text-[#1A1A1A] dark:text-[#FAF3E1] placeholder-gray-400 outline-none focus:border-[#FA8112] focus:ring-2 focus:ring-[#FA8112]/20 transition-all text-sm"
                   />
                 </div>
 
@@ -1044,7 +1052,7 @@ export default function ProfilePage() {
                     value={editForm.role}
                     onChange={(e) => setEditForm((f) => ({ ...f, role: e.target.value }))}
                     placeholder="ex: Designer graphique, Développeur web…"
-                    className="w-full px-4 py-3 rounded-xl border border-[#F0E8E0] dark:border-[#3a3a3a] bg-[#FFF8F0] dark:bg-[#1a1a1a] text-[#1A1A1A] dark:text-[#FAF3E1] placeholder-gray-400 outline-none focus:border-[#FA8112] focus:ring-2 focus:ring-[#FA8112]/20 transition-all text-sm"
+                    className="w-full px-4 py-3 rounded-xl border border-[#F0E8E0] dark:border-[var(--ink-12)] bg-[#FFF8F0] dark:bg-[var(--color-bg)] text-[#1A1A1A] dark:text-[#FAF3E1] placeholder-gray-400 outline-none focus:border-[#FA8112] focus:ring-2 focus:ring-[#FA8112]/20 transition-all text-sm"
                   />
                 </div>
 
@@ -1056,31 +1064,31 @@ export default function ProfilePage() {
                     value={editForm.bio}
                     onChange={(e) => setEditForm((f) => ({ ...f, bio: e.target.value }))}
                     placeholder="Décrivez votre expérience et vos compétences…"
-                    className="w-full px-4 py-3 rounded-xl border border-[#F0E8E0] dark:border-[#3a3a3a] bg-[#FFF8F0] dark:bg-[#1a1a1a] text-[#1A1A1A] dark:text-[#FAF3E1] placeholder-gray-400 outline-none focus:border-[#FA8112] focus:ring-2 focus:ring-[#FA8112]/20 transition-all text-sm resize-none"
+                    className="w-full px-4 py-3 rounded-xl border border-[#F0E8E0] dark:border-[var(--ink-12)] bg-[#FFF8F0] dark:bg-[var(--color-bg)] text-[#1A1A1A] dark:text-[#FAF3E1] placeholder-gray-400 outline-none focus:border-[#FA8112] focus:ring-2 focus:ring-[#FA8112]/20 transition-all text-sm resize-none"
                   />
                 </div>
 
-                {/* Wilaya */}
-                <div>
-                  <label className="block text-sm font-medium text-[#1A1A1A] dark:text-[#FAF3E1] mb-1.5">Wilaya</label>
-                  <div className="relative">
-                    <select
-                      value={editForm.wilaya}
-                      onChange={(e) => setEditForm((f) => ({ ...f, wilaya: e.target.value }))}
-                      className="w-full px-4 py-3 rounded-xl border border-[#F0E8E0] dark:border-[#3a3a3a] bg-[#FFF8F0] dark:bg-[#1a1a1a] text-[#1A1A1A] dark:text-[#FAF3E1] outline-none focus:border-[#FA8112] focus:ring-2 focus:ring-[#FA8112]/20 transition-all text-sm appearance-none cursor-pointer"
-                    >
-                      <option value="">Sélectionnez votre wilaya</option>
-                      {WILAYAS.map((w) => (
-                        <option key={w.id} value={w.name}>
-                          {w.id.toString().padStart(2, "0")} — {w.name}
-                        </option>
-                      ))}
-                    </select>
-                    <div className="absolute inset-y-0 right-3.5 flex items-center pointer-events-none text-gray-400">
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                      </svg>
-                    </div>
+                {/* Location */}
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-sm font-medium text-[#1A1A1A] dark:text-[#FAF3E1] mb-1.5">Ville</label>
+                    <input
+                      type="text"
+                      value={editForm.location_city}
+                      onChange={(e) => setEditForm((f) => ({ ...f, location_city: e.target.value }))}
+                      placeholder="Ex: Alger"
+                      className="w-full px-4 py-3 rounded-xl border border-[#F0E8E0] dark:border-[var(--ink-12)] bg-[#FFF8F0] dark:bg-[var(--color-bg)] text-[#1A1A1A] dark:text-[#FAF3E1] outline-none focus:border-[#FA8112] focus:ring-2 focus:ring-[#FA8112]/20 transition-all text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-[#1A1A1A] dark:text-[#FAF3E1] mb-1.5">Pays</label>
+                    <input
+                      type="text"
+                      value={editForm.location_country}
+                      onChange={(e) => setEditForm((f) => ({ ...f, location_country: e.target.value }))}
+                      placeholder="Ex: Algérie"
+                      className="w-full px-4 py-3 rounded-xl border border-[#F0E8E0] dark:border-[var(--ink-12)] bg-[#FFF8F0] dark:bg-[var(--color-bg)] text-[#1A1A1A] dark:text-[#FAF3E1] outline-none focus:border-[#FA8112] focus:ring-2 focus:ring-[#FA8112]/20 transition-all text-sm"
+                    />
                   </div>
                 </div>
 
@@ -1088,7 +1096,7 @@ export default function ProfilePage() {
                 <div className="flex gap-3 pt-2">
                   <button
                     onClick={() => setShowEdit(false)}
-                    className="flex-1 py-3 border-2 border-[#F0E8E0] dark:border-[#3a3a3a] text-[#1A1A1A] dark:text-[#FAF3E1] text-sm font-semibold rounded-xl hover:border-[#FA8112]/40 transition-colors"
+                    className="flex-1 py-3 border-2 border-[#F0E8E0] dark:border-[var(--ink-12)] text-[#1A1A1A] dark:text-[#FAF3E1] text-sm font-semibold rounded-xl hover:border-[#FA8112]/40 transition-colors"
                   >
                     Annuler
                   </button>

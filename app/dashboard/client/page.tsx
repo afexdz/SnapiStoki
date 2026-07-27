@@ -75,7 +75,7 @@ function StatCard({ label, value, sub, color = "text-[#FA8112]" }: {
   label: string; value: string; sub?: string; color?: string
 }) {
   return (
-    <div className="bg-white dark:bg-[#2a2a2a] rounded-2xl border border-[#F0E8E0] dark:border-[#3a3a3a] p-5 shadow-sm">
+    <div className="bg-white dark:bg-[var(--white)] rounded-2xl border border-[#F0E8E0] dark:border-[var(--ink-12)] p-5 shadow-sm">
       <div className={`text-2xl font-black ${color}`}>{value}</div>
       <div className="text-sm font-medium text-[#1A1A1A] dark:text-[#FAF3E1] mt-0.5">{label}</div>
       {sub && <div className="text-xs text-gray-400 mt-0.5">{sub}</div>}
@@ -136,25 +136,25 @@ export default function ClientDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#FFF8F0] dark:bg-[#1a1a1a] flex items-center justify-center">
+      <div className="min-h-screen bg-[#FFF8F0] dark:bg-[var(--color-bg)] flex items-center justify-center">
         <div className="w-8 h-8 border-3 border-[#FA8112] border-t-transparent rounded-full animate-spin" />
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-[#FFF8F0] dark:bg-[#1a1a1a] flex">
+    <div className="min-h-screen bg-[#FFF8F0] dark:bg-[var(--color-bg)] flex">
       {sidebarOpen && (
         <div className="fixed inset-0 bg-black/40 z-20 lg:hidden" onClick={() => setSidebarOpen(false)} />
       )}
 
       {/* Sidebar */}
       <aside
-        className={`fixed inset-y-0 left-0 z-30 w-64 bg-white dark:bg-[#2a2a2a] border-r border-[#F0E8E0] dark:border-[#3a3a3a] flex flex-col transition-transform duration-300 ${
+        className={`fixed inset-y-0 left-0 z-30 w-64 bg-white dark:bg-[var(--white)] border-r border-[#F0E8E0] dark:border-[var(--ink-12)] flex flex-col transition-transform duration-300 ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         } lg:static lg:translate-x-0 lg:flex`}
       >
-        <div className="px-5 py-5 border-b border-[#F0E8E0] dark:border-[#3a3a3a]">
+        <div className="px-5 py-5 border-b border-[#F0E8E0] dark:border-[var(--ink-12)]">
           <Link href="/" className="flex items-center gap-0.5">
             <span className="text-xl font-extrabold text-[#FA8112]">Pix</span>
             <span className="text-xl font-extrabold text-[#1A1A1A] dark:text-[#FAF3E1]">Raise</span>
@@ -162,7 +162,7 @@ export default function ClientDashboard() {
           <p className="text-xs text-gray-400 mt-0.5">Espace Client</p>
         </div>
 
-        <div className="px-5 py-4 border-b border-[#F0E8E0] dark:border-[#3a3a3a]">
+        <div className="px-5 py-4 border-b border-[#F0E8E0] dark:border-[var(--ink-12)]">
           <Link href="/profile" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
             {profile?.avatar_url ? (
               <img src={profile.avatar_url} alt="avatar" className="w-10 h-10 rounded-xl object-cover" />
@@ -194,7 +194,7 @@ export default function ClientDashboard() {
           ))}
         </nav>
 
-        <div className="px-3 pb-5 pt-3 border-t border-[#F0E8E0] dark:border-[#3a3a3a]">
+        <div className="px-3 pb-5 pt-3 border-t border-[#F0E8E0] dark:border-[var(--ink-12)]">
           <button
             onClick={async () => {
               const sb = createClient()
@@ -213,7 +213,7 @@ export default function ClientDashboard() {
 
       {/* Main */}
       <div className="flex-1 min-w-0 flex flex-col">
-        <header className="lg:hidden sticky top-0 z-10 bg-white dark:bg-[#2a2a2a] border-b border-[#F0E8E0] dark:border-[#3a3a3a] px-4 py-3 flex items-center justify-between">
+        <header className="lg:hidden sticky top-0 z-10 bg-white dark:bg-[var(--white)] border-b border-[#F0E8E0] dark:border-[var(--ink-12)] px-4 py-3 flex items-center justify-between">
           <button
             onClick={() => setSidebarOpen(true)}
             className="p-1.5 rounded-lg hover:bg-[#FFF8F0] dark:hover:bg-[#3a3a3a] transition-colors"
@@ -282,8 +282,8 @@ export default function ClientDashboard() {
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Orders */}
-            <div className="lg:col-span-2 bg-white dark:bg-[#2a2a2a] rounded-2xl border border-[#F0E8E0] dark:border-[#3a3a3a] shadow-sm">
-              <div className="flex items-center justify-between px-5 py-4 border-b border-[#F0E8E0] dark:border-[#3a3a3a]">
+            <div className="lg:col-span-2 bg-white dark:bg-[var(--white)] rounded-2xl border border-[#F0E8E0] dark:border-[var(--ink-12)] shadow-sm">
+              <div className="flex items-center justify-between px-5 py-4 border-b border-[#F0E8E0] dark:border-[var(--ink-12)]">
                 <h2 className="font-bold text-[#1A1A1A] dark:text-[#FAF3E1]">Mes commandes récentes</h2>
                 <Link href="/dashboard/client/orders" className="text-xs text-[#FA8112] hover:text-[#E8730F] font-medium transition-colors">
                   Voir tout →
@@ -291,7 +291,7 @@ export default function ClientDashboard() {
               </div>
               {recentOrders.length === 0 ? (
                 <div className="px-5 py-12 text-center">
-                  <div className="w-14 h-14 mx-auto mb-3 rounded-2xl bg-[#FFF8F0] dark:bg-[#3a3a3a] flex items-center justify-center">
+                  <div className="w-14 h-14 mx-auto mb-3 rounded-2xl bg-[#FFF8F0] dark:bg-[var(--cream)] flex items-center justify-center">
                     <svg className="w-7 h-7 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                     </svg>
@@ -343,7 +343,7 @@ export default function ClientDashboard() {
             {/* Right column */}
             <div className="space-y-4">
               {/* Quick actions */}
-              <div className="bg-white dark:bg-[#2a2a2a] rounded-2xl border border-[#F0E8E0] dark:border-[#3a3a3a] shadow-sm p-5">
+              <div className="bg-white dark:bg-[var(--white)] rounded-2xl border border-[#F0E8E0] dark:border-[var(--ink-12)] shadow-sm p-5">
                 <h2 className="font-bold text-[#1A1A1A] dark:text-[#FAF3E1] mb-4">Actions rapides</h2>
                 <div className="space-y-2">
                   {[
@@ -370,7 +370,7 @@ export default function ClientDashboard() {
                       className={`flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${
                         a.primary
                           ? "bg-[#FA8112] hover:bg-[#E8730F] text-white shadow-md shadow-[#FA8112]/20"
-                          : "bg-[#FFF8F0] dark:bg-[#3a3a3a] hover:bg-[#FA8112]/10 text-[#1A1A1A] dark:text-[#FAF3E1] hover:text-[#FA8112]"
+                          : "bg-[#FFF8F0] dark:bg-[var(--cream)] hover:bg-[#FA8112]/10 text-[#1A1A1A] dark:text-[#FAF3E1] hover:text-[#FA8112]"
                       }`}
                     >
                       <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -383,7 +383,7 @@ export default function ClientDashboard() {
               </div>
 
               {/* Account info */}
-              <div className="bg-white dark:bg-[#2a2a2a] rounded-2xl border border-[#F0E8E0] dark:border-[#3a3a3a] shadow-sm p-5">
+              <div className="bg-white dark:bg-[var(--white)] rounded-2xl border border-[#F0E8E0] dark:border-[var(--ink-12)] shadow-sm p-5">
                 <h2 className="font-bold text-[#1A1A1A] dark:text-[#FAF3E1] mb-4">Mon compte</h2>
                 <div className="space-y-3">
                   {[

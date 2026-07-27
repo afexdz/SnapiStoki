@@ -9,6 +9,9 @@ const PRODUCT_TYPES = ["Illustration", "Template", "Icônes", "Police", "Photo",
 const LICENSES = ["Usage personnel", "Usage commercial", "Licence étendue"]
 const ALLOWED_PRODUCT_EXTS = ["zip", "pdf", "psd", "ai", "svg", "png", "jpg", "jpeg", "sketch", "xd", "fig"]
 
+const inputCls = "w-full px-4 py-2.5 border border-[var(--ink-12)] rounded-xl text-sm text-[var(--ink)] outline-none focus:border-[#FA8112] focus:ring-2 focus:ring-[#FA8112]/10 transition-all"
+const labelCls = "block text-sm font-semibold text-[var(--ink)] mb-1.5"
+
 type PreviewImage = { file: File; preview: string; uploading: boolean; url?: string }
 type ProductFile  = { file: File; uploading: boolean; url?: string }
 
@@ -157,9 +160,6 @@ export default function NewProductPage() {
   if (!authChecked) {
     return <div className="min-h-screen flex items-center justify-center bg-white"><div className="w-8 h-8 border-[3px] border-[#FA8112] border-t-transparent rounded-full animate-spin" /></div>
   }
-
-  const inputCls = "w-full px-4 py-2.5 border border-[var(--ink-12)] rounded-xl text-sm text-[var(--ink)] outline-none focus:border-[#FA8112] focus:ring-2 focus:ring-[#FA8112]/10 transition-all"
-  const labelCls = "block text-sm font-semibold text-[var(--ink)] mb-1.5"
 
   return (
     <>

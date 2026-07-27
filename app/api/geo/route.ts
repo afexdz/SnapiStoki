@@ -1,52 +1,46 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import { findNearestWilaya } from '@/lib/wilayas'
+
+const ISO_TO_FRENCH: Record<string, string> = {
+  DZ: 'Algérie', FR: 'France', MA: 'Maroc', TN: 'Tunisie', US: 'États-Unis',
+  GB: 'Royaume-Uni', DE: 'Allemagne', ES: 'Espagne', IT: 'Italie', CA: 'Canada',
+  BE: 'Belgique', CH: 'Suisse', NL: 'Pays-Bas', PT: 'Portugal', SE: 'Suède',
+  NO: 'Norvège', DK: 'Danemark', FI: 'Finlande', PL: 'Pologne', AU: 'Australie',
+  BR: 'Brésil', MX: 'Mexique', AR: 'Argentine', SA: 'Arabie Saoudite', AE: 'Émirats arabes unis',
+  TR: 'Turquie', EG: 'Égypte', NG: 'Nigeria', SN: 'Sénégal', CI: 'Côte d\'Ivoire',
+  CM: 'Cameroun', ML: 'Mali', LY: 'Libye', MR: 'Mauritanie', LB: 'Liban', JO: 'Jordanie',
+}
 
 export async function GET(request: NextRequest) {
   try {
     // 1. Try Vercel geo headers (available in production)
-    const lat = request.headers.get('x-vercel-ip-latitude')
-    const lng = request.headers.get('x-vercel-ip-longitude')
-    const country = request.headers.get('x-vercel-ip-country') ?? ''
+    const cityHeader = request.headers.get('x-vercel-ip-city')
+    const isoCountry = request.headers.get('x-vercel-ip-country') ?? ''
 
-    if (lat && lng) {
-      const latNum = parseFloat(lat)
-      const lngNum = parseFloat(lng)
-      if (!isNaN(latNum) && !isNaN(lngNum)) {
-        if (country !== 'DZ') {
-          return NextResponse.json({ wilaya: null, detected: false })
-        }
-        const city = request.headers.get('x-vercel-ip-city') ?? undefined
-        const wilaya = findNearestWilaya(latNum, lngNum)
-        return NextResponse.json({ wilaya: wilaya.name, city, detected: true })
-      }
+    if (cityHeader && isoCountry) {
+      const city = decodeURIComponent(cityHeader)
+      const country = ISO_TO_FRENCH[isoCountry] ?? isoCountry
+      return NextResponse.json({ city, country, detected: true })
     }
 
-    // 2. Fallback: server-side ipapi.co call using client IP (no CORS issue)
+    // 2. Fallback: ipapi.co
     const forwarded = request.headers.get('x-forwarded-for')
     const ip = forwarded ? forwarded.split(',')[0].trim() : ''
 
-    // Skip loopback addresses (local dev)
     if (!ip || ip === '127.0.0.1' || ip === '::1' || ip.startsWith('192.168.') || ip.startsWith('10.')) {
-      return NextResponse.json({ wilaya: null, detected: false })
+      return NextResponse.json({ city: null, country: null, detected: false })
     }
 
     const res = await fetch(`https://ipapi.co/${ip}/json/`, {
       signal: AbortSignal.timeout(5000),
     })
-    if (!res.ok) return NextResponse.json({ wilaya: null, detected: false })
+    if (!res.ok) return NextResponse.json({ city: null, country: null, detected: false })
 
     const data = await res.json()
-    if (data.country_code !== 'DZ') {
-      return NextResponse.json({ wilaya: null, detected: false })
-    }
-    if (typeof data.latitude !== 'number' || typeof data.longitude !== 'number') {
-      return NextResponse.json({ wilaya: null, detected: false })
-    }
-
-    const wilaya = findNearestWilaya(data.latitude, data.longitude)
-    return NextResponse.json({ wilaya: wilaya.name, city: data.city ?? null, detected: true })
+    const city = data.city ?? null
+    const country = ISO_TO_FRENCH[data.country_code ?? ''] ?? data.country_name ?? null
+    return NextResponse.json({ city, country, detected: !!(city || country) })
   } catch {
-    return NextResponse.json({ wilaya: null, detected: false })
+    return NextResponse.json({ city: null, country: null, detected: false })
   }
 }

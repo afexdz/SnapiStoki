@@ -30,7 +30,7 @@ type Service = {
   } | null
 }
 
-type ServiceWithWilaya = Service & { wilaya?: string | null }
+type ServiceWithWilaya = Service & { wilaya?: string | null }; // used for distance sort
 
 const SORT_OPTIONS = [
   { id: "relevance",  label: "Pertinence"       },
@@ -58,7 +58,6 @@ export default function FreelancesPage() {
   const [loading, setLoading]         = useState(true)
 
   const [category, setCategory]       = useState("all")
-  const [wilayaFilter, setWilayaFilter] = useState("")
   const [minRating, setMinRating]     = useState(0)
   const [maxPrice, setMaxPrice]       = useState(100000)
   const [sort, setSort]               = useState("relevance")
@@ -103,7 +102,6 @@ export default function FreelancesPage() {
   const filtered = useMemo(() => {
     let list: Service[] = allServices.filter(s => {
       if (category !== "all" && s.category !== category) return false
-      if (wilayaFilter && s.seller?.wilaya !== wilayaFilter) return false
       if ((s.avg_rating ?? s.rating ?? 0) < minRating) return false
       if (s.price > maxPrice) return false
       return true
@@ -121,7 +119,7 @@ export default function FreelancesPage() {
     }
 
     return list
-  }, [allServices, category, wilayaFilter, minRating, maxPrice, sort, userWilaya])
+  }, [allServices, category, minRating, maxPrice, sort, userWilaya])
 
   const FilterPanel = () => (
     <div className="space-y-6">
@@ -146,29 +144,6 @@ export default function FreelancesPage() {
         </div>
       </div>
 
-      <div>
-        <h3 className="text-sm font-semibold text-[#1A1A1A] dark:text-[#FAF3E1] mb-3">Wilaya</h3>
-        <div className="relative">
-          <select
-            value={wilayaFilter}
-            onChange={e => setWilayaFilter(e.target.value)}
-            className="w-full px-3 py-2.5 rounded-xl border border-[#F0E8E0] dark:border-[#3a3a3a] bg-[#FFF8F0] dark:bg-[#1a1a1a] text-[#1A1A1A] dark:text-[#FAF3E1] text-sm outline-none focus:border-[#FA8112] transition-all appearance-none cursor-pointer"
-          >
-            <option value="">Toutes les wilayas</option>
-            {WILAYAS.map(w => <option key={w.id} value={w.name}>{w.id.toString().padStart(2, "0")} — {w.name}</option>)}
-          </select>
-          <div className="absolute inset-y-0 right-2.5 flex items-center pointer-events-none text-gray-400">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-            </svg>
-          </div>
-        </div>
-        {wilayaFilter && (
-          <button onClick={() => setWilayaFilter("")} className="mt-1.5 text-xs text-[#FA8112] hover:text-[#E8730F]">
-            Effacer le filtre wilaya
-          </button>
-        )}
-      </div>
 
       <div>
         <h3 className="text-sm font-semibold text-[#1A1A1A] dark:text-[#FAF3E1] mb-3">Note minimale</h3>
@@ -198,8 +173,8 @@ export default function FreelancesPage() {
       </div>
 
       <button
-        onClick={() => { setCategory("all"); setWilayaFilter(""); setMinRating(0); setMaxPrice(100000); setSort("relevance"); setNearMeEnabled(false) }}
-        className="w-full py-2.5 text-sm text-gray-500 dark:text-gray-400 hover:text-[#FA8112] border border-[#F0E8E0] dark:border-[#3a3a3a] rounded-xl transition-colors"
+        onClick={() => { setCategory("all"); setMinRating(0); setMaxPrice(100000); setSort("relevance"); setNearMeEnabled(false) }}
+        className="w-full py-2.5 text-sm text-gray-500 dark:text-gray-400 hover:text-[#FA8112] border border-[#F0E8E0] dark:border-[var(--ink-12)] rounded-xl transition-colors"
       >
         Réinitialiser les filtres
       </button>
@@ -207,8 +182,8 @@ export default function FreelancesPage() {
   )
 
   return (
-    <div className="min-h-screen bg-white dark:bg-[#1a1a1a]">
-      <div className="bg-[#FFF8F0] dark:bg-[#2a2a2a] border-b border-[#F0E8E0] dark:border-[#3a3a3a]">
+    <div className="min-h-screen bg-white dark:bg-[var(--color-bg)]">
+      <div className="bg-[#FFF8F0] dark:bg-[var(--white)] border-b border-[#F0E8E0] dark:border-[var(--ink-12)]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mb-3">
             <Link href="/" className="hover:text-[#FA8112] transition-colors">Accueil</Link>
@@ -235,7 +210,7 @@ export default function FreelancesPage() {
             </span>
             <button
               onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="lg:hidden flex items-center gap-1.5 px-3 py-2 border border-[#F0E8E0] dark:border-[#3a3a3a] rounded-xl text-sm text-gray-600 dark:text-gray-400 hover:border-[#FA8112]/40 transition-colors"
+              className="lg:hidden flex items-center gap-1.5 px-3 py-2 border border-[#F0E8E0] dark:border-[var(--ink-12)] rounded-xl text-sm text-gray-600 dark:text-gray-400 hover:border-[#FA8112]/40 transition-colors"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
@@ -248,7 +223,7 @@ export default function FreelancesPage() {
             <button
               onClick={handleNearMe}
               disabled={locLoading}
-              className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium transition-all ${nearMeEnabled ? "bg-[#FA8112] text-white shadow-md shadow-[#FA8112]/30" : "border border-[#F0E8E0] dark:border-[#3a3a3a] text-gray-600 dark:text-gray-400 hover:border-[#FA8112]/40 hover:text-[#FA8112]"}`}
+              className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium transition-all ${nearMeEnabled ? "bg-[#FA8112] text-white shadow-md shadow-[#FA8112]/30" : "border border-[#F0E8E0] dark:border-[var(--ink-12)] text-gray-600 dark:text-gray-400 hover:border-[#FA8112]/40 hover:text-[#FA8112]"}`}
             >
               {locLoading ? (
                 <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
@@ -268,7 +243,7 @@ export default function FreelancesPage() {
               <select
                 value={sort}
                 onChange={e => { setSort(e.target.value); if (e.target.value !== "distance") setNearMeEnabled(false) }}
-                className="pl-3 pr-8 py-2 rounded-xl border border-[#F0E8E0] dark:border-[#3a3a3a] bg-white dark:bg-[#1a1a1a] text-[#1A1A1A] dark:text-[#FAF3E1] text-sm outline-none focus:border-[#FA8112] appearance-none cursor-pointer"
+                className="pl-3 pr-8 py-2 rounded-xl border border-[#F0E8E0] dark:border-[var(--ink-12)] bg-white dark:bg-[var(--color-bg)] text-[#1A1A1A] dark:text-[#FAF3E1] text-sm outline-none focus:border-[#FA8112] appearance-none cursor-pointer"
               >
                 {SORT_OPTIONS.map(o => <option key={o.id} value={o.id}>{o.label}</option>)}
               </select>
@@ -284,7 +259,7 @@ export default function FreelancesPage() {
         <div className="flex gap-8">
           {/* Sidebar — desktop */}
           <aside className="hidden lg:block w-64 shrink-0">
-            <div className="sticky top-6 bg-white dark:bg-[#2a2a2a] rounded-2xl border border-[#F0E8E0] dark:border-[#3a3a3a] p-5">
+            <div className="sticky top-6 bg-white dark:bg-[var(--white)] rounded-2xl border border-[#F0E8E0] dark:border-[var(--ink-12)] p-5">
               <h2 className="font-semibold text-[#1A1A1A] dark:text-[#FAF3E1] mb-5">Filtres</h2>
               <FilterPanel />
             </div>
@@ -294,7 +269,7 @@ export default function FreelancesPage() {
           {sidebarOpen && (
             <div className="fixed inset-0 z-50 lg:hidden">
               <div className="absolute inset-0 bg-black/50" onClick={() => setSidebarOpen(false)} />
-              <div className="absolute left-0 top-0 bottom-0 w-72 bg-white dark:bg-[#2a2a2a] overflow-y-auto p-5 shadow-2xl">
+              <div className="absolute left-0 top-0 bottom-0 w-72 bg-white dark:bg-[var(--white)] overflow-y-auto p-5 shadow-2xl">
                 <div className="flex items-center justify-between mb-5">
                   <h2 className="font-semibold text-[#1A1A1A] dark:text-[#FAF3E1]">Filtres</h2>
                   <button onClick={() => setSidebarOpen(false)} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
@@ -313,12 +288,12 @@ export default function FreelancesPage() {
             {loading ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
                 {[1, 2, 3, 4, 5, 6].map(i => (
-                  <div key={i} className="h-72 bg-gray-100 dark:bg-[#2a2a2a] rounded-2xl animate-pulse" />
+                  <div key={i} className="h-72 bg-gray-100 dark:bg-[var(--white)] rounded-2xl animate-pulse" />
                 ))}
               </div>
             ) : filtered.length === 0 ? (
               <div className="text-center py-20">
-                <div className="w-16 h-16 bg-[#FFF8F0] dark:bg-[#2a2a2a] rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <div className="w-16 h-16 bg-[#FFF8F0] dark:bg-[var(--white)] rounded-2xl flex items-center justify-center mx-auto mb-4">
                   <svg className="w-8 h-8 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15.182 16.318A4.486 4.486 0 0012.016 15a4.486 4.486 0 00-3.198 1.318M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>

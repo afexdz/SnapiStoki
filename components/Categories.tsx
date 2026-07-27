@@ -94,7 +94,7 @@ const categories = [
 
 export default function Categories() {
   return (
-    <section className="py-[88px] bg-white dark:bg-[#1a1a1a]">
+    <section className="py-[88px] bg-white dark:bg-[var(--color-bg)]">
       <div className="max-w-[1180px] mx-auto px-6">
 
         {/* Section head */}
@@ -121,7 +121,7 @@ export default function Categories() {
             <Link
               key={cat.label}
               href={`/search?q=${encodeURIComponent(cat.q)}`}
-              className="group block border-[1.5px] border-[rgba(26,26,26,0.12)] dark:border-[#3a3a3a] rounded-[14px] bg-white dark:bg-[#2a2a2a] transition-all duration-[180ms] ease-out hover:border-[#FA8112] hover:shadow-[0_12px_30px_rgba(250,129,18,0.14)] hover:-translate-y-[3px]"
+              className="group block border-[1.5px] border-[rgba(26,26,26,0.12)] dark:border-[var(--ink-12)] rounded-[14px] bg-white dark:bg-[var(--white)] transition-all duration-[180ms] ease-out hover:border-[#FA8112] hover:shadow-[0_12px_30px_rgba(250,129,18,0.14)] hover:-translate-y-[3px]"
               style={{ padding: "26px 22px" }}
             >
               <div

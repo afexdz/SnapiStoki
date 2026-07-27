@@ -124,7 +124,7 @@ export default function Hero({ servicesCount, profilesCount }: HeroProps) {
               className="font-extrabold leading-[1.08] tracking-tight mb-5"
               style={{ fontSize: "clamp(34px, 4.6vw, 56px)", letterSpacing: "-0.03em", color: "var(--ink)" }}
             >
-              Le talent algérien,<br />
+              Le talent créatif,<br />
               à portée de{" "}
               <span className="relative inline-block" style={{ whiteSpace: "nowrap" }}>
                 <span style={{ color: "var(--orange)" }}>clic</span>
@@ -153,7 +153,7 @@ export default function Hero({ servicesCount, profilesCount }: HeroProps) {
 
             <p className="text-[18px] mb-8 max-w-[480px]" style={{ lineHeight: 1.6, color: "var(--ink-60)" }}>
               Trouvez des freelances qualifiés et des produits digitaux prêts à l&apos;emploi.
-              Paiement en dinars, vendeurs vérifiés, 100% algérien.
+              Vendeurs vérifiés, paiement sécurisé, où que vous soyez.
             </p>
 
             {/* Search bar */}
@@ -232,12 +232,6 @@ export default function Hero({ servicesCount, profilesCount }: HeroProps) {
                     <span className="text-[13.5px]" style={{ color: "var(--ink-60)" }}>vendeurs vérifiés</span>
                   </div>
                 )}
-                <div>
-                  <b className="block text-[26px] font-extrabold font-jakarta" style={{ letterSpacing: "-0.02em", color: "var(--ink)" }}>
-                    58
-                  </b>
-                  <span className="text-[13.5px]" style={{ color: "var(--ink-60)" }}>wilayas couvertes</span>
-                </div>
               </div>
             )}
           </div>

@@ -97,7 +97,7 @@ export default function Navbar() {
   const seller = isSeller(userRole);
 
   return (
-    <nav className="sticky top-0 z-50 bg-white/92 dark:bg-[#1a1a1a]/92 backdrop-blur-md border-b border-[rgba(26,26,26,0.12)] dark:border-[rgba(255,255,255,0.08)]">
+    <nav className="sticky top-0 z-50 bg-white/92 dark:bg-[var(--color-bg)]/92 backdrop-blur-md border-b border-[rgba(26,26,26,0.12)] dark:border-[rgba(255,255,255,0.08)]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-[70px]">
 
@@ -168,8 +168,8 @@ export default function Navbar() {
                 </button>
 
                 {dropdownOpen && (
-                  <div className="absolute right-0 top-full mt-2 w-52 bg-white dark:bg-[#2a2a2a] rounded-2xl border border-[rgba(26,26,26,0.12)] dark:border-[#3a3a3a] shadow-xl shadow-gray-200/60 dark:shadow-black/40 py-1.5 z-50">
-                    <div className="px-4 py-2.5 border-b border-[rgba(26,26,26,0.08)] dark:border-[#3a3a3a]">
+                  <div className="absolute right-0 top-full mt-2 w-52 bg-white dark:bg-[var(--white)] rounded-2xl border border-[rgba(26,26,26,0.12)] dark:border-[var(--ink-12)] shadow-xl shadow-gray-200/60 dark:shadow-black/40 py-1.5 z-50">
+                    <div className="px-4 py-2.5 border-b border-[rgba(26,26,26,0.08)] dark:border-[var(--ink-12)]">
                       <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 truncate">{user.email}</p>
                     </div>
                     <Link href="/dashboard" onClick={() => setDropdownOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-[rgba(26,26,26,0.7)] dark:text-gray-300 hover:bg-[var(--orange-soft)] hover:text-[#FA8112] transition-colors">
@@ -180,7 +180,7 @@ export default function Navbar() {
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
                       Mon profil
                     </Link>
-                    <div className="border-t border-[rgba(26,26,26,0.08)] dark:border-[#3a3a3a] mt-1 pt-1">
+                    <div className="border-t border-[rgba(26,26,26,0.08)] dark:border-[var(--ink-12)] mt-1 pt-1">
                       {seller ? (
                         <>
                           <Link href="/services/new" onClick={() => setDropdownOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-[rgba(26,26,26,0.7)] dark:text-gray-300 hover:bg-[var(--orange-soft)] hover:text-[#FA8112] transition-colors">
@@ -199,7 +199,7 @@ export default function Navbar() {
                         </Link>
                       )}
                     </div>
-                    <div className="border-t border-[rgba(26,26,26,0.08)] dark:border-[#3a3a3a] mt-1 pt-1">
+                    <div className="border-t border-[rgba(26,26,26,0.08)] dark:border-[var(--ink-12)] mt-1 pt-1">
                       <button onClick={handleSignOut} className="flex items-center gap-2.5 w-full px-4 py-2.5 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
                         Se déconnecter

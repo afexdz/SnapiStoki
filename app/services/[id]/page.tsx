@@ -67,6 +67,7 @@ export default function ServiceDetailPage() {
   const [galleryIdx, setGalleryIdx] = useState(0)
   const [activeTab, setActiveTab]   = useState<string>("basique")
   const [showToast, setShowToast]   = useState(justCreated)
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null)
 
   useEffect(() => {
     if (showToast) setTimeout(() => setShowToast(false), 4000)
@@ -76,6 +77,9 @@ export default function ServiceDetailPage() {
     async function load() {
       setLoading(true)
       const sb = createClient()
+
+      const { data: { user } } = await sb.auth.getUser()
+      setCurrentUserId(user?.id ?? null)
 
       const { data: svc, error: svcErr } = await sb
         .from("services")
@@ -155,6 +159,7 @@ export default function ServiceDetailPage() {
 
   const avgRating = Number(service.avg_rating ?? 0)
   const reviewCount = service.reviews_count ?? 0
+  const isOwner = currentUserId !== null && currentUserId === service.seller_id
 
   function StarBar({ rating }: { rating: number }) {
     return (
@@ -363,68 +368,103 @@ export default function ServiceDetailPage() {
               )}
             </div>
 
-            {/* ── RIGHT COLUMN: Buy Box ── */}
+            {/* ── RIGHT COLUMN: Buy Box / Owner Panel ── */}
             <div className="lg:col-span-1">
-              <div className="hidden lg:block sticky top-6 bg-white rounded-2xl border border-[#EEEEEE] p-5 shadow-sm">
-                {/* Package tabs */}
-                {hasPkgs && (
-                  <div className="flex rounded-xl overflow-hidden border border-[#EEEEEE] mb-4">
-                    {PKG_ORDER.filter(k => service.packages && k in service.packages).map(k => {
-                      const label = { basique: "Basique", standard: "Standard", premium: "Premium" }[k]
-                      return (
-                        <button
-                          key={k}
-                          onClick={() => setActiveTab(k)}
-                          className={`flex-1 py-2 text-xs font-semibold transition-colors ${activeTab === k ? "bg-[#FA8112] text-white" : "bg-white text-gray-600 hover:bg-gray-50"}`}
-                        >
-                          {label}
-                        </button>
-                      )
-                    })}
-                  </div>
-                )}
-
-                {pkg && (
-                  <>
-                    <p className="text-xs text-gray-600 mb-3 leading-relaxed">{pkg.description}</p>
-                    <div className="flex gap-4 mb-4 text-xs text-gray-600">
-                      <div className="flex items-center gap-1">
-                        <svg className="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        {pkg.delivery_days} jour{pkg.delivery_days > 1 ? "s" : ""}
+              <div className="hidden lg:block sticky top-6">
+                {isOwner ? (
+                  <div className="bg-white rounded-2xl border border-[#FA8112]/30 p-5 shadow-sm space-y-4">
+                    <div className="flex items-center gap-2">
+                      <span className="px-2.5 py-1 bg-[#FA8112]/10 text-[#FA8112] text-xs font-bold rounded-lg">Votre service</span>
+                    </div>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="p-3 bg-gray-50 rounded-xl text-center">
+                        <p className="text-lg font-black text-[#FA8112]">{reviewCount}</p>
+                        <p className="text-xs text-gray-500">avis</p>
                       </div>
-                      <div className="flex items-center gap-1">
-                        <svg className="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                        </svg>
-                        {pkg.revisions === -1 ? "Révisions illimitées" : `${pkg.revisions} révision${pkg.revisions > 1 ? "s" : ""}`}
+                      <div className="p-3 bg-gray-50 rounded-xl text-center">
+                        <p className="text-lg font-black text-[#1A1A1A]">{avgRating > 0 ? avgRating.toFixed(1) : "—"}</p>
+                        <p className="text-xs text-gray-500">note moy.</p>
+                      </div>
+                      <div className="p-3 bg-gray-50 rounded-xl text-center">
+                        <p className="text-lg font-black text-[#1A1A1A]">{service.orders_count ?? 0}</p>
+                        <p className="text-xs text-gray-500">commandes</p>
+                      </div>
+                      <div className="p-3 bg-gray-50 rounded-xl text-center">
+                        <p className="text-lg font-black text-[#1A1A1A]">{coverPrice.toLocaleString("fr-DZ")}</p>
+                        <p className="text-xs text-gray-500">DA dès</p>
                       </div>
                     </div>
-                  </>
-                )}
-
-                <div className="flex items-end justify-between mb-4">
-                  <div>
-                    <p className="text-xs text-gray-400">Prix</p>
-                    <p className="text-2xl font-bold text-[#1A1A1A]">{coverPrice.toLocaleString("fr-DZ")} <span className="text-base text-[#FA8112]">DA</span></p>
+                    <Link href={`/dashboard/freelance/services/${service.id}/edit`} className="flex items-center justify-center gap-2 w-full py-3 bg-[#FA8112] text-white font-bold text-sm rounded-xl hover:bg-[#E8730F] transition-colors">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                      Modifier ce service
+                    </Link>
+                    <Link href="/dashboard/freelance/services" className="flex items-center justify-center gap-2 w-full py-2.5 border border-[#EEEEEE] text-[#1A1A1A] text-sm font-semibold rounded-xl hover:border-[#FA8112]/40 transition-colors">
+                      Gérer mes services
+                    </Link>
                   </div>
-                  {!pkg && (
-                    <div className="flex items-center gap-1 text-xs text-gray-400">
-                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      {service.delivery_days} jour{service.delivery_days > 1 ? "s" : ""}
-                    </div>
-                  )}
-                </div>
+                ) : (
+                  <div className="bg-white rounded-2xl border border-[#EEEEEE] p-5 shadow-sm">
+                    {/* Package tabs */}
+                    {hasPkgs && (
+                      <div className="flex rounded-xl overflow-hidden border border-[#EEEEEE] mb-4">
+                        {PKG_ORDER.filter(k => service.packages && k in service.packages).map(k => {
+                          const label = { basique: "Basique", standard: "Standard", premium: "Premium" }[k]
+                          return (
+                            <button
+                              key={k}
+                              onClick={() => setActiveTab(k)}
+                              className={`flex-1 py-2 text-xs font-semibold transition-colors ${activeTab === k ? "bg-[#FA8112] text-white" : "bg-white text-gray-600 hover:bg-gray-50"}`}
+                            >
+                              {label}
+                            </button>
+                          )
+                        })}
+                      </div>
+                    )}
 
-                <button className="w-full py-3 bg-[#FA8112] text-white font-bold text-sm rounded-xl hover:bg-[#E8730F] transition-colors">
-                  Commander maintenant
-                </button>
-                <button className="w-full py-2.5 mt-2 border border-[#EEEEEE] text-[#1A1A1A] text-sm font-semibold rounded-xl hover:border-[#FA8112]/40 transition-colors">
-                  Contacter le vendeur
-                </button>
+                    {pkg && (
+                      <>
+                        <p className="text-xs text-gray-600 mb-3 leading-relaxed">{pkg.description}</p>
+                        <div className="flex gap-4 mb-4 text-xs text-gray-600">
+                          <div className="flex items-center gap-1">
+                            <svg className="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            {pkg.delivery_days} jour{pkg.delivery_days > 1 ? "s" : ""}
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <svg className="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                            </svg>
+                            {pkg.revisions === -1 ? "Révisions illimitées" : `${pkg.revisions} révision${pkg.revisions > 1 ? "s" : ""}`}
+                          </div>
+                        </div>
+                      </>
+                    )}
+
+                    <div className="flex items-end justify-between mb-4">
+                      <div>
+                        <p className="text-xs text-gray-400">Prix</p>
+                        <p className="text-2xl font-bold text-[#1A1A1A]">{coverPrice.toLocaleString("fr-DZ")} <span className="text-base text-[#FA8112]">DA</span></p>
+                      </div>
+                      {!pkg && (
+                        <div className="flex items-center gap-1 text-xs text-gray-400">
+                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          {service.delivery_days} jour{service.delivery_days > 1 ? "s" : ""}
+                        </div>
+                      )}
+                    </div>
+
+                    <button className="w-full py-3 bg-[#FA8112] text-white font-bold text-sm rounded-xl hover:bg-[#E8730F] transition-colors">
+                      Commander maintenant
+                    </button>
+                    <button className="w-full py-2.5 mt-2 border border-[#EEEEEE] text-[#1A1A1A] text-sm font-semibold rounded-xl hover:border-[#FA8112]/40 transition-colors">
+                      Contacter le vendeur
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -441,15 +481,26 @@ export default function ServiceDetailPage() {
         </div>
       </main>
 
-      {/* Mobile sticky bottom buy bar */}
+      {/* Mobile sticky bottom bar */}
       <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-[#EEEEEE] px-4 py-3 flex items-center justify-between gap-4 shadow-[0_-4px_20px_rgba(0,0,0,0.08)]">
-        <div>
-          <p className="text-xs text-gray-400">À partir de</p>
-          <p className="text-xl font-bold text-[#1A1A1A]">{coverPrice.toLocaleString("fr-DZ")} <span className="text-sm text-[#FA8112]">DA</span></p>
-        </div>
-        <button className="flex-1 max-w-[220px] py-3 bg-[#FA8112] text-white font-bold text-sm rounded-xl hover:bg-[#E8730F] transition-colors">
-          Commander maintenant
-        </button>
+        {isOwner ? (
+          <>
+            <span className="px-2.5 py-1 bg-[#FA8112]/10 text-[#FA8112] text-xs font-bold rounded-lg">Votre service</span>
+            <Link href={`/dashboard/freelance/services/${service.id}/edit`} className="flex-1 max-w-[220px] py-3 bg-[#FA8112] text-white font-bold text-sm rounded-xl hover:bg-[#E8730F] transition-colors text-center">
+              Modifier
+            </Link>
+          </>
+        ) : (
+          <>
+            <div>
+              <p className="text-xs text-gray-400">À partir de</p>
+              <p className="text-xl font-bold text-[#1A1A1A]">{coverPrice.toLocaleString("fr-DZ")} <span className="text-sm text-[#FA8112]">DA</span></p>
+            </div>
+            <button className="flex-1 max-w-[220px] py-3 bg-[#FA8112] text-white font-bold text-sm rounded-xl hover:bg-[#E8730F] transition-colors">
+              Commander maintenant
+            </button>
+          </>
+        )}
       </div>
 
       {/* Success toast */}

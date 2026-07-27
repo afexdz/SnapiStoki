@@ -50,11 +50,11 @@ export default function ClientOrdersPage() {
   const skeleton = Array.from({ length: 4 })
 
   return (
-    <div className="min-h-screen bg-[#FFF8F0] dark:bg-[#1a1a1a]">
+    <div className="min-h-screen bg-[#FFF8F0] dark:bg-[var(--color-bg)]">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         {/* Header */}
         <div className="flex items-center gap-4 mb-8">
-          <Link href="/dashboard/client" className="p-2 rounded-xl border border-[#F0E8E0] dark:border-[#3a3a3a] text-gray-500 hover:text-[#FA8112] hover:border-[#FA8112]/40 transition-all">
+          <Link href="/dashboard/client" className="p-2 rounded-xl border border-[#F0E8E0] dark:border-[var(--ink-12)] text-gray-500 hover:text-[#FA8112] hover:border-[#FA8112]/40 transition-all">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
@@ -82,7 +82,7 @@ export default function ClientOrdersPage() {
               className={`shrink-0 px-4 py-2 rounded-xl text-sm font-medium transition-all ${
                 filter === f.key
                   ? "bg-[#FA8112] text-white shadow-md shadow-[#FA8112]/20"
-                  : "bg-white dark:bg-[#2a2a2a] border border-[#F0E8E0] dark:border-[#3a3a3a] text-gray-600 dark:text-gray-400 hover:border-[#FA8112]/40"
+                  : "bg-white dark:bg-[var(--white)] border border-[#F0E8E0] dark:border-[var(--ink-12)] text-gray-600 dark:text-gray-400 hover:border-[#FA8112]/40"
               }`}
             >
               {f.label}
@@ -94,20 +94,20 @@ export default function ClientOrdersPage() {
         <div className="space-y-3">
           {loading
             ? skeleton.map((_, i) => (
-                <div key={i} className="bg-white dark:bg-[#2a2a2a] rounded-2xl border border-[#F0E8E0] dark:border-[#3a3a3a] p-5 animate-pulse">
+                <div key={i} className="bg-white dark:bg-[var(--white)] rounded-2xl border border-[#F0E8E0] dark:border-[var(--ink-12)] p-5 animate-pulse">
                   <div className="flex items-center justify-between">
                     <div className="space-y-2">
-                      <div className="h-4 w-40 bg-gray-200 dark:bg-[#3a3a3a] rounded" />
+                      <div className="h-4 w-40 bg-gray-200 dark:bg-[var(--cream)] rounded" />
                       <div className="h-3 w-24 bg-gray-100 dark:bg-[#333] rounded" />
                     </div>
-                    <div className="h-6 w-20 bg-gray-200 dark:bg-[#3a3a3a] rounded-full" />
+                    <div className="h-6 w-20 bg-gray-200 dark:bg-[var(--cream)] rounded-full" />
                   </div>
                 </div>
               ))
             : filtered.length === 0
               ? (
-                <div className="bg-white dark:bg-[#2a2a2a] rounded-2xl border border-[#F0E8E0] dark:border-[#3a3a3a] p-16 text-center">
-                  <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-[#FFF8F0] dark:bg-[#3a3a3a] flex items-center justify-center">
+                <div className="bg-white dark:bg-[var(--white)] rounded-2xl border border-[#F0E8E0] dark:border-[var(--ink-12)] p-16 text-center">
+                  <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-[#FFF8F0] dark:bg-[var(--cream)] flex items-center justify-center">
                     <svg className="w-8 h-8 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                     </svg>
@@ -126,7 +126,7 @@ export default function ClientOrdersPage() {
                   return (
                     <div
                       key={order.id}
-                      className="bg-white dark:bg-[#2a2a2a] rounded-2xl border border-[#F0E8E0] dark:border-[#3a3a3a] p-5 hover:border-[#FA8112]/30 hover:shadow-md transition-all"
+                      className="bg-white dark:bg-[var(--white)] rounded-2xl border border-[#F0E8E0] dark:border-[var(--ink-12)] p-5 hover:border-[#FA8112]/30 hover:shadow-md transition-all"
                     >
                       <div className="flex items-center justify-between gap-4">
                         <div className="flex items-center gap-4 min-w-0">
