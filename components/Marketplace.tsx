@@ -79,7 +79,7 @@ export default function Marketplace() {
           </div>
         ) : products.length === 0 ? (
           <div className="text-center py-16 bg-[#FFF8F0] dark:bg-[#2a2a2a] rounded-[14px] border border-[rgba(26,26,26,0.08)]">
-            <div className="w-14 h-14 mx-auto mb-4 rounded-xl bg-[#FFEAD5] flex items-center justify-center">
+            <div className="w-14 h-14 mx-auto mb-4 rounded-xl bg-[var(--orange-soft)] flex items-center justify-center">
               <svg className="w-7 h-7 text-[#FA8112]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
               </svg>

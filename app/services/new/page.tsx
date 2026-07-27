@@ -222,14 +222,14 @@ export default function NewServicePage() {
     )
   }
 
-  const inputCls = "w-full px-4 py-2.5 border border-[#E5E5E5] rounded-xl text-sm text-[#1A1A1A] outline-none focus:border-[#FA8112] focus:ring-2 focus:ring-[#FA8112]/10 transition-all"
-  const labelCls = "block text-sm font-semibold text-[#1A1A1A] mb-1.5"
+  const inputCls = "w-full px-4 py-2.5 border border-[var(--ink-12)] rounded-xl text-sm text-[var(--ink)] bg-[var(--white)] outline-none focus:border-[#FA8112] focus:ring-2 focus:ring-[#FA8112]/10 transition-all"
+  const labelCls = "block text-sm font-semibold text-[var(--ink)] mb-1.5"
 
   const PkgColumn = ({
     pkg, setPkgFn, label, disabled = false,
   }: { pkg: Package; setPkgFn: (f: keyof Package, v: string | number) => void; label: string; disabled?: boolean }) => (
-    <div className={`flex-1 min-w-0 p-4 border border-[#EEEEEE] rounded-xl space-y-3 ${disabled ? "opacity-40 pointer-events-none" : ""}`}>
-      <p className="text-sm font-bold text-[#1A1A1A]">{label}</p>
+    <div className={`flex-1 min-w-0 p-4 border border-[var(--ink-12)] rounded-xl space-y-3 ${disabled ? "opacity-40 pointer-events-none" : ""}`}>
+      <p className="text-sm font-bold text-[var(--ink)]">{label}</p>
       <div>
         <label className="text-xs text-gray-500 mb-1 block">Description</label>
         <textarea
@@ -277,13 +277,13 @@ export default function NewServicePage() {
       <main className="min-h-screen bg-[#FAFAFA] py-8 px-4">
         <div className="max-w-3xl mx-auto">
           <div className="mb-6">
-            <h1 className="text-2xl font-bold text-[#1A1A1A]">Publier un service</h1>
+            <h1 className="text-2xl font-bold text-[var(--ink)]">Publier un service</h1>
             <p className="text-sm text-gray-500 mt-1">Remplissez les informations pour créer votre offre</p>
           </div>
 
           <StepBar step={step} />
 
-          <div className="bg-white rounded-2xl border border-[#EEEEEE] p-6 shadow-sm">
+          <div className="bg-white rounded-2xl border border-[var(--ink-12)] p-6 shadow-sm">
 
             {/* ── STEP 1 ── */}
             {step === 1 && (
@@ -317,7 +317,7 @@ export default function NewServicePage() {
                   <label className={labelCls}>Tags <span className="text-gray-400 font-normal">(max 5)</span></label>
                   <div className="flex flex-wrap gap-2 mb-2">
                     {tags.map(t => (
-                      <span key={t} className="flex items-center gap-1 px-2.5 py-1 bg-[#FFF8F0] text-[#FA8112] text-xs rounded-lg border border-[#FA8112]/20">
+                      <span key={t} className="flex items-center gap-1 px-2.5 py-1 bg-[var(--cream)] text-[#FA8112] text-xs rounded-lg border border-[#FA8112]/20">
                         {t}
                         <button onClick={() => setTags(prev => prev.filter(x => x !== t))} className="ml-1 hover:text-red-500">×</button>
                       </span>
@@ -344,7 +344,7 @@ export default function NewServicePage() {
             {step === 2 && (
               <div className="space-y-5">
                 <div className="flex items-center justify-between">
-                  <h2 className="font-bold text-[#1A1A1A]">Packages tarifaires</h2>
+                  <h2 className="font-bold text-[var(--ink)]">Packages tarifaires</h2>
                   <label className="flex items-center gap-2 cursor-pointer">
                     <span className="text-sm text-gray-600">Package unique</span>
                     <div
@@ -400,7 +400,7 @@ export default function NewServicePage() {
                   </div>
                   <div className="space-y-4">
                     {faqItems.map((item, i) => (
-                      <div key={i} className="p-4 border border-[#EEEEEE] rounded-xl space-y-2">
+                      <div key={i} className="p-4 border border-[var(--ink-12)] rounded-xl space-y-2">
                         <div className="flex items-center justify-between">
                           <p className="text-xs font-semibold text-gray-500">Question {i + 1}</p>
                           <button onClick={() => setFaqItems(prev => prev.filter((_, j) => j !== i))} className="text-xs text-gray-400 hover:text-red-500">Supprimer</button>
@@ -438,7 +438,7 @@ export default function NewServicePage() {
                       ref={dropRef}
                       onDrop={onDrop}
                       onDragOver={e => e.preventDefault()}
-                      className="border-2 border-dashed border-[#EEEEEE] rounded-xl p-8 text-center cursor-pointer hover:border-[#FA8112]/40 transition-colors"
+                      className="border-2 border-dashed border-[var(--ink-12)] rounded-xl p-8 text-center cursor-pointer hover:border-[#FA8112]/40 transition-colors"
                       onClick={() => document.getElementById("img-input")?.click()}
                     >
                       <svg className="w-10 h-10 text-gray-300 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -495,7 +495,7 @@ export default function NewServicePage() {
           {/* Navigation buttons */}
           <div className="flex items-center justify-between mt-6">
             {step > 1 ? (
-              <button onClick={() => setStep(s => s - 1)} className="px-5 py-2.5 border border-[#EEEEEE] text-sm font-semibold text-gray-600 rounded-xl hover:border-gray-300 transition-colors">
+              <button onClick={() => setStep(s => s - 1)} className="px-5 py-2.5 border border-[var(--ink-12)] text-sm font-semibold text-gray-600 rounded-xl hover:border-gray-300 transition-colors">
                 ← Retour
               </button>
             ) : <div />}

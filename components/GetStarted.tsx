@@ -19,9 +19,8 @@ export default function GetStarted() {
       <div className="max-w-[1180px] mx-auto px-4 sm:px-6">
         <div
           id="vendre"
-          className="relative overflow-hidden rounded-[22px] grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] items-center gap-8 lg:gap-11"
+          className="relative overflow-hidden rounded-[22px] grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] items-center gap-8 lg:gap-11 bg-[#1A1A1A] dark:bg-[#1E1E1E]"
           style={{
-            background: "#1A1A1A",
             padding: "clamp(32px, 5vw, 64px) clamp(20px, 5vw, 56px)",
           }}
         >

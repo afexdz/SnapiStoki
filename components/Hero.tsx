@@ -17,7 +17,7 @@ type HeroProps = {
 
 function StarIcon() {
   return (
-    <svg className="w-[13px] h-[13px] fill-[#FA8112] inline-block" viewBox="0 0 24 24">
+    <svg className="w-[13px] h-[13px] fill-[var(--orange)] inline-block" viewBox="0 0 24 24">
       <path d="M12 2l3 6.6 7 .9-5.2 4.8 1.4 7-6.2-3.6L5.8 21l1.4-7L2 9.5l7-.9z" />
     </svg>
   );
@@ -45,26 +45,33 @@ function MiniServiceCard({
   price: string;
 }) {
   return (
-    <div className="w-[270px] bg-white rounded-[14px] border border-[rgba(26,26,26,0.10)] shadow-[0_18px_44px_rgba(26,26,26,0.10)] overflow-hidden">
+    <div
+      className="w-[270px] rounded-[14px] overflow-hidden"
+      style={{
+        background: "var(--color-surface)",
+        border: "1px solid var(--ink-12)",
+        boxShadow: "0 18px 44px rgba(0,0,0,0.12)",
+      }}
+    >
       <div className={`h-[130px] relative ${thumbBg} flex items-center justify-center`}>
         {thumbContent}
       </div>
       <div className="p-3.5">
         <div className="flex items-center gap-1.5 mb-1.5">
-          <div className="w-[22px] h-[22px] rounded-full bg-gradient-to-br from-[#FA8112] to-[#FFB86B] flex items-center justify-center shrink-0">
+          <div className="w-[22px] h-[22px] rounded-full bg-gradient-to-br from-[var(--orange)] to-[#FFB86B] flex items-center justify-center shrink-0">
             <span className="text-white text-[8px] font-bold font-jakarta">{initials}</span>
           </div>
-          <span className="text-[12.5px] text-[rgba(26,26,26,0.62)]">{name} — {location}</span>
+          <span className="text-[12.5px]" style={{ color: "var(--ink-60)" }}>{name} — {location}</span>
         </div>
-        <h3 className="text-[14.5px] font-bold text-[#1A1A1A] leading-snug mb-2.5 line-clamp-1 font-jakarta">{title}</h3>
+        <h3 className="text-[14.5px] font-bold leading-snug mb-2.5 line-clamp-1 font-jakarta" style={{ color: "var(--ink)" }}>{title}</h3>
         <div className="flex items-center justify-between">
-          <span className="text-[12.5px] font-semibold text-[#1A1A1A]">
+          <span className="text-[12.5px] font-semibold" style={{ color: "var(--ink)" }}>
             <StarIcon /> {rating}{" "}
-            <span className="text-[rgba(26,26,26,0.45)] font-normal">({reviewCount})</span>
+            <span className="font-normal" style={{ color: "var(--ink-60)" }}>({reviewCount})</span>
           </span>
-          <span className="text-[15px] font-extrabold text-[#1A1A1A] font-jakarta">
+          <span className="text-[15px] font-extrabold font-jakarta" style={{ color: "var(--ink)" }}>
             {price}{" "}
-            <small className="text-[11px] text-[rgba(26,26,26,0.45)] font-normal">DA</small>
+            <small className="text-[11px] font-normal" style={{ color: "var(--ink-60)" }}>DA</small>
           </span>
         </div>
       </div>
@@ -91,7 +98,7 @@ export default function Hero({ servicesCount, profilesCount }: HeroProps) {
   return (
     <section
       className="relative overflow-hidden"
-      style={{ background: "linear-gradient(180deg, #FFF8F0 0%, #FFFFFF 100%)" }}
+      style={{ background: "linear-gradient(180deg, var(--cream) 0%, var(--white) 100%)" }}
     >
       {/* Decorative radial circle top-right */}
       <div
@@ -103,7 +110,7 @@ export default function Hero({ servicesCount, profilesCount }: HeroProps) {
           width: "420px",
           height: "420px",
           borderRadius: "50%",
-          background: "radial-gradient(circle, #FFEAD5, transparent 68%)",
+          background: "radial-gradient(circle, var(--orange-soft), transparent 68%)",
           pointerEvents: "none",
         }}
       />
@@ -114,13 +121,13 @@ export default function Hero({ servicesCount, profilesCount }: HeroProps) {
           {/* ── Left column ── */}
           <div>
             <h1
-              className="font-extrabold text-[#1A1A1A] leading-[1.08] tracking-tight mb-5"
-              style={{ fontSize: "clamp(34px, 4.6vw, 56px)", letterSpacing: "-0.03em" }}
+              className="font-extrabold leading-[1.08] tracking-tight mb-5"
+              style={{ fontSize: "clamp(34px, 4.6vw, 56px)", letterSpacing: "-0.03em", color: "var(--ink)" }}
             >
               Le talent algérien,<br />
               à portée de{" "}
               <span className="relative inline-block" style={{ whiteSpace: "nowrap" }}>
-                <span className="text-[#FA8112]">clic</span>
+                <span style={{ color: "var(--orange)" }}>clic</span>
                 <svg
                   aria-hidden="true"
                   viewBox="0 0 200 12"
@@ -136,7 +143,7 @@ export default function Hero({ servicesCount, profilesCount }: HeroProps) {
                   <path
                     d="M3 9 Q 50 2 100 7 T 197 5"
                     fill="none"
-                    stroke="#FA8112"
+                    stroke="var(--orange)"
                     strokeWidth="4"
                     strokeLinecap="round"
                   />
@@ -144,7 +151,7 @@ export default function Hero({ servicesCount, profilesCount }: HeroProps) {
               </span>
             </h1>
 
-            <p className="text-[18px] text-[rgba(26,26,26,0.62)] mb-8 max-w-[480px]" style={{ lineHeight: 1.6 }}>
+            <p className="text-[18px] mb-8 max-w-[480px]" style={{ lineHeight: 1.6, color: "var(--ink-60)" }}>
               Trouvez des freelances qualifiés et des produits digitaux prêts à l&apos;emploi.
               Paiement en dinars, vendeurs vérifiés, 100% algérien.
             </p>
@@ -152,10 +159,11 @@ export default function Hero({ servicesCount, profilesCount }: HeroProps) {
             {/* Search bar */}
             <form
               onSubmit={handleSearch}
-              className="flex bg-white rounded-[14px] overflow-hidden mb-[18px]"
+              className="flex rounded-[14px] overflow-hidden mb-[18px]"
               style={{
-                border: "1.5px solid rgba(26,26,26,0.12)",
-                boxShadow: "0 12px 34px rgba(26,26,26,0.08)",
+                background: "var(--white)",
+                border: "1.5px solid var(--ink-12)",
+                boxShadow: "0 12px 34px rgba(0,0,0,0.06)",
                 maxWidth: "560px",
                 padding: "6px",
               }}
@@ -165,12 +173,21 @@ export default function Hero({ servicesCount, profilesCount }: HeroProps) {
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder='Essayez « logo », « site web », « montage vidéo »…'
-                className="flex-1 border-none outline-none bg-transparent px-4 py-3 text-[16px] text-[#1A1A1A] placeholder-[rgba(26,26,26,0.38)] min-w-0"
-                style={{ fontFamily: "var(--font-inter)" }}
+                className="flex-1 border-none outline-none bg-transparent px-4 py-3 text-[16px] min-w-0"
+                style={{
+                  color: "var(--ink)",
+                  fontFamily: "var(--font-inter)",
+                }}
               />
               <button
                 type="submit"
-                className="shrink-0 bg-[#FA8112] hover:bg-[#E06F05] text-white font-bold text-[15px] rounded-[10px] px-5 py-3 transition-all hover:-translate-y-px hover:shadow-[0_8px_20px_rgba(250,129,18,0.28)] font-jakarta"
+                className="shrink-0 text-white font-bold text-[15px] rounded-[10px] px-5 py-3 transition-all hover:-translate-y-px font-jakarta"
+                style={{
+                  background: "var(--orange)",
+                  boxShadow: "0 4px 12px rgba(250,129,18,0.28)",
+                }}
+                onMouseEnter={e => (e.currentTarget.style.background = "var(--orange-dark)")}
+                onMouseLeave={e => (e.currentTarget.style.background = "var(--orange)")}
               >
                 Rechercher
               </button>
@@ -178,13 +195,18 @@ export default function Hero({ servicesCount, profilesCount }: HeroProps) {
 
             {/* Popular chips */}
             <div className="flex items-center gap-2.5 mb-8 overflow-x-auto scrollbar-hide pb-1">
-              <span className="text-[13px] text-[rgba(26,26,26,0.60)] shrink-0">Populaire :</span>
+              <span className="text-[13px] shrink-0" style={{ color: "var(--ink-60)" }}>Populaire :</span>
               {popularChips.map((chip) => (
                 <button
                   key={chip}
                   type="button"
                   onClick={() => searchChip(chip)}
-                  className="shrink-0 text-[13px] font-medium px-3.5 py-1.5 rounded-full bg-white border border-[rgba(26,26,26,0.12)] hover:border-[#FA8112] hover:text-[#FA8112] transition-all"
+                  className="shrink-0 text-[13px] font-medium px-3.5 py-1.5 rounded-full transition-all hover:border-[var(--orange)] hover:text-[var(--orange)]"
+                  style={{
+                    background: "var(--white)",
+                    border: "1px solid var(--ink-12)",
+                    color: "var(--ink)",
+                  }}
                 >
                   {chip}
                 </button>
@@ -196,25 +218,25 @@ export default function Hero({ servicesCount, profilesCount }: HeroProps) {
               <div className="flex flex-wrap gap-9">
                 {servicesCount > 0 && (
                   <div>
-                    <b className="block text-[26px] font-extrabold text-[#1A1A1A] font-jakarta" style={{ letterSpacing: "-0.02em" }}>
+                    <b className="block text-[26px] font-extrabold font-jakarta" style={{ letterSpacing: "-0.02em", color: "var(--ink)" }}>
                       {servicesCount.toLocaleString("fr-DZ")}+
                     </b>
-                    <span className="text-[13.5px] text-[rgba(26,26,26,0.60)]">services actifs</span>
+                    <span className="text-[13.5px]" style={{ color: "var(--ink-60)" }}>services actifs</span>
                   </div>
                 )}
                 {profilesCount > 0 && (
                   <div>
-                    <b className="block text-[26px] font-extrabold text-[#1A1A1A] font-jakarta" style={{ letterSpacing: "-0.02em" }}>
+                    <b className="block text-[26px] font-extrabold font-jakarta" style={{ letterSpacing: "-0.02em", color: "var(--ink)" }}>
                       {profilesCount.toLocaleString("fr-DZ")}+
                     </b>
-                    <span className="text-[13.5px] text-[rgba(26,26,26,0.60)]">vendeurs vérifiés</span>
+                    <span className="text-[13.5px]" style={{ color: "var(--ink-60)" }}>vendeurs vérifiés</span>
                   </div>
                 )}
                 <div>
-                  <b className="block text-[26px] font-extrabold text-[#1A1A1A] font-jakarta" style={{ letterSpacing: "-0.02em" }}>
+                  <b className="block text-[26px] font-extrabold font-jakarta" style={{ letterSpacing: "-0.02em", color: "var(--ink)" }}>
                     58
                   </b>
-                  <span className="text-[13.5px] text-[rgba(26,26,26,0.60)]">wilayas couvertes</span>
+                  <span className="text-[13.5px]" style={{ color: "var(--ink-60)" }}>wilayas couvertes</span>
                 </div>
               </div>
             )}
@@ -235,7 +257,7 @@ export default function Hero({ servicesCount, profilesCount }: HeroProps) {
                     background: "var(--ink)",
                     padding: "10px 16px",
                     borderRadius: "999px",
-                    boxShadow: "0 10px 26px rgba(26,26,26,0.25)",
+                    boxShadow: "0 10px 26px rgba(0,0,0,0.25)",
                   }}
                 >
                   <span
@@ -268,7 +290,7 @@ export default function Hero({ servicesCount, profilesCount }: HeroProps) {
                 />
               </div>
 
-              {/* Card 2 – Dev (middle-right, tilt right) */}
+              {/* Card 2 – Dev (middle-right, tilt right) — intentionally dark thumb */}
               <div
                 className="absolute animate-float-card-2"
                 style={{ top: "150px", right: 0, transform: "rotate(2.5deg)", zIndex: 2 }}

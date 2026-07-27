@@ -23,8 +23,8 @@ export default function Footer() {
     <footer
       className="border-t"
       style={{
-        background: "#FFF8F0",
-        borderColor: "rgba(26,26,26,0.12)",
+        background: "var(--cream)",
+        borderColor: "var(--ink-12)",
         padding: "60px 0 32px",
         marginTop: "20px",
       }}
@@ -36,10 +36,10 @@ export default function Footer() {
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
             <a href="/" className="inline-flex items-center gap-0 mb-3 font-jakarta">
-              <span className="text-2xl font-extrabold text-[#FA8112]">Pix</span>
-              <span className="text-2xl font-extrabold text-[#1A1A1A]">Raise</span>
+              <span className="text-2xl font-extrabold" style={{ color: "var(--orange)" }}>Pix</span>
+              <span className="text-2xl font-extrabold" style={{ color: "var(--ink)" }}>Raise</span>
             </a>
-            <p className="text-[14px] leading-relaxed max-w-[280px] mt-3" style={{ color: "rgba(26,26,26,0.62)" }}>
+            <p className="text-[14px] leading-relaxed max-w-[280px] mt-3" style={{ color: "var(--ink-60)" }}>
               La marketplace algérienne des freelances et des produits digitaux. Fait en Algérie, pour l&apos;Algérie.
             </p>
           </div>
@@ -49,7 +49,7 @@ export default function Footer() {
             <div key={group}>
               <h4
                 className="font-jakarta font-bold text-[14px] uppercase mb-4"
-                style={{ letterSpacing: "0.04em", color: "#1A1A1A" }}
+                style={{ letterSpacing: "0.04em", color: "var(--ink)" }}
               >
                 {group}
               </h4>
@@ -58,7 +58,8 @@ export default function Footer() {
                   <li key={item.label}>
                     <a
                       href={item.href}
-                      className="text-[rgba(26,26,26,0.62)] hover:text-[#FA8112] transition-colors"
+                      className="transition-colors hover:text-[var(--orange)]"
+                      style={{ color: "var(--ink-60)" }}
                     >
                       {item.label}
                     </a>
@@ -73,9 +74,9 @@ export default function Footer() {
         <div
           className="flex justify-between items-center flex-wrap gap-4 pt-6"
           style={{
-            borderTop: "1px solid rgba(26,26,26,0.12)",
+            borderTop: "1px solid var(--ink-12)",
             fontSize: "13.5px",
-            color: "rgba(26,26,26,0.55)",
+            color: "var(--ink-60)",
           }}
         >
           <span>© 2026 PixRaise — Tous droits réservés</span>

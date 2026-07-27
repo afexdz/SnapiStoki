@@ -158,8 +158,8 @@ export default function NewProductPage() {
     return <div className="min-h-screen flex items-center justify-center bg-white"><div className="w-8 h-8 border-[3px] border-[#FA8112] border-t-transparent rounded-full animate-spin" /></div>
   }
 
-  const inputCls = "w-full px-4 py-2.5 border border-[#E5E5E5] rounded-xl text-sm text-[#1A1A1A] outline-none focus:border-[#FA8112] focus:ring-2 focus:ring-[#FA8112]/10 transition-all"
-  const labelCls = "block text-sm font-semibold text-[#1A1A1A] mb-1.5"
+  const inputCls = "w-full px-4 py-2.5 border border-[var(--ink-12)] rounded-xl text-sm text-[var(--ink)] outline-none focus:border-[#FA8112] focus:ring-2 focus:ring-[#FA8112]/10 transition-all"
+  const labelCls = "block text-sm font-semibold text-[var(--ink)] mb-1.5"
 
   return (
     <>
@@ -167,20 +167,20 @@ export default function NewProductPage() {
       <main className="min-h-screen bg-[#FAFAFA] py-8 px-4">
         <div className="max-w-2xl mx-auto">
           <div className="mb-6">
-            <h1 className="text-2xl font-bold text-[#1A1A1A]">Vendre un produit digital</h1>
+            <h1 className="text-2xl font-bold text-[var(--ink)]">Vendre un produit digital</h1>
             <p className="text-sm text-gray-500 mt-1">Mettez en vente vos créations numériques</p>
           </div>
 
           <div className="space-y-6">
             {/* Title */}
-            <div className="bg-white rounded-2xl border border-[#EEEEEE] p-6">
+            <div className="bg-white rounded-2xl border border-[var(--ink-12)] p-6">
               <label className={labelCls}>Titre du produit</label>
               <input type="text" value={title} onChange={e => setTitle(e.target.value.slice(0, 80))} placeholder="Ex: Pack 50 templates logo vectoriels..." className={inputCls} />
               <p className={`text-xs text-right mt-1 ${title.length > 70 ? "text-orange-500" : "text-gray-400"}`}>{title.length}/80</p>
             </div>
 
             {/* Type + License */}
-            <div className="bg-white rounded-2xl border border-[#EEEEEE] p-6 space-y-4">
+            <div className="bg-white rounded-2xl border border-[var(--ink-12)] p-6 space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className={labelCls}>Type de produit</label>
@@ -209,7 +209,7 @@ export default function NewProductPage() {
                 <label className={labelCls}>Tags <span className="text-gray-400 font-normal">(max 8)</span></label>
                 <div className="flex flex-wrap gap-2 mb-2">
                   {tags.map(t => (
-                    <span key={t} className="flex items-center gap-1 px-2.5 py-1 bg-[#FFF8F0] text-[#FA8112] text-xs rounded-lg border border-[#FA8112]/20">
+                    <span key={t} className="flex items-center gap-1 px-2.5 py-1 bg-[var(--cream)] text-[#FA8112] text-xs rounded-lg border border-[#FA8112]/20">
                       {t}
                       <button onClick={() => setTags(p => p.filter(x => x !== t))}>×</button>
                     </span>
@@ -225,7 +225,7 @@ export default function NewProductPage() {
             </div>
 
             {/* Pricing */}
-            <div className="bg-white rounded-2xl border border-[#EEEEEE] p-6">
+            <div className="bg-white rounded-2xl border border-[var(--ink-12)] p-6">
               <label className={labelCls}>Prix</label>
               <div className="flex gap-3 mb-4">
                 {["Payant", "Gratuit"].map(opt => (
@@ -235,7 +235,7 @@ export default function NewProductPage() {
                     className={`flex-1 py-2.5 rounded-xl border text-sm font-semibold transition-all ${
                       (opt === "Gratuit") === isFree
                         ? "bg-[#FA8112] border-[#FA8112] text-white"
-                        : "bg-white border-[#EEEEEE] text-gray-600 hover:border-[#FA8112]/40"
+                        : "bg-white border-[var(--ink-12)] text-gray-600 hover:border-[#FA8112]/40"
                     }`}
                   >
                     {opt}
@@ -259,7 +259,7 @@ export default function NewProductPage() {
             </div>
 
             {/* Product file */}
-            <div className="bg-white rounded-2xl border border-[#EEEEEE] p-6">
+            <div className="bg-white rounded-2xl border border-[var(--ink-12)] p-6">
               <label className={labelCls}>Fichier principal <span className="text-red-500">*</span></label>
               <p className="text-xs text-gray-400 mb-3">ZIP, PDF, PSD, AI, SVG, PNG, JPG... — max 50MB</p>
 
@@ -268,7 +268,7 @@ export default function NewProductPage() {
                   onDrop={onProductFileDrop}
                   onDragOver={e => e.preventDefault()}
                   onClick={() => document.getElementById("product-file-input")?.click()}
-                  className="border-2 border-dashed border-[#EEEEEE] rounded-xl p-8 text-center cursor-pointer hover:border-[#FA8112]/40 transition-colors"
+                  className="border-2 border-dashed border-[var(--ink-12)] rounded-xl p-8 text-center cursor-pointer hover:border-[#FA8112]/40 transition-colors"
                 >
                   <svg className="w-10 h-10 text-gray-300 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
@@ -277,12 +277,12 @@ export default function NewProductPage() {
                   <input id="product-file-input" type="file" className="hidden" onChange={e => e.target.files?.[0] && handleProductFile(e.target.files[0])} />
                 </div>
               ) : (
-                <div className="flex items-center gap-3 p-3 bg-[#FFF8F0] rounded-xl border border-[#FA8112]/20">
+                <div className="flex items-center gap-3 p-3 bg-[var(--cream)] rounded-xl border border-[#FA8112]/20">
                   <svg className="w-8 h-8 text-[#FA8112] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                   </svg>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-[#1A1A1A] truncate">{productFile.file.name}</p>
+                    <p className="text-sm font-medium text-[var(--ink)] truncate">{productFile.file.name}</p>
                     <p className="text-xs text-gray-400">{formatFileSize(productFile.file.size)}</p>
                   </div>
                   <button onClick={() => setProductFile(null)} className="text-xs text-gray-400 hover:text-red-500">Supprimer</button>
@@ -292,7 +292,7 @@ export default function NewProductPage() {
             </div>
 
             {/* Preview images */}
-            <div className="bg-white rounded-2xl border border-[#EEEEEE] p-6">
+            <div className="bg-white rounded-2xl border border-[var(--ink-12)] p-6">
               <label className={labelCls}>Images de présentation <span className="text-red-500">*</span> <span className="text-gray-400 font-normal">(1–4, max 5MB)</span></label>
 
               {previews.length < 4 && (
@@ -300,7 +300,7 @@ export default function NewProductPage() {
                   onDrop={onPreviewDrop}
                   onDragOver={e => e.preventDefault()}
                   onClick={() => document.getElementById("preview-input")?.click()}
-                  className="border-2 border-dashed border-[#EEEEEE] rounded-xl p-6 text-center cursor-pointer hover:border-[#FA8112]/40 transition-colors mb-4"
+                  className="border-2 border-dashed border-[var(--ink-12)] rounded-xl p-6 text-center cursor-pointer hover:border-[#FA8112]/40 transition-colors mb-4"
                 >
                   <p className="text-sm text-gray-500">Glissez des images ici ou <span className="text-[#FA8112] font-semibold">cliquez</span></p>
                   <input id="preview-input" type="file" accept="image/jpeg,image/png,image/webp" multiple className="hidden" onChange={onPreviewInput} />

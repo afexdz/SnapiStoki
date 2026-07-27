@@ -126,7 +126,7 @@ export default function Categories() {
             >
               <div
                 className="flex items-center justify-center rounded-[12px] mb-4"
-                style={{ width: "46px", height: "46px", background: "#FFEAD5", flexShrink: 0 }}
+                style={{ width: "46px", height: "46px", background: "var(--orange-soft)", flexShrink: 0 }}
               >
                 {cat.icon}
               </div>

@@ -75,7 +75,7 @@ export default function TopFreelancers() {
           </div>
         ) : services.length === 0 ? (
           <div className="text-center py-16 bg-white dark:bg-[#1a1a1a] rounded-[14px] border border-[rgba(26,26,26,0.08)]">
-            <div className="w-14 h-14 mx-auto mb-4 rounded-xl bg-[#FFEAD5] flex items-center justify-center">
+            <div className="w-14 h-14 mx-auto mb-4 rounded-xl bg-[var(--orange-soft)] flex items-center justify-center">
               <svg className="w-7 h-7 text-[#FA8112]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4v16m8-8H4" />
               </svg>
