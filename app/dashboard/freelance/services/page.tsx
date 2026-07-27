@@ -9,9 +9,10 @@ type Service = {
   id: string
   title: string
   price: number
-  status: string
+  is_active: boolean
   category: string | null
-  image_url: string | null
+  gallery: string[] | null
+  images: string[] | null
   created_at: string
 }
 
@@ -26,12 +27,13 @@ export default function FreelanceServicesPage() {
     const { data: { user } } = await sb.auth.getUser()
     if (!user) { router.push("/login"); return }
 
-    const { data } = await sb
+    const { data, error } = await sb
       .from("services")
-      .select("id, title, price, status, category, image_url, created_at")
+      .select("id, title, price, is_active, category, gallery, images, created_at")
       .eq("seller_id", user.id)
       .order("created_at", { ascending: false })
 
+    if (error) console.error("[freelance/services] fetch error:", error)
     setServices(data ?? [])
     setLoading(false)
   }
@@ -42,16 +44,17 @@ export default function FreelanceServicesPage() {
     if (!confirm("Supprimer ce service ? Cette action est irréversible.")) return
     setDeleting(id)
     const sb = createClient()
-    await sb.from("services").delete().eq("id", id)
+    const { error } = await sb.from("services").delete().eq("id", id)
+    if (error) { console.error("[freelance/services] delete error:", error); setDeleting(null); return }
     setServices(prev => prev.filter(s => s.id !== id))
     setDeleting(null)
   }
 
-  const handleToggleStatus = async (id: string, current: string) => {
-    const next = current === "active" ? "paused" : "active"
+  const handleToggleStatus = async (id: string, current: boolean) => {
     const sb = createClient()
-    await sb.from("services").update({ status: next }).eq("id", id)
-    setServices(prev => prev.map(s => s.id === id ? { ...s, status: next } : s))
+    const { error } = await sb.from("services").update({ is_active: !current }).eq("id", id)
+    if (error) { console.error("[freelance/services] toggle error:", error); return }
+    setServices(prev => prev.map(s => s.id === id ? { ...s, is_active: !current } : s))
   }
 
   const skeleton = Array.from({ length: 3 })
@@ -119,59 +122,56 @@ export default function FreelanceServicesPage() {
                   </Link>
                 </div>
               )
-              : services.map(service => (
-                  <div key={service.id} className="bg-white dark:bg-[#2a2a2a] rounded-2xl border border-[#F0E8E0] dark:border-[#3a3a3a] p-5 hover:border-[#FA8112]/20 transition-all">
-                    <div className="flex gap-4">
-                      {/* Thumbnail */}
-                      <div className="w-20 h-16 rounded-xl bg-[#FFF8F0] dark:bg-[#3a3a3a] overflow-hidden shrink-0 flex items-center justify-center">
-                        {service.image_url ? (
-                          <img src={service.image_url} alt="" className="w-full h-full object-cover" />
-                        ) : (
-                          <svg className="w-6 h-6 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                          </svg>
-                        )}
-                      </div>
-
-                      {/* Info */}
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-start justify-between gap-3">
-                          <div className="min-w-0">
-                            <h3 className="text-sm font-semibold text-[#1A1A1A] dark:text-[#FAF3E1] truncate">{service.title}</h3>
-                            <div className="flex items-center gap-2 mt-1 flex-wrap">
-                              {service.category && (
-                                <span className="text-xs text-gray-400 dark:text-gray-500">{service.category}</span>
-                              )}
-                              <span
-                                className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${
-                                  service.status === "active"
-                                    ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
-                                    : service.status === "paused"
-                                    ? "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400"
-                                    : "bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400"
-                                }`}
-                              >
-                                <span className={`w-1.5 h-1.5 rounded-full ${
-                                  service.status === "active" ? "bg-green-500" :
-                                  service.status === "paused" ? "bg-amber-500" : "bg-gray-400"
-                                }`} />
-                                {service.status === "active" ? "Actif" : service.status === "paused" ? "En pause" : service.status}
-                              </span>
-                            </div>
-                          </div>
-                          <div className="text-right shrink-0">
-                            <span className="text-sm font-black text-[#FA8112]">{(service.price ?? 0).toLocaleString("fr-DZ")} DA</span>
-                          </div>
+              : services.map(service => {
+                  const thumb = service.gallery?.[0] ?? service.images?.[0]
+                  return (
+                    <div key={service.id} className="bg-white dark:bg-[#2a2a2a] rounded-2xl border border-[#F0E8E0] dark:border-[#3a3a3a] p-5 hover:border-[#FA8112]/20 transition-all">
+                      <div className="flex gap-4">
+                        {/* Thumbnail */}
+                        <div className="w-20 h-16 rounded-xl bg-[#FFF8F0] dark:bg-[#3a3a3a] overflow-hidden shrink-0 flex items-center justify-center">
+                          {thumb ? (
+                            <img src={thumb} alt="" className="w-full h-full object-cover" />
+                          ) : (
+                            <svg className="w-6 h-6 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                          )}
                         </div>
 
-                        {/* Actions */}
-                        <div className="flex items-center gap-2 mt-3 flex-wrap">
-                          <button
-                            onClick={() => handleToggleStatus(service.id, service.status)}
-                            className="px-3 py-1.5 rounded-lg border border-[#F0E8E0] dark:border-[#3a3a3a] text-xs font-medium text-gray-600 dark:text-gray-400 hover:border-[#FA8112]/40 hover:text-[#FA8112] transition-all"
-                          >
-                            {service.status === "active" ? "Mettre en pause" : "Réactiver"}
-                          </button>
+                        {/* Info */}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-start justify-between gap-3">
+                            <div className="min-w-0">
+                              <h3 className="text-sm font-semibold text-[#1A1A1A] dark:text-[#FAF3E1] truncate">{service.title}</h3>
+                              <div className="flex items-center gap-2 mt-1 flex-wrap">
+                                {service.category && (
+                                  <span className="text-xs text-gray-400 dark:text-gray-500">{service.category}</span>
+                                )}
+                                <span
+                                  className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${
+                                    service.is_active
+                                      ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
+                                      : "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400"
+                                  }`}
+                                >
+                                  <span className={`w-1.5 h-1.5 rounded-full ${service.is_active ? "bg-green-500" : "bg-amber-500"}`} />
+                                  {service.is_active ? "Actif" : "En pause"}
+                                </span>
+                              </div>
+                            </div>
+                            <div className="text-right shrink-0">
+                              <span className="text-sm font-black text-[#FA8112]">{(service.price ?? 0).toLocaleString("fr-DZ")} DA</span>
+                            </div>
+                          </div>
+
+                          {/* Actions */}
+                          <div className="flex items-center gap-2 mt-3 flex-wrap">
+                            <button
+                              onClick={() => handleToggleStatus(service.id, service.is_active)}
+                              className="px-3 py-1.5 rounded-lg border border-[#F0E8E0] dark:border-[#3a3a3a] text-xs font-medium text-gray-600 dark:text-gray-400 hover:border-[#FA8112]/40 hover:text-[#FA8112] transition-all"
+                            >
+                              {service.is_active ? "Mettre en pause" : "Réactiver"}
+                            </button>
                           <Link
                             href={`/services/${service.id}`}
                             className="px-3 py-1.5 rounded-lg border border-[#F0E8E0] dark:border-[#3a3a3a] text-xs font-medium text-gray-600 dark:text-gray-400 hover:border-[#FA8112]/40 hover:text-[#FA8112] transition-all"
@@ -189,7 +189,8 @@ export default function FreelanceServicesPage() {
                       </div>
                     </div>
                   </div>
-                ))
+                  )
+                })
           }
         </div>
       </div>

@@ -26,16 +26,17 @@ type Profile = {
 type Stats = { orders: number; sales: number; reviews: number; revenue: number }
 type Service = {
   id: string; title: string; price: number
-  rating: number | null; review_count: number | null
-  category: string | null; cover_url: string | null
+  avg_rating: number | null; reviews_count: number | null
+  category: string | null; gallery: string[] | null; images: string[] | null
 }
 type Product = {
   id: string; title: string; price: number
-  sales_count: number | null; format: string | null; cover_url: string | null
+  sales_count: number | null; format: string | null; file_format: string | null
+  preview_urls: string[] | null; preview_images: string[] | null
 }
 type Review = {
   id: string; rating: number; comment: string | null; created_at: string
-  reviewer_name: string | null; reviewer_initials: string | null; reviewer_avatar: string | null
+  reviewer: { full_name: string | null; avatar_url: string | null } | null
 }
 type Tab = "services" | "produits" | "avis" | "parametres"
 
@@ -325,20 +326,23 @@ export default function ProfilePage() {
     ;(async () => {
       setTabLoading(true)
       if (activeTab === "services") {
-        const { data } = await supabase.from("services")
-          .select("id, title, price, rating, review_count, category, cover_url")
+        const { data, error } = await supabase.from("services")
+          .select("id, title, price, avg_rating, reviews_count, category, gallery, images")
           .eq("seller_id", user.id).order("created_at", { ascending: false })
+        if (error) console.error("[profile] services fetch error:", error)
         setServices(data ?? [])
       } else if (activeTab === "produits") {
-        const { data } = await supabase.from("digital_products")
-          .select("id, title, price, sales_count, format, cover_url")
+        const { data, error } = await supabase.from("digital_products")
+          .select("id, title, price, sales_count, format, file_format, preview_urls, preview_images")
           .eq("seller_id", user.id).order("created_at", { ascending: false })
+        if (error) console.error("[profile] produits fetch error:", error)
         setProducts(data ?? [])
       } else if (activeTab === "avis") {
-        const { data } = await supabase.from("reviews")
-          .select("id, rating, comment, created_at, reviewer_name, reviewer_initials, reviewer_avatar")
-          .eq("seller_id", user.id).order("created_at", { ascending: false })
-        setReviews(data ?? [])
+        const { data, error } = await supabase.from("reviews")
+          .select("id, rating, comment, created_at, reviewer:profiles!reviews_reviewer_id_fkey(full_name, avatar_url)")
+          .eq("reviewed_id", user.id).order("created_at", { ascending: false })
+        if (error) console.error("[profile] avis fetch error:", error)
+        setReviews((data ?? []) as unknown as Review[])
       }
       setTabLoading(false)
     })()
@@ -825,8 +829,8 @@ export default function ProfilePage() {
                   {services.map((s, i) => (
                     <div key={s.id} className="group bg-white dark:bg-[#2a2a2a] rounded-2xl border border-[#F0E8E0] dark:border-[#3a3a3a] hover:border-[#FA8112]/30 hover:shadow-xl hover:shadow-[#FA8112]/10 transition-all overflow-hidden">
                       <div
-                        className={`h-36 relative overflow-hidden ${!s.cover_url ? `bg-gradient-to-br ${GRADIENTS[i % GRADIENTS.length]}` : ""}`}
-                        style={s.cover_url ? { backgroundImage: `url(${s.cover_url})`, backgroundSize: "cover", backgroundPosition: "center" } : undefined}
+                        className={`h-36 relative overflow-hidden ${!(s.gallery?.[0] ?? s.images?.[0]) ? `bg-gradient-to-br ${GRADIENTS[i % GRADIENTS.length]}` : ""}`}
+                        style={(s.gallery?.[0] ?? s.images?.[0]) ? { backgroundImage: `url(${s.gallery?.[0] ?? s.images?.[0]})`, backgroundSize: "cover", backgroundPosition: "center" } : undefined}
                       >
                         {s.category && (
                           <span className="absolute top-3 left-3 px-2 py-0.5 bg-black/30 backdrop-blur-sm text-white text-xs rounded-lg">{s.category}</span>
@@ -834,10 +838,10 @@ export default function ProfilePage() {
                       </div>
                       <div className="p-4">
                         <h3 className="text-sm font-semibold text-[#1A1A1A] dark:text-[#FAF3E1] mb-2 group-hover:text-[#FA8112] transition-colors line-clamp-2">{s.title}</h3>
-                        {s.rating != null && (
+                        {s.avg_rating != null && (
                           <div className="flex items-center gap-1.5 mb-3">
-                            <Stars rating={s.rating} />
-                            <span className="text-xs text-gray-500 dark:text-gray-400">{s.rating} ({s.review_count ?? 0})</span>
+                            <Stars rating={s.avg_rating} />
+                            <span className="text-xs text-gray-500 dark:text-gray-400">{s.avg_rating} ({s.reviews_count ?? 0})</span>
                           </div>
                         )}
                         <div className="flex items-center justify-between">
@@ -870,11 +874,11 @@ export default function ProfilePage() {
                   {products.map((p, i) => (
                     <div key={p.id} className="group bg-white dark:bg-[#2a2a2a] rounded-2xl border border-[#F0E8E0] dark:border-[#3a3a3a] hover:border-[#FA8112]/30 hover:shadow-xl hover:shadow-[#FA8112]/10 transition-all overflow-hidden">
                       <div
-                        className={`h-36 relative overflow-hidden ${!p.cover_url ? `bg-gradient-to-br ${GRADIENTS[i % GRADIENTS.length]}` : ""}`}
-                        style={p.cover_url ? { backgroundImage: `url(${p.cover_url})`, backgroundSize: "cover", backgroundPosition: "center" } : undefined}
+                        className={`h-36 relative overflow-hidden ${!(p.preview_urls?.[0] ?? p.preview_images?.[0]) ? `bg-gradient-to-br ${GRADIENTS[i % GRADIENTS.length]}` : ""}`}
+                        style={(p.preview_urls?.[0] ?? p.preview_images?.[0]) ? { backgroundImage: `url(${p.preview_urls?.[0] ?? p.preview_images?.[0]})`, backgroundSize: "cover", backgroundPosition: "center" } : undefined}
                       >
-                        {p.format && (
-                          <span className="absolute bottom-3 left-3 px-2 py-0.5 bg-black/30 backdrop-blur-sm text-white text-xs rounded-lg">{p.format}</span>
+                        {(p.format ?? p.file_format) && (
+                          <span className="absolute bottom-3 left-3 px-2 py-0.5 bg-black/30 backdrop-blur-sm text-white text-xs rounded-lg">{p.format ?? p.file_format}</span>
                         )}
                       </div>
                       <div className="p-4">
@@ -917,15 +921,15 @@ export default function ProfilePage() {
                     <div key={r.id} className="bg-white dark:bg-[#2a2a2a] rounded-2xl border border-[#F0E8E0] dark:border-[#3a3a3a] p-6 hover:border-[#FA8112]/30 hover:shadow-lg hover:shadow-[#FA8112]/10 transition-all">
                       <div className="flex items-start gap-4">
                         <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#FA8112] to-[#E8730F] flex items-center justify-center text-white text-sm font-bold shrink-0 overflow-hidden">
-                          {r.reviewer_avatar
-                            ? <img src={r.reviewer_avatar} alt="" className="w-full h-full object-cover" />
-                            : (r.reviewer_initials || "?")}
+                          {r.reviewer?.avatar_url
+                            ? <img src={r.reviewer.avatar_url} alt="" className="w-full h-full object-cover" />
+                            : (r.reviewer?.full_name?.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2) || "?")}
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-start justify-between gap-2">
                             <div>
                               <span className="font-semibold text-[#1A1A1A] dark:text-[#FAF3E1] text-sm">
-                                {r.reviewer_name || "Anonyme"}
+                                {r.reviewer?.full_name || "Anonyme"}
                               </span>
                               <div className="flex items-center gap-2 mt-0.5">
                                 <Stars rating={r.rating} />

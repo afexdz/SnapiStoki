@@ -31,7 +31,7 @@ type Service = {
   title: string
   category: string | null
   price: number
-  status: string | null
+  is_active: boolean | null
   created_at: string
 }
 
@@ -156,7 +156,7 @@ export default function FreelanceDashboard() {
         sb.from("orders").select("id", { count: "exact", head: true }).eq("seller_id", u.id).eq("status", "completed"),
         sb.from("orders").select("total_price").eq("seller_id", u.id).in("status", ["completed", "paid"]).gte("created_at", monthStart),
         sb.from("orders").select("total_price").eq("seller_id", u.id).in("status", ["completed", "paid"]),
-        sb.from("reviews").select("id", { count: "exact", head: true }).eq("seller_id", u.id),
+        sb.from("reviews").select("id", { count: "exact", head: true }).eq("reviewed_id", u.id),
         sb.from("services").select("id", { count: "exact", head: true }).eq("seller_id", u.id),
         sb.from("orders").select("id, status, total_price, created_at").eq("seller_id", u.id).order("created_at", { ascending: false }).limit(5),
       ])
@@ -177,12 +177,13 @@ export default function FreelanceDashboard() {
       setRecentOrders(ordersData)
 
       // Fetch services
-      const { data: svcData } = await sb
+      const { data: svcData, error: svcError } = await sb
         .from("services")
-        .select("id, title, category, price, status, created_at")
+        .select("id, title, category, price, is_active, created_at")
         .eq("seller_id", u.id)
         .order("created_at", { ascending: false })
         .limit(4)
+      if (svcError) console.error("[freelance/dashboard] services fetch error:", svcError)
       setServices(svcData ?? [])
 
       setLoading(false)
