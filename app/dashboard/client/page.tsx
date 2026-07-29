@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
+import UnreadBadge from "@/components/UnreadBadge"
 import type { User } from "@supabase/supabase-js"
 
 type Profile = {
@@ -43,7 +44,7 @@ const navItems = [
   },
   {
     label: "Messages",
-    href: "/dashboard/messages",
+    href: "/messages",
     icon: "M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z",
   },
   {
@@ -190,6 +191,7 @@ export default function ClientDashboard() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d={item.icon} />
               </svg>
               {item.label}
+              {item.href === "/messages" && <UnreadBadge className="ml-auto" />}
             </Link>
           ))}
         </nav>

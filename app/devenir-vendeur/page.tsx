@@ -3,8 +3,6 @@
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input"
-import type { Country } from "react-phone-number-input"
 import Navbar from "@/components/Navbar"
 import { createClient } from "@/lib/supabase/client"
 
@@ -30,24 +28,19 @@ const benefits = [
   {
     icon: (
       <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
       </svg>
     ),
-    title: "Contact direct sur WhatsApp",
-    desc: "Les acheteurs vous contactent directement sur WhatsApp — simple, rapide, sans intermédiaire.",
+    title: "Messagerie intégrée",
+    desc: "Les acheteurs vous contactent directement via la messagerie PixRaise — simple, rapide, centralisé.",
   },
 ]
 
 export default function DevenirVendeurPage() {
   const router = useRouter()
-  const [loading, setLoading]     = useState(true)
+  const [loading, setLoading]       = useState(true)
   const [activating, setActivating] = useState(false)
-  const [error, setError]         = useState<string | null>(null)
-
-  const [whatsapp, setWhatsapp]         = useState<string | undefined>(undefined)
-  const [whatsappError, setWhatsappError] = useState<string | null>(null)
-  const [defaultCountry, setDefaultCountry] = useState<Country>("DZ")
+  const [error, setError]           = useState<string | null>(null)
 
   useEffect(() => {
     const init = async () => {
@@ -57,7 +50,7 @@ export default function DevenirVendeurPage() {
 
       const { data: profile } = await sb
         .from("profiles")
-        .select("role, whatsapp")
+        .select("role")
         .eq("id", user.id)
         .single()
 
@@ -66,35 +59,12 @@ export default function DevenirVendeurPage() {
         return
       }
 
-      // Pre-fill existing whatsapp if any
-      if (profile?.whatsapp) setWhatsapp(profile.whatsapp)
-
-      // Detect country from IP
-      try {
-        const res = await fetch("/api/geo")
-        const geo = await res.json()
-        if (geo.countryCode) setDefaultCountry(geo.countryCode as Country)
-      } catch {
-        // keep default DZ
-      }
-
       setLoading(false)
     }
     init()
   }, [router])
 
   const handleActivate = async () => {
-    // Validate WhatsApp
-    if (!whatsapp) {
-      setWhatsappError("Le numéro WhatsApp est obligatoire pour devenir vendeur.")
-      return
-    }
-    if (!isValidPhoneNumber(whatsapp)) {
-      setWhatsappError("Numéro de téléphone invalide. Vérifiez l'indicatif et le format.")
-      return
-    }
-    setWhatsappError(null)
-
     setActivating(true)
     setError(null)
     try {
@@ -104,7 +74,7 @@ export default function DevenirVendeurPage() {
 
       const { error: dbError } = await sb
         .from("profiles")
-        .update({ role: "both", whatsapp })
+        .update({ role: "both" })
         .eq("id", user.id)
 
       if (dbError) throw dbError
@@ -177,35 +147,8 @@ export default function DevenirVendeurPage() {
                 Prêt à commencer ?
               </h3>
               <p className="text-sm text-gray-500 leading-relaxed">
-                Activez votre compte vendeur. Les acheteurs vous contacteront directement sur WhatsApp.
+                Activez votre compte vendeur en un clic. Vous conservez vos capacités d'achat.
               </p>
-            </div>
-
-            {/* WhatsApp field */}
-            <div className="mb-5">
-              <label className="block text-sm font-semibold text-[var(--ink)] mb-2">
-                Numéro WhatsApp
-                <span className="text-[var(--orange)] ml-1">*</span>
-              </label>
-              <div className="wa-phone-wrap">
-                <PhoneInput
-                  international
-                  defaultCountry={defaultCountry}
-                  value={whatsapp}
-                  onChange={(val) => {
-                    setWhatsapp(val)
-                    if (whatsappError) setWhatsappError(null)
-                  }}
-                  placeholder="+33 6 12 34 56 78"
-                />
-              </div>
-              {whatsappError ? (
-                <p className="mt-1.5 text-xs text-red-500">{whatsappError}</p>
-              ) : (
-                <p className="mt-1.5 text-xs text-gray-400">
-                  Les acheteurs vous contacteront à ce numéro. Format international requis.
-                </p>
-              )}
             </div>
 
             {error && (

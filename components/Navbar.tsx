@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { isSeller } from "@/lib/auth/role";
+import UnreadBadge from "@/components/UnreadBadge";
 import type { User } from "@supabase/supabase-js";
 
 const navLinks = [
@@ -180,6 +181,11 @@ export default function Navbar() {
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
                       Mon profil
                     </Link>
+                    <Link href="/messages" onClick={() => setDropdownOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-[rgba(26,26,26,0.7)] dark:text-gray-300 hover:bg-[var(--orange-soft)] hover:text-[var(--orange)] transition-colors">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
+                      Messages
+                      <UnreadBadge className="ml-auto" />
+                    </Link>
                     <div className="border-t border-[var(--border-subtle)] dark:border-[var(--border-subtle)] mt-1 pt-1">
                       {seller ? (
                         <>
@@ -259,6 +265,10 @@ export default function Navbar() {
               <>
                 <Link href="/dashboard" onClick={() => setMenuOpen(false)} className="flex items-center px-3 py-3 text-sm font-medium text-[rgba(26,26,26,0.7)] dark:text-gray-400 hover:text-[var(--orange)] rounded-[10px] hover:bg-[var(--orange-soft)] dark:hover:bg-[#2a2a2a] transition-colors font-jakarta min-h-[44px]">
                   Tableau de bord
+                </Link>
+                <Link href="/messages" onClick={() => setMenuOpen(false)} className="flex items-center gap-2 px-3 py-3 text-sm font-medium text-[rgba(26,26,26,0.7)] dark:text-gray-400 hover:text-[var(--orange)] rounded-[10px] hover:bg-[var(--orange-soft)] dark:hover:bg-[#2a2a2a] transition-colors font-jakarta min-h-[44px]">
+                  Messages
+                  <UnreadBadge />
                 </Link>
                 {seller ? (
                   <>

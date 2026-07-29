@@ -5,8 +5,6 @@ import { useRouter } from "next/navigation"
 import Link from "next/link"
 import ReactCrop, { type Crop, type PixelCrop, centerCrop, makeAspectCrop } from "react-image-crop"
 import "react-image-crop/dist/ReactCrop.css"
-import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input"
-import type { Country } from "react-phone-number-input"
 import Navbar from "@/components/Navbar"
 import Footer from "@/components/Footer"
 import { createClient } from "@/lib/supabase/client"
@@ -27,7 +25,6 @@ type Profile = {
   cover_position: string | null
   rating: number | null
   created_at: string
-  whatsapp: string | null
 }
 type Stats = { orders: number; sales: number; reviews: number; revenue: number }
 type Service = {
@@ -238,10 +235,6 @@ export default function ProfilePage() {
   const [showEdit, setShowEdit] = useState(false)
   const [saving, setSaving]     = useState(false)
   const [editForm, setEditForm] = useState({ full_name: "", bio: "", wilaya: "", location_city: "", location_country: "", role: "" })
-  const [editWhatsapp, setEditWhatsapp] = useState<string | undefined>(undefined)
-  const [whatsappError, setWhatsappError] = useState<string | null>(null)
-  const [waDefaultCountry, setWaDefaultCountry] = useState<Country>("DZ")
-
   const [detectedCity, setDetectedCity] = useState("")
   const [detectedCountry, setDetectedCountry] = useState("")
 
@@ -317,7 +310,6 @@ export default function ProfilePage() {
             if (geo.detected) {
               if (geo.city) setDetectedCity(geo.city)
               if (geo.country) setDetectedCountry(geo.country)
-              if (geo.countryCode) setWaDefaultCountry(geo.countryCode as Country)
               setEditForm(prev => ({ ...prev, location_city: geo.city ?? prev.location_city, location_country: geo.country ?? prev.location_country }))
             }
           } catch (e) {
@@ -503,21 +495,11 @@ export default function ProfilePage() {
       location_country: profile?.location_country || detectedCountry || "",
       role:             profile?.role             || "",
     })
-    setEditWhatsapp(profile?.whatsapp || undefined)
-    setWhatsappError(null)
     setShowEdit(true)
   }
 
   const saveProfile = async () => {
     if (!user) return
-
-    // Validate whatsapp if provided
-    if (editWhatsapp && !isValidPhoneNumber(editWhatsapp)) {
-      setWhatsappError("Numéro de téléphone invalide. Vérifiez l'indicatif et le format.")
-      return
-    }
-    setWhatsappError(null)
-
     setSaving(true)
     const sb = createClient()
     const { error } = await sb
@@ -529,7 +511,6 @@ export default function ProfilePage() {
         location_city:    editForm.location_city    || null,
         location_country: editForm.location_country || null,
         role:             editForm.role,
-        whatsapp:         editWhatsapp || null,
         updated_at:       new Date().toISOString(),
       })
       .eq("id", user.id)
@@ -542,7 +523,6 @@ export default function ProfilePage() {
         location_city:    editForm.location_city    || null,
         location_country: editForm.location_country || null,
         role:             editForm.role,
-        whatsapp:         editWhatsapp || null,
       } : null)
     }
     setSaving(false)
@@ -1085,31 +1065,6 @@ export default function ProfilePage() {
                     placeholder="Décrivez votre expérience et vos compétences…"
                     className="w-full px-4 py-3 rounded-xl border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] bg-[var(--cream)] dark:bg-[var(--color-bg)] text-[var(--ink)] dark:text-[var(--ink)] placeholder-gray-400 outline-none focus:border-[var(--orange)] focus:ring-2 focus:ring-[var(--orange)]/20 transition-all text-sm resize-none"
                   />
-                </div>
-
-                {/* WhatsApp */}
-                <div>
-                  <label className="block text-sm font-medium text-[var(--ink)] mb-1.5">
-                    WhatsApp
-                    <span className="text-gray-400 font-normal ml-1">(optionnel)</span>
-                  </label>
-                  <div className="wa-phone-wrap">
-                    <PhoneInput
-                      international
-                      defaultCountry={waDefaultCountry}
-                      value={editWhatsapp}
-                      onChange={(val) => {
-                        setEditWhatsapp(val)
-                        if (whatsappError) setWhatsappError(null)
-                      }}
-                      placeholder="+33 6 12 34 56 78"
-                    />
-                  </div>
-                  {whatsappError ? (
-                    <p className="mt-1 text-xs text-red-500">{whatsappError}</p>
-                  ) : (
-                    <p className="mt-1 text-xs text-gray-400">Format international — les acheteurs vous contacteront à ce numéro.</p>
-                  )}
                 </div>
 
                 {/* Location */}
