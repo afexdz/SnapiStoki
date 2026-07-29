@@ -9,8 +9,6 @@ export default async function ThreadPage({ params }: { params: Promise<{ id: str
   const { data: { user } } = await sb.auth.getUser()
   if (!user) redirect(`/login?next=/messages/${convId}`)
 
-  console.log("[thread/page] loading convId:", convId, "userId:", user.id)
-
   const { data: conv, error: convErr } = await sb
     .from("conversations")
     .select("id, buyer_id, seller_id, listing_type, listing_id")
@@ -18,11 +16,8 @@ export default async function ThreadPage({ params }: { params: Promise<{ id: str
     .single()
 
   if (convErr) console.error("[thread/page] conversations query error:", convErr)
-  console.log("[thread/page] conv:", conv ? "found" : "null", "convErr:", convErr?.code)
 
-  // Server-side participation check (RLS + explicit guard)
   if (!conv || (conv.buyer_id !== user.id && conv.seller_id !== user.id)) {
-    console.log("[thread/page] access denied — redirecting to /messages")
     redirect("/messages")
   }
 
@@ -42,8 +37,6 @@ export default async function ThreadPage({ params }: { params: Promise<{ id: str
   if (msgsResult.error) console.error("[thread/page] messages query error:", msgsResult.error)
   if (interlocutorResult.error) console.error("[thread/page] interlocutor query error:", interlocutorResult.error)
 
-  console.log("[thread/page] messages:", msgsResult.data?.length ?? 0, "interlocutor:", interlocutorResult.data?.id)
-
   const interlocutorId = conv.buyer_id === user.id ? conv.seller_id : conv.buyer_id
 
   let listingTitle = "Annonce"
@@ -54,8 +47,6 @@ export default async function ThreadPage({ params }: { params: Promise<{ id: str
     const { data: prod } = await sb.from("digital_products").select("title").eq("id", conv.listing_id).single()
     if (prod) listingTitle = prod.title
   }
-
-  console.log("[thread/page] listingTitle:", listingTitle, "— rendering ThreadClient")
 
   return (
     <ThreadClient
