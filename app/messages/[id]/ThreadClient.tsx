@@ -61,7 +61,8 @@ export default function ThreadClient({
       const unread = initialMessages.filter((m) => m.sender_id !== currentUserId && !m.read_at)
       if (unread.length === 0) return
       const sb = createClient()
-      await sb.from("messages").update({ read_at: new Date().toISOString() }).in("id", unread.map((m) => m.id))
+      const { error } = await sb.from("messages").update({ read_at: new Date().toISOString() }).in("id", unread.map((m) => m.id))
+      if (error) { console.error("[thread] markRead error:", error); return }
       setMessages((prev) =>
         prev.map((m) => unread.some((u) => u.id === m.id) ? { ...m, read_at: new Date().toISOString() } : m)
       )
@@ -83,7 +84,8 @@ export default function ThreadClient({
           setMessages((prev) => prev.some((m) => m.id === msg.id) ? prev : [...prev, msg])
           if (msg.sender_id !== currentUserId) {
             const sb2 = createClient()
-            await sb2.from("messages").update({ read_at: new Date().toISOString() }).eq("id", msg.id)
+            const { error } = await sb2.from("messages").update({ read_at: new Date().toISOString() }).eq("id", msg.id)
+            if (error) { console.error("[thread] realtime markRead error:", error); return }
             setMessages((prev) => prev.map((m) => m.id === msg.id ? { ...m, read_at: new Date().toISOString() } : m))
           }
         }
@@ -98,10 +100,16 @@ export default function ThreadClient({
     if (!text || sending) return
     setContent("")
     setSending(true)
-    const sb = createClient()
-    await sb.from("messages").insert({ conversation_id: convId, sender_id: currentUserId, content: text })
-    setSending(false)
-    inputRef.current?.focus()
+    try {
+      const sb = createClient()
+      const { error } = await sb.from("messages").insert({ conversation_id: convId, sender_id: currentUserId, content: text })
+      if (error) console.error("[thread] sendMessage error:", error)
+    } catch (e) {
+      console.error("[thread] sendMessage unexpected error:", e)
+    } finally {
+      setSending(false)
+      inputRef.current?.focus()
+    }
   }
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {

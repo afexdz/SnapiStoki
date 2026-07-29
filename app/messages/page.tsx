@@ -61,76 +61,98 @@ export default function MessagesPage() {
   const router = useRouter()
   const [convs, setConvs] = useState<ConvDisplay[]>([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const [userId, setUserId] = useState<string | null>(null)
+  const [retryKey, setRetryKey] = useState(0)
 
   useEffect(() => {
     const load = async () => {
-      const sb = createClient()
-      const { data: { user } } = await sb.auth.getUser()
-      if (!user) { router.push("/login?next=/messages"); return }
-      setUserId(user.id)
+      setError(null)
+      setLoading(true)
+      try {
+        const sb = createClient()
+        const { data: { user } } = await sb.auth.getUser()
+        if (!user) { router.push("/login?next=/messages"); return }
+        setUserId(user.id)
 
-      const { data: rawConvs } = await sb
-        .from("conversations")
-        .select("id, buyer_id, seller_id, listing_type, listing_id, last_message_at")
-        .order("last_message_at", { ascending: false })
+        const { data: rawConvs, error: convsErr } = await sb
+          .from("conversations")
+          .select("id, buyer_id, seller_id, listing_type, listing_id, last_message_at")
+          .order("last_message_at", { ascending: false })
 
-      if (!rawConvs || rawConvs.length === 0) { setLoading(false); return }
-
-      const profileIds = [...new Set([...rawConvs.map((c: ConvRow) => c.buyer_id), ...rawConvs.map((c: ConvRow) => c.seller_id)])]
-      const convIds = rawConvs.map((c: ConvRow) => c.id)
-      const serviceIds = rawConvs.filter((c: ConvRow) => c.listing_type === "service").map((c: ConvRow) => c.listing_id)
-      const productIds = rawConvs.filter((c: ConvRow) => c.listing_type === "product").map((c: ConvRow) => c.listing_id)
-
-      const [profilesRes, lastMsgsRes, unreadRes] = await Promise.all([
-        sb.from("profiles").select("id, full_name, avatar_url").in("id", profileIds),
-        sb.from("messages").select("id, conversation_id, content, created_at, sender_id")
-          .in("conversation_id", convIds).order("created_at", { ascending: false }),
-        sb.from("messages").select("conversation_id")
-          .in("conversation_id", convIds).is("read_at", null).neq("sender_id", user.id),
-      ])
-
-      const [servicesData, productsData] = await Promise.all([
-        serviceIds.length === 0 ? null : sb.from("services").select("id, title").in("id", serviceIds).then((r) => r.data),
-        productIds.length === 0 ? null : sb.from("digital_products").select("id, title").in("id", productIds).then((r) => r.data),
-      ])
-
-      const profileMap: Record<string, ProfileRow> = {}
-      for (const p of (profilesRes.data ?? []) as ProfileRow[]) profileMap[p.id] = p
-
-      const lastMsgByConv: Record<string, MsgRow> = {}
-      for (const m of (lastMsgsRes.data ?? []) as MsgRow[]) {
-        if (!lastMsgByConv[m.conversation_id]) lastMsgByConv[m.conversation_id] = m
-      }
-
-      const unreadByConv: Record<string, number> = {}
-      for (const m of (unreadRes.data ?? []) as { conversation_id: string }[]) {
-        unreadByConv[m.conversation_id] = (unreadByConv[m.conversation_id] ?? 0) + 1
-      }
-
-      const titleMap: Record<string, string> = {}
-      for (const s of (servicesData ?? []) as { id: string; title: string }[]) titleMap[s.id] = s.title
-      for (const p of (productsData ?? []) as { id: string; title: string }[]) titleMap[p.id] = p.title
-
-      const display: ConvDisplay[] = (rawConvs as ConvRow[]).map((c) => {
-        const interlocutorId = c.buyer_id === user.id ? c.seller_id : c.buyer_id
-        return {
-          id: c.id,
-          interlocutor: profileMap[interlocutorId] ?? { id: interlocutorId, full_name: null, avatar_url: null },
-          listingTitle: titleMap[c.listing_id] ?? "Annonce supprimée",
-          listingType: c.listing_type,
-          listingId: c.listing_id,
-          lastMessage: lastMsgByConv[c.id] ?? null,
-          unread: unreadByConv[c.id] ?? 0,
-          last_message_at: c.last_message_at,
+        if (convsErr) {
+          console.error("[messages] conversations query error:", convsErr)
+          setError("Impossible de charger les conversations.")
+          setLoading(false)
+          return
         }
-      })
 
-      setConvs(display)
-      setLoading(false)
+        if (!rawConvs || rawConvs.length === 0) { setLoading(false); return }
+
+        const profileIds = [...new Set([...rawConvs.map((c: ConvRow) => c.buyer_id), ...rawConvs.map((c: ConvRow) => c.seller_id)])]
+        const convIds = rawConvs.map((c: ConvRow) => c.id)
+        const serviceIds = rawConvs.filter((c: ConvRow) => c.listing_type === "service").map((c: ConvRow) => c.listing_id)
+        const productIds = rawConvs.filter((c: ConvRow) => c.listing_type === "product").map((c: ConvRow) => c.listing_id)
+
+        const [profilesRes, lastMsgsRes, unreadRes] = await Promise.all([
+          sb.from("profiles").select("id, full_name, avatar_url").in("id", profileIds),
+          sb.from("messages").select("id, conversation_id, content, created_at, sender_id")
+            .in("conversation_id", convIds).order("created_at", { ascending: false }),
+          sb.from("messages").select("conversation_id")
+            .in("conversation_id", convIds).is("read_at", null).neq("sender_id", user.id),
+        ])
+
+        if (lastMsgsRes.error) console.error("[messages] lastMsgs query error:", lastMsgsRes.error)
+        if (unreadRes.error) console.error("[messages] unread query error:", unreadRes.error)
+        if (profilesRes.error) console.error("[messages] profiles query error:", profilesRes.error)
+
+        const [servicesData, productsData] = await Promise.all([
+          serviceIds.length === 0 ? null : sb.from("services").select("id, title").in("id", serviceIds).then((r) => { if (r.error) console.error("[messages] services query error:", r.error); return r.data }),
+          productIds.length === 0 ? null : sb.from("digital_products").select("id, title").in("id", productIds).then((r) => { if (r.error) console.error("[messages] products query error:", r.error); return r.data }),
+        ])
+
+        const profileMap: Record<string, ProfileRow> = {}
+        for (const p of (profilesRes.data ?? []) as ProfileRow[]) profileMap[p.id] = p
+
+        const lastMsgByConv: Record<string, MsgRow> = {}
+        for (const m of (lastMsgsRes.data ?? []) as MsgRow[]) {
+          if (!lastMsgByConv[m.conversation_id]) lastMsgByConv[m.conversation_id] = m
+        }
+
+        const unreadByConv: Record<string, number> = {}
+        for (const m of (unreadRes.data ?? []) as { conversation_id: string }[]) {
+          unreadByConv[m.conversation_id] = (unreadByConv[m.conversation_id] ?? 0) + 1
+        }
+
+        const titleMap: Record<string, string> = {}
+        for (const s of (servicesData ?? []) as { id: string; title: string }[]) titleMap[s.id] = s.title
+        for (const p of (productsData ?? []) as { id: string; title: string }[]) titleMap[p.id] = p.title
+
+        const display: ConvDisplay[] = (rawConvs as ConvRow[]).map((c) => {
+          const interlocutorId = c.buyer_id === user.id ? c.seller_id : c.buyer_id
+          return {
+            id: c.id,
+            interlocutor: profileMap[interlocutorId] ?? { id: interlocutorId, full_name: null, avatar_url: null },
+            listingTitle: titleMap[c.listing_id] ?? "Annonce supprimée",
+            listingType: c.listing_type,
+            listingId: c.listing_id,
+            lastMessage: lastMsgByConv[c.id] ?? null,
+            unread: unreadByConv[c.id] ?? 0,
+            last_message_at: c.last_message_at,
+          }
+        })
+
+        setConvs(display)
+        setLoading(false)
+      } catch (e) {
+        console.error("[messages] load error:", e)
+        setError("Une erreur inattendue est survenue.")
+        setLoading(false)
+      }
     }
     load()
-  }, [router])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router, retryKey])
 
   return (
     <>
@@ -142,6 +164,16 @@ export default function MessagesPage() {
           {loading ? (
             <div className="flex justify-center py-20">
               <div className="w-8 h-8 border-[3px] border-[var(--orange)] border-t-transparent rounded-full animate-spin" />
+            </div>
+          ) : error ? (
+            <div className="text-center py-20">
+              <p className="text-red-500 font-medium">{error}</p>
+              <button
+                onClick={() => setRetryKey((k) => k + 1)}
+                className="mt-4 px-4 py-2 bg-[var(--orange)] text-white text-sm font-semibold rounded-xl hover:bg-[var(--orange-dark)] transition-colors"
+              >
+                Réessayer
+              </button>
             </div>
           ) : convs.length === 0 ? (
             <div className="text-center py-20">

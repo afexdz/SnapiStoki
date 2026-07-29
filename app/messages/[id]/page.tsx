@@ -7,29 +7,35 @@ export default async function ThreadPage({ params }: { params: { id: string } })
   const { data: { user } } = await sb.auth.getUser()
   if (!user) redirect(`/login?next=/messages/${params.id}`)
 
-  const { data: conv } = await sb
+  const { data: conv, error: convErr } = await sb
     .from("conversations")
     .select("id, buyer_id, seller_id, listing_type, listing_id")
     .eq("id", params.id)
     .single()
+
+  if (convErr) console.error("[thread/page] conversations query error:", convErr)
 
   // Server-side participation check (RLS + explicit guard)
   if (!conv || (conv.buyer_id !== user.id && conv.seller_id !== user.id)) {
     redirect("/messages")
   }
 
-  const { data: messages } = await sb
+  const { data: messages, error: msgsErr } = await sb
     .from("messages")
     .select("id, conversation_id, sender_id, content, read_at, created_at")
     .eq("conversation_id", params.id)
     .order("created_at", { ascending: true })
 
+  if (msgsErr) console.error("[thread/page] messages query error:", msgsErr)
+
   const interlocutorId = conv.buyer_id === user.id ? conv.seller_id : conv.buyer_id
-  const { data: interlocutor } = await sb
+  const { data: interlocutor, error: interlocutorErr } = await sb
     .from("profiles")
     .select("id, full_name, avatar_url")
     .eq("id", interlocutorId)
     .single()
+
+  if (interlocutorErr) console.error("[thread/page] interlocutor query error:", interlocutorErr)
 
   let listingTitle = "Annonce"
   if (conv.listing_type === "service") {

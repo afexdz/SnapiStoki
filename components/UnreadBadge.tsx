@@ -14,11 +14,13 @@ export default function UnreadBadge({ className = "" }: { className?: string }) 
 
     const fetchCount = async () => {
       if (!uidRef.current) return
-      const { count: c } = await sb
+      const { count: c, error } = await sb
         .from("messages")
         .select("id", { count: "exact", head: true })
+        .not("conversation_id", "is", null)
         .is("read_at", null)
         .neq("sender_id", uidRef.current)
+      if (error) { console.error("[UnreadBadge] fetchCount error:", error); return }
       setCount(c ?? 0)
     }
 
