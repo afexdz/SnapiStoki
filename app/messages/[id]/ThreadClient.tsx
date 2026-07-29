@@ -44,6 +44,8 @@ function relativeTime(d: string) {
 export default function ThreadClient({
   convId, currentUserId, interlocutor, listingTitle, listingType, listingId, initialMessages,
 }: Props) {
+  console.log("[ThreadClient] render — convId:", convId, "initialMessages:", initialMessages.length)
+
   const [messages, setMessages] = useState<Message[]>(initialMessages)
   const [content, setContent] = useState("")
   const [sending, setSending] = useState(false)
@@ -51,28 +53,39 @@ export default function ThreadClient({
   const channelRef = useRef<RealtimeChannel | null>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
 
+  // Auto-scroll on new messages
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" })
   }, [messages])
 
-  // Mark received messages as read on open
+  // Mark received messages as read — fire-and-forget, never blocks rendering
   useEffect(() => {
-    const markRead = async () => {
-      const unread = initialMessages.filter((m) => m.sender_id !== currentUserId && !m.read_at)
-      if (unread.length === 0) return
-      const sb = createClient()
-      const { error } = await sb.from("messages").update({ read_at: new Date().toISOString() }).in("id", unread.map((m) => m.id))
-      if (error) { console.error("[thread] markRead error:", error); return }
-      setMessages((prev) =>
-        prev.map((m) => unread.some((u) => u.id === m.id) ? { ...m, read_at: new Date().toISOString() } : m)
-      )
-    }
-    markRead()
+    console.log("[thread] markRead effect — initialMessages:", initialMessages.length)
+    const unread = initialMessages.filter((m) => m.sender_id !== currentUserId && !m.read_at)
+    console.log("[thread] markRead — unread count:", unread.length)
+    if (unread.length === 0) return
+
+    const ids = unread.map((m) => m.id)
+    const now = new Date().toISOString()
+
+    // Optimistic UI update first — no await, no blocking
+    setMessages((prev) => prev.map((m) => ids.includes(m.id) ? { ...m, read_at: now } : m))
+
+    // DB update: fire-and-forget
+    createClient()
+      .from("messages")
+      .update({ read_at: now })
+      .in("id", ids)
+      .then(({ error }) => {
+        if (error) console.error("[thread] markRead DB error:", error)
+        else console.log("[thread] markRead DB — success, ids:", ids)
+      })
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // Realtime subscription
+  // Realtime subscription — fully decoupled from rendering
   useEffect(() => {
+    console.log("[thread] realtime setup — convId:", convId)
     const sb = createClient()
     channelRef.current = sb
       .channel(`conv-${convId}`)
@@ -80,30 +93,49 @@ export default function ThreadClient({
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "messages", filter: `conversation_id=eq.${convId}` },
         async (payload) => {
+          console.log("[thread] realtime INSERT received:", payload.new)
           const msg = payload.new as Message
           setMessages((prev) => prev.some((m) => m.id === msg.id) ? prev : [...prev, msg])
           if (msg.sender_id !== currentUserId) {
-            const sb2 = createClient()
-            const { error } = await sb2.from("messages").update({ read_at: new Date().toISOString() }).eq("id", msg.id)
-            if (error) { console.error("[thread] realtime markRead error:", error); return }
-            setMessages((prev) => prev.map((m) => m.id === msg.id ? { ...m, read_at: new Date().toISOString() } : m))
+            const now = new Date().toISOString()
+            setMessages((prev) => prev.map((m) => m.id === msg.id ? { ...m, read_at: now } : m))
+            // Fire-and-forget DB mark-as-read
+            createClient()
+              .from("messages")
+              .update({ read_at: now })
+              .eq("id", msg.id)
+              .then(({ error }) => {
+                if (error) console.error("[thread] realtime markRead error:", error)
+              })
           }
         }
       )
-      .subscribe()
+      .subscribe((status, err) => {
+        if (err) console.error("[thread] realtime subscription error:", err)
+        else console.log("[thread] realtime subscription status:", status)
+      })
 
-    return () => { if (channelRef.current) sb.removeChannel(channelRef.current) }
+    return () => {
+      console.log("[thread] realtime cleanup — convId:", convId)
+      if (channelRef.current) sb.removeChannel(channelRef.current)
+    }
   }, [convId, currentUserId])
 
   const sendMessage = async () => {
     const text = content.trim()
     if (!text || sending) return
+    console.log("[thread] sendMessage — length:", text.length)
     setContent("")
     setSending(true)
     try {
       const sb = createClient()
-      const { error } = await sb.from("messages").insert({ conversation_id: convId, sender_id: currentUserId, content: text })
+      const { error } = await sb.from("messages").insert({
+        conversation_id: convId,
+        sender_id: currentUserId,
+        content: text,
+      })
       if (error) console.error("[thread] sendMessage error:", error)
+      else console.log("[thread] sendMessage — success")
     } catch (e) {
       console.error("[thread] sendMessage unexpected error:", e)
     } finally {
@@ -119,6 +151,8 @@ export default function ThreadClient({
   const otherName = interlocutor.full_name ?? "Interlocuteur"
   const otherInitials = otherName.trim().split(/\s+/).map((n) => n[0]).join("").toUpperCase().slice(0, 2)
   const listingHref = listingType === "service" ? `/services/${listingId}` : `/products/${listingId}`
+
+  console.log("[ThreadClient] rendering UI — messages.length:", messages.length)
 
   return (
     <>

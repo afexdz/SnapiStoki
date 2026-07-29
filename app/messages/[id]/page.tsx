@@ -2,40 +2,49 @@ import { createClient } from "@/lib/supabase/server"
 import { redirect } from "next/navigation"
 import ThreadClient from "./ThreadClient"
 
-export default async function ThreadPage({ params }: { params: { id: string } }) {
+export default async function ThreadPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id: convId } = await params
+
   const sb = await createClient()
   const { data: { user } } = await sb.auth.getUser()
-  if (!user) redirect(`/login?next=/messages/${params.id}`)
+  if (!user) redirect(`/login?next=/messages/${convId}`)
+
+  console.log("[thread/page] loading convId:", convId, "userId:", user.id)
 
   const { data: conv, error: convErr } = await sb
     .from("conversations")
     .select("id, buyer_id, seller_id, listing_type, listing_id")
-    .eq("id", params.id)
+    .eq("id", convId)
     .single()
 
   if (convErr) console.error("[thread/page] conversations query error:", convErr)
+  console.log("[thread/page] conv:", conv ? "found" : "null", "convErr:", convErr?.code)
 
   // Server-side participation check (RLS + explicit guard)
   if (!conv || (conv.buyer_id !== user.id && conv.seller_id !== user.id)) {
+    console.log("[thread/page] access denied — redirecting to /messages")
     redirect("/messages")
   }
 
-  const { data: messages, error: msgsErr } = await sb
-    .from("messages")
-    .select("id, conversation_id, sender_id, content, read_at, created_at")
-    .eq("conversation_id", params.id)
-    .order("created_at", { ascending: true })
+  const [msgsResult, interlocutorResult] = await Promise.all([
+    sb
+      .from("messages")
+      .select("id, conversation_id, sender_id, content, read_at, created_at")
+      .eq("conversation_id", convId)
+      .order("created_at", { ascending: true }),
+    sb
+      .from("profiles")
+      .select("id, full_name, avatar_url")
+      .eq("id", conv.buyer_id === user.id ? conv.seller_id : conv.buyer_id)
+      .single(),
+  ])
 
-  if (msgsErr) console.error("[thread/page] messages query error:", msgsErr)
+  if (msgsResult.error) console.error("[thread/page] messages query error:", msgsResult.error)
+  if (interlocutorResult.error) console.error("[thread/page] interlocutor query error:", interlocutorResult.error)
+
+  console.log("[thread/page] messages:", msgsResult.data?.length ?? 0, "interlocutor:", interlocutorResult.data?.id)
 
   const interlocutorId = conv.buyer_id === user.id ? conv.seller_id : conv.buyer_id
-  const { data: interlocutor, error: interlocutorErr } = await sb
-    .from("profiles")
-    .select("id, full_name, avatar_url")
-    .eq("id", interlocutorId)
-    .single()
-
-  if (interlocutorErr) console.error("[thread/page] interlocutor query error:", interlocutorErr)
 
   let listingTitle = "Annonce"
   if (conv.listing_type === "service") {
@@ -46,15 +55,17 @@ export default async function ThreadPage({ params }: { params: { id: string } })
     if (prod) listingTitle = prod.title
   }
 
+  console.log("[thread/page] listingTitle:", listingTitle, "— rendering ThreadClient")
+
   return (
     <ThreadClient
-      convId={params.id}
+      convId={convId}
       currentUserId={user.id}
-      interlocutor={interlocutor ?? { id: interlocutorId, full_name: null, avatar_url: null }}
+      interlocutor={interlocutorResult.data ?? { id: interlocutorId, full_name: null, avatar_url: null }}
       listingTitle={listingTitle}
       listingType={conv.listing_type}
       listingId={conv.listing_id}
-      initialMessages={messages ?? []}
+      initialMessages={msgsResult.data ?? []}
     />
   )
 }
