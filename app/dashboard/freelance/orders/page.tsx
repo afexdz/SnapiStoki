@@ -52,17 +52,17 @@ export default function FreelanceOrdersPage() {
   const skeleton = Array.from({ length: 4 })
 
   return (
-    <div className="min-h-screen bg-[#FFF8F0] dark:bg-[var(--color-bg)]">
+    <div className="min-h-screen bg-[var(--cream)] dark:bg-[var(--color-bg)]">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         {/* Header */}
         <div className="flex items-center gap-4 mb-6">
-          <Link href="/dashboard/freelance" className="p-2 rounded-xl border border-[#F0E8E0] dark:border-[var(--ink-12)] text-gray-500 hover:text-[#FA8112] hover:border-[#FA8112]/40 transition-all">
+          <Link href="/dashboard/freelance" className="p-2 rounded-xl border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] text-gray-500 hover:text-[var(--orange)] hover:border-[var(--orange)]/40 transition-all">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
           </Link>
           <div>
-            <h1 className="text-2xl font-extrabold text-[#1A1A1A] dark:text-[#FAF3E1]" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+            <h1 className="text-2xl font-extrabold text-[var(--ink)] dark:text-[var(--ink)]" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
               Commandes reçues
             </h1>
             <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Gérez les commandes de vos clients</p>
@@ -72,16 +72,16 @@ export default function FreelanceOrdersPage() {
         {/* Revenue summary */}
         {!loading && (
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-6">
-            <div className="bg-white dark:bg-[var(--white)] rounded-2xl border border-[#F0E8E0] dark:border-[var(--ink-12)] p-4">
+            <div className="bg-[var(--white)] dark:bg-[var(--white)] rounded-2xl border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] p-4">
               <div className="text-xl font-black text-emerald-600 dark:text-emerald-400">{totalRevenue.toLocaleString("fr-DZ")} DA</div>
               <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Revenu total</div>
             </div>
-            <div className="bg-white dark:bg-[var(--white)] rounded-2xl border border-[#F0E8E0] dark:border-[var(--ink-12)] p-4">
+            <div className="bg-[var(--white)] dark:bg-[var(--white)] rounded-2xl border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] p-4">
               <div className="text-xl font-black text-blue-600 dark:text-blue-400">{orders.filter(o => o.status === "active" || o.status === "pending").length}</div>
               <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">En cours</div>
             </div>
-            <div className="bg-white dark:bg-[var(--white)] rounded-2xl border border-[#F0E8E0] dark:border-[var(--ink-12)] p-4 col-span-2 sm:col-span-1">
-              <div className="text-xl font-black text-[#FA8112]">{orders.filter(o => o.status === "completed").length}</div>
+            <div className="bg-[var(--white)] dark:bg-[var(--white)] rounded-2xl border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] p-4 col-span-2 sm:col-span-1">
+              <div className="text-xl font-black text-[var(--orange)]">{orders.filter(o => o.status === "completed").length}</div>
               <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Terminées</div>
             </div>
           </div>
@@ -101,8 +101,8 @@ export default function FreelanceOrdersPage() {
               onClick={() => setFilter(f.key)}
               className={`shrink-0 px-4 py-2 rounded-xl text-sm font-medium transition-all ${
                 filter === f.key
-                  ? "bg-[#FA8112] text-white shadow-md shadow-[#FA8112]/20"
-                  : "bg-white dark:bg-[var(--white)] border border-[#F0E8E0] dark:border-[var(--ink-12)] text-gray-600 dark:text-gray-400 hover:border-[#FA8112]/40"
+                  ? "bg-[var(--orange)] text-white shadow-md shadow-[var(--orange)]/20"
+                  : "bg-[var(--white)] dark:bg-[var(--white)] border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] text-gray-600 dark:text-gray-400 hover:border-[var(--orange)]/40"
               }`}
             >
               {f.label}
@@ -114,11 +114,11 @@ export default function FreelanceOrdersPage() {
         <div className="space-y-3">
           {loading
             ? skeleton.map((_, i) => (
-                <div key={i} className="bg-white dark:bg-[var(--white)] rounded-2xl border border-[#F0E8E0] dark:border-[var(--ink-12)] p-5 animate-pulse">
+                <div key={i} className="bg-[var(--white)] dark:bg-[var(--white)] rounded-2xl border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] p-5 animate-pulse">
                   <div className="flex items-center justify-between">
                     <div className="space-y-2">
                       <div className="h-4 w-40 bg-gray-200 dark:bg-[var(--cream)] rounded" />
-                      <div className="h-3 w-24 bg-gray-100 dark:bg-[#333] rounded" />
+                      <div className="h-3 w-24 bg-gray-100 dark:bg-[var(--ink-12)] rounded" />
                     </div>
                     <div className="h-6 w-20 bg-gray-200 dark:bg-[var(--cream)] rounded-full" />
                   </div>
@@ -126,8 +126,8 @@ export default function FreelanceOrdersPage() {
               ))
             : filtered.length === 0
               ? (
-                <div className="bg-white dark:bg-[var(--white)] rounded-2xl border border-[#F0E8E0] dark:border-[var(--ink-12)] p-16 text-center">
-                  <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-[#FFF8F0] dark:bg-[var(--cream)] flex items-center justify-center">
+                <div className="bg-[var(--white)] dark:bg-[var(--white)] rounded-2xl border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] p-16 text-center">
+                  <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-[var(--cream)] dark:bg-[var(--cream)] flex items-center justify-center">
                     <svg className="w-8 h-8 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                     </svg>
@@ -136,25 +136,25 @@ export default function FreelanceOrdersPage() {
                   <p className="text-gray-400 dark:text-gray-500 text-xs mt-1 mb-5">Publiez vos services pour commencer à recevoir des commandes</p>
                   <Link
                     href="/services/new"
-                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#FA8112] hover:bg-[#E8730F] text-white text-sm font-semibold rounded-xl shadow-md shadow-[#FA8112]/20 transition-all"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-[var(--orange)] hover:bg-[var(--orange-dark)] text-white text-sm font-semibold rounded-xl shadow-md shadow-[var(--orange)]/20 transition-all"
                   >
                     Publier un service →
                   </Link>
                 </div>
               )
               : filtered.map(order => {
-                  const status = STATUS_LABELS[order.status] ?? { label: order.status, color: "bg-gray-100 text-gray-600" }
+                  const status = STATUS_LABELS[order.status] ?? { label: order.status, color: "bg-gray-100 dark:bg-[var(--ink-12)] text-gray-600" }
                   return (
-                    <div key={order.id} className="bg-white dark:bg-[var(--white)] rounded-2xl border border-[#F0E8E0] dark:border-[var(--ink-12)] p-5 hover:border-[#FA8112]/30 hover:shadow-md transition-all">
+                    <div key={order.id} className="bg-[var(--white)] dark:bg-[var(--white)] rounded-2xl border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] p-5 hover:border-[var(--orange)]/30 hover:shadow-md transition-all">
                       <div className="flex items-center justify-between gap-4">
                         <div className="flex items-center gap-4 min-w-0">
-                          <div className="w-10 h-10 rounded-xl bg-[#FA8112]/10 flex items-center justify-center shrink-0">
-                            <svg className="w-5 h-5 text-[#FA8112]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <div className="w-10 h-10 rounded-xl bg-[var(--orange)]/10 flex items-center justify-center shrink-0">
+                            <svg className="w-5 h-5 text-[var(--orange)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                             </svg>
                           </div>
                           <div className="min-w-0">
-                            <p className="text-sm font-semibold text-[#1A1A1A] dark:text-[#FAF3E1] truncate">
+                            <p className="text-sm font-semibold text-[var(--ink)] dark:text-[var(--ink)] truncate">
                               Commande #{order.id.slice(0, 8).toUpperCase()}
                             </p>
                             <p className="text-xs text-gray-400 mt-0.5 capitalize">
@@ -167,7 +167,7 @@ export default function FreelanceOrdersPage() {
                           <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${status.color}`}>
                             {status.label}
                           </span>
-                          <span className="text-sm font-bold text-[#1A1A1A] dark:text-[#FAF3E1]">
+                          <span className="text-sm font-bold text-[var(--ink)] dark:text-[var(--ink)]">
                             {(order.total_price ?? 0).toLocaleString("fr-DZ")} DA
                           </span>
                         </div>

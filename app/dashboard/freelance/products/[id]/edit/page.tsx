@@ -10,7 +10,7 @@ const PRODUCT_TYPES = ["Illustration", "Template", "Icônes", "Police", "Photo",
 const LICENSES = ["Usage personnel", "Usage commercial", "Licence étendue"]
 const ALLOWED_PRODUCT_EXTS = ["zip", "pdf", "psd", "ai", "svg", "png", "jpg", "jpeg", "sketch", "xd", "fig"]
 
-const inputCls = "w-full px-4 py-2.5 border border-[var(--ink-12)] rounded-xl text-sm text-[var(--ink)] bg-[var(--white)] outline-none focus:border-[#FA8112] focus:ring-2 focus:ring-[#FA8112]/10 transition-all"
+const inputCls = "w-full px-4 py-2.5 border border-[var(--ink-12)] rounded-xl text-sm text-[var(--ink)] bg-[var(--white)] outline-none focus:border-[var(--orange)] focus:ring-2 focus:ring-[var(--orange)]/10 transition-all"
 const labelCls = "block text-sm font-semibold text-[var(--ink)] mb-1.5"
 
 type PreviewImage = { file: File; preview: string }
@@ -169,7 +169,7 @@ export default function EditProductPage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[var(--cream)]">
-        <div className="w-8 h-8 border-[3px] border-[#FA8112] border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-[3px] border-[var(--orange)] border-t-transparent rounded-full animate-spin" />
       </div>
     )
   }
@@ -177,10 +177,10 @@ export default function EditProductPage() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen bg-[#FAFAFA] py-8 px-4">
+      <main className="min-h-screen bg-[var(--background)] py-8 px-4">
         <div className="max-w-2xl mx-auto">
           <div className="mb-6 flex items-center gap-4">
-            <Link href="/dashboard/freelance/products" className="p-2 rounded-xl border border-[var(--ink-12)] text-gray-500 hover:text-[#FA8112] hover:border-[#FA8112]/40 transition-all">
+            <Link href="/dashboard/freelance/products" className="p-2 rounded-xl border border-[var(--ink-12)] text-gray-500 hover:text-[var(--orange)] hover:border-[var(--orange)]/40 transition-all">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
             </Link>
             <div>
@@ -189,7 +189,7 @@ export default function EditProductPage() {
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl border border-[var(--ink-12)] p-6 shadow-sm space-y-6">
+          <div className="bg-[var(--white)] rounded-2xl border border-[var(--ink-12)] p-6 shadow-sm space-y-6">
             <div>
               <label className={labelCls}>Titre du produit</label>
               <input type="text" value={title} onChange={e => setTitle(e.target.value.slice(0, 80))} placeholder="Ex: Pack d'icônes minimalistes..." className={inputCls} />
@@ -222,7 +222,7 @@ export default function EditProductPage() {
               <label className={labelCls}>Tags <span className="text-gray-400 font-normal">(max 8)</span></label>
               <div className="flex flex-wrap gap-2 mb-2">
                 {tags.map(t => (
-                  <span key={t} className="flex items-center gap-1 px-2.5 py-1 bg-[var(--cream)] text-[#FA8112] text-xs rounded-lg border border-[#FA8112]/20">
+                  <span key={t} className="flex items-center gap-1 px-2.5 py-1 bg-[var(--cream)] text-[var(--orange)] text-xs rounded-lg border border-[var(--orange)]/20">
                     {t}<button onClick={() => setTags(p => p.filter(x => x !== t))} className="ml-1 hover:text-red-500">×</button>
                   </span>
                 ))}
@@ -230,7 +230,7 @@ export default function EditProductPage() {
               {tags.length < 8 && (
                 <div className="flex gap-2">
                   <input type="text" value={tagInput} onChange={e => setTagInput(e.target.value)} onKeyDown={e => { if (e.key === "Enter") { e.preventDefault(); addTag() } }} placeholder="Ex: icônes, design..." className={inputCls + " flex-1"} />
-                  <button onClick={addTag} className="px-4 py-2.5 bg-[#FA8112] text-white text-sm font-semibold rounded-xl">+</button>
+                  <button onClick={addTag} className="px-4 py-2.5 bg-[var(--orange)] text-white text-sm font-semibold rounded-xl">+</button>
                 </div>
               )}
             </div>
@@ -240,8 +240,8 @@ export default function EditProductPage() {
                 <label className={labelCls + " mb-0"}>Prix</label>
                 <label className="flex items-center gap-2 cursor-pointer">
                   <span className="text-sm text-gray-600">Gratuit</span>
-                  <div onClick={() => setIsFree(p => !p)} className={`relative w-10 h-5 rounded-full transition-colors cursor-pointer ${isFree ? "bg-[#FA8112]" : "bg-gray-200"}`}>
-                    <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow transition-all ${isFree ? "left-5" : "left-0.5"}`} />
+                  <div onClick={() => setIsFree(p => !p)} className={`relative w-10 h-5 rounded-full transition-colors cursor-pointer ${isFree ? "bg-[var(--orange)]" : "bg-gray-200 dark:bg-[var(--ink-12)]"}`}>
+                    <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-[var(--white)] shadow transition-all ${isFree ? "left-5" : "left-0.5"}`} />
                   </div>
                 </label>
               </div>
@@ -257,8 +257,8 @@ export default function EditProductPage() {
             <div>
               <label className={labelCls}>Images d'aperçu <span className="text-gray-400 font-normal">(1–3 images, max 5MB)</span></label>
               {totalPreviews < 3 && (
-                <div onDrop={onPreviewDrop} onDragOver={e => e.preventDefault()} className="border-2 border-dashed border-[var(--ink-12)] rounded-xl p-6 text-center cursor-pointer hover:border-[#FA8112]/40 transition-colors" onClick={() => document.getElementById("edit-preview-input")?.click()}>
-                  <p className="text-sm text-gray-500">Glissez ou <span className="text-[#FA8112] font-semibold">cliquez</span></p>
+                <div onDrop={onPreviewDrop} onDragOver={e => e.preventDefault()} className="border-2 border-dashed border-[var(--ink-12)] rounded-xl p-6 text-center cursor-pointer hover:border-[var(--orange)]/40 transition-colors" onClick={() => document.getElementById("edit-preview-input")?.click()}>
+                  <p className="text-sm text-gray-500">Glissez ou <span className="text-[var(--orange)] font-semibold">cliquez</span></p>
                   <p className="text-xs text-gray-400 mt-1">JPG, PNG, WebP — max 5MB</p>
                   <input id="edit-preview-input" type="file" accept="image/jpeg,image/png,image/webp" multiple className="hidden" onChange={onPreviewInput} />
                 </div>
@@ -267,13 +267,13 @@ export default function EditProductPage() {
               {totalPreviews > 0 && (
                 <div className="mt-3 grid grid-cols-3 gap-3">
                   {existingPreviews.map((img, i) => (
-                    <div key={img.url} className="relative aspect-video bg-gray-100 rounded-xl overflow-hidden">
+                    <div key={img.url} className="relative aspect-video bg-gray-100 dark:bg-[var(--ink-12)] rounded-xl overflow-hidden">
                       <img src={img.url} alt="" className="w-full h-full object-cover" />
                       <button onClick={() => setExistingPreviews(p => p.filter((_, j) => j !== i))} className="absolute top-1.5 right-1.5 w-6 h-6 bg-black/50 text-white rounded-full text-xs flex items-center justify-center hover:bg-red-600">×</button>
                     </div>
                   ))}
                   {newPreviews.map((img, i) => (
-                    <div key={i} className="relative aspect-video bg-gray-100 rounded-xl overflow-hidden">
+                    <div key={i} className="relative aspect-video bg-gray-100 dark:bg-[var(--ink-12)] rounded-xl overflow-hidden">
                       <img src={img.preview} alt="" className="w-full h-full object-cover" />
                       <button onClick={() => setNewPreviews(p => p.filter((_, j) => j !== i))} className="absolute top-1.5 right-1.5 w-6 h-6 bg-black/50 text-white rounded-full text-xs flex items-center justify-center hover:bg-red-600">×</button>
                       <span className="absolute bottom-1.5 left-1.5 px-1.5 py-0.5 bg-blue-500 text-white text-[9px] font-bold rounded">Nouveau</span>
@@ -293,7 +293,7 @@ export default function EditProductPage() {
               )}
               {newProductFile ? (
                 <div className="flex items-center gap-3 px-4 py-3 bg-[var(--cream)] border border-[var(--ink-12)] rounded-xl">
-                  <svg className="w-5 h-5 text-[#FA8112] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                  <svg className="w-5 h-5 text-[var(--orange)] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-[var(--ink)] truncate">{newProductFile.file.name}</p>
                     <p className="text-xs text-gray-400">{formatFileSize(newProductFile.file.size)}</p>
@@ -301,8 +301,8 @@ export default function EditProductPage() {
                   <button onClick={() => setNewProductFile(null)} className="text-gray-400 hover:text-red-500 p-1">×</button>
                 </div>
               ) : (
-                <div onDrop={onProductFileDrop} onDragOver={e => e.preventDefault()} className="border-2 border-dashed border-[var(--ink-12)] rounded-xl p-6 text-center cursor-pointer hover:border-[#FA8112]/40 transition-colors" onClick={() => document.getElementById("edit-product-file")?.click()}>
-                  <p className="text-sm text-gray-500">Glissez ou <span className="text-[#FA8112] font-semibold">cliquez</span></p>
+                <div onDrop={onProductFileDrop} onDragOver={e => e.preventDefault()} className="border-2 border-dashed border-[var(--ink-12)] rounded-xl p-6 text-center cursor-pointer hover:border-[var(--orange)]/40 transition-colors" onClick={() => document.getElementById("edit-product-file")?.click()}>
+                  <p className="text-sm text-gray-500">Glissez ou <span className="text-[var(--orange)] font-semibold">cliquez</span></p>
                   <p className="text-xs text-gray-400 mt-1">{ALLOWED_PRODUCT_EXTS.join(", ")} — max 50MB</p>
                   <input id="edit-product-file" type="file" className="hidden" onChange={onProductFileInput} />
                 </div>
@@ -313,7 +313,7 @@ export default function EditProductPage() {
             <button
               onClick={handleSubmit}
               disabled={submitting || !title.trim()}
-              className="w-full py-3 bg-[#FA8112] text-white font-bold rounded-xl hover:bg-[#E8730F] transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="w-full py-3 bg-[var(--orange)] text-white font-bold rounded-xl hover:bg-[var(--orange-dark)] transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
               {submitting ? <><div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> Enregistrement...</> : "Enregistrer les modifications"}
             </button>

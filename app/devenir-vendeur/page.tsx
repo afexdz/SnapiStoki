@@ -87,8 +87,8 @@ export default function DevenirVendeurPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#FFF8F0] dark:bg-[var(--color-bg)] flex items-center justify-center">
-        <div className="w-8 h-8 border-[3px] border-[#FA8112] border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen bg-[var(--cream)] dark:bg-[var(--color-bg)] flex items-center justify-center">
+        <div className="w-8 h-8 border-[3px] border-[var(--orange)] border-t-transparent rounded-full animate-spin" />
       </div>
     )
   }
@@ -96,14 +96,14 @@ export default function DevenirVendeurPage() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen bg-[#FFF8F0] dark:bg-[var(--color-bg)]">
+      <main className="min-h-screen bg-[var(--cream)] dark:bg-[var(--color-bg)]">
         {/* Hero */}
-        <div className="relative overflow-hidden bg-gradient-to-br from-[#FA8112] to-[#E8730F] py-20 px-4">
-          <div className="absolute -top-32 -right-32 w-96 h-96 bg-white/10 rounded-full blur-3xl" />
+        <div className="relative overflow-hidden bg-gradient-to-br from-[var(--orange)] to-[var(--orange-dark)] py-20 px-4">
+          <div className="absolute -top-32 -right-32 w-96 h-96 bg-[var(--white)]/10 rounded-full blur-3xl" />
           <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-black/10 rounded-full blur-3xl" />
           <div className="relative max-w-3xl mx-auto text-center">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/20 backdrop-blur-sm rounded-full text-white text-sm font-semibold mb-6">
-              <span className="w-2 h-2 bg-white rounded-full" />
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-[var(--white)]/20 backdrop-blur-sm rounded-full text-white text-sm font-semibold mb-6">
+              <span className="w-2 h-2 bg-[var(--white)] rounded-full" />
               Gratuit et sans engagement
             </div>
             <h1 className="text-3xl sm:text-5xl font-extrabold text-white mb-4 leading-tight" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
@@ -117,32 +117,32 @@ export default function DevenirVendeurPage() {
 
         {/* Benefits */}
         <div className="max-w-4xl mx-auto px-4 py-16">
-          <h2 className="text-2xl font-extrabold text-[#1A1A1A] dark:text-[#FAF3E1] text-center mb-10" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+          <h2 className="text-2xl font-extrabold text-[var(--ink)] dark:text-[var(--ink)] text-center mb-10" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
             Tout ce que vous obtenez gratuitement
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-12">
             {benefits.map((b) => (
               <div
                 key={b.title}
-                className="bg-white dark:bg-[var(--white)] rounded-2xl border border-[#F0E8E0] dark:border-[var(--ink-12)] p-6 shadow-sm hover:shadow-md hover:border-[#FA8112]/30 transition-all"
+                className="bg-[var(--white)] dark:bg-[var(--white)] rounded-2xl border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] p-6 shadow-sm hover:shadow-md hover:border-[var(--orange)]/30 transition-all"
               >
-                <div className="w-12 h-12 rounded-xl bg-[#FA8112]/10 text-[#FA8112] flex items-center justify-center mb-4">
+                <div className="w-12 h-12 rounded-xl bg-[var(--orange)]/10 text-[var(--orange)] flex items-center justify-center mb-4">
                   {b.icon}
                 </div>
-                <h3 className="font-bold text-[#1A1A1A] dark:text-[#FAF3E1] mb-2">{b.title}</h3>
+                <h3 className="font-bold text-[var(--ink)] dark:text-[var(--ink)] mb-2">{b.title}</h3>
                 <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">{b.desc}</p>
               </div>
             ))}
           </div>
 
           {/* CTA card */}
-          <div className="bg-white dark:bg-[var(--white)] rounded-3xl border border-[#F0E8E0] dark:border-[var(--ink-12)] shadow-xl shadow-[#FA8112]/5 p-8 sm:p-10 text-center max-w-lg mx-auto">
-            <div className="w-16 h-16 bg-gradient-to-br from-[#FA8112] to-[#E8730F] rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-lg shadow-[#FA8112]/30">
+          <div className="bg-[var(--white)] dark:bg-[var(--white)] rounded-3xl border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] shadow-xl shadow-[var(--orange)]/5 p-8 sm:p-10 text-center max-w-lg mx-auto">
+            <div className="w-16 h-16 bg-gradient-to-br from-[var(--orange)] to-[var(--orange-dark)] rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-lg shadow-[var(--orange)]/30">
               <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
               </svg>
             </div>
-            <h3 className="text-xl font-extrabold text-[#1A1A1A] dark:text-[#FAF3E1] mb-2" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+            <h3 className="text-xl font-extrabold text-[var(--ink)] dark:text-[var(--ink)] mb-2" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
               Prêt à commencer ?
             </h3>
             <p className="text-sm text-gray-500 dark:text-gray-400 mb-6 leading-relaxed">
@@ -158,7 +158,7 @@ export default function DevenirVendeurPage() {
             <button
               onClick={handleActivate}
               disabled={activating}
-              className="w-full py-4 bg-[#FA8112] hover:bg-[#E8730F] text-white font-bold rounded-xl shadow-lg shadow-[#FA8112]/30 transition-all hover:scale-[1.02] active:scale-100 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm"
+              className="w-full py-4 bg-[var(--orange)] hover:bg-[var(--orange-dark)] text-white font-bold rounded-xl shadow-lg shadow-[var(--orange)]/30 transition-all hover:scale-[1.02] active:scale-100 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm"
             >
               {activating ? (
                 <>
@@ -174,10 +174,10 @@ export default function DevenirVendeurPage() {
               Vous resterez acheteur en même temps. Aucun engagement.
             </p>
 
-            <div className="mt-6 pt-6 border-t border-[#F0E8E0] dark:border-[var(--ink-12)]">
+            <div className="mt-6 pt-6 border-t border-[var(--border-subtle)] dark:border-[var(--border-subtle)]">
               <Link
                 href="/dashboard"
-                className="text-sm text-gray-500 dark:text-gray-400 hover:text-[#FA8112] transition-colors"
+                className="text-sm text-gray-500 dark:text-gray-400 hover:text-[var(--orange)] transition-colors"
               >
                 ← Retour au tableau de bord
               </Link>

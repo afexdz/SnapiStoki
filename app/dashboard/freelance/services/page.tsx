@@ -60,18 +60,18 @@ export default function FreelanceServicesPage() {
   const skeleton = Array.from({ length: 3 })
 
   return (
-    <div className="min-h-screen bg-[#FFF8F0] dark:bg-[var(--color-bg)]">
+    <div className="min-h-screen bg-[var(--cream)] dark:bg-[var(--color-bg)]">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         {/* Header */}
         <div className="flex items-center justify-between gap-4 mb-8">
           <div className="flex items-center gap-4">
-            <Link href="/dashboard/freelance" className="p-2 rounded-xl border border-[#F0E8E0] dark:border-[var(--ink-12)] text-gray-500 hover:text-[#FA8112] hover:border-[#FA8112]/40 transition-all">
+            <Link href="/dashboard/freelance" className="p-2 rounded-xl border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] text-gray-500 hover:text-[var(--orange)] hover:border-[var(--orange)]/40 transition-all">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
             </Link>
             <div>
-              <h1 className="text-2xl font-extrabold text-[#1A1A1A] dark:text-[#FAF3E1]" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+              <h1 className="text-2xl font-extrabold text-[var(--ink)] dark:text-[var(--ink)]" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
                 Mes services
               </h1>
               <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
@@ -81,7 +81,7 @@ export default function FreelanceServicesPage() {
           </div>
           <Link
             href="/services/new"
-            className="inline-flex items-center gap-2 px-4 py-2.5 bg-[#FA8112] hover:bg-[#E8730F] text-white text-sm font-semibold rounded-xl shadow-md shadow-[#FA8112]/20 transition-all"
+            className="inline-flex items-center gap-2 px-4 py-2.5 bg-[var(--orange)] hover:bg-[var(--orange-dark)] text-white text-sm font-semibold rounded-xl shadow-md shadow-[var(--orange)]/20 transition-all"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -94,20 +94,20 @@ export default function FreelanceServicesPage() {
         <div className="space-y-4">
           {loading
             ? skeleton.map((_, i) => (
-                <div key={i} className="bg-white dark:bg-[var(--white)] rounded-2xl border border-[#F0E8E0] dark:border-[var(--ink-12)] p-5 animate-pulse">
+                <div key={i} className="bg-[var(--white)] dark:bg-[var(--white)] rounded-2xl border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] p-5 animate-pulse">
                   <div className="flex gap-4">
                     <div className="w-20 h-16 rounded-xl bg-gray-200 dark:bg-[var(--cream)] shrink-0" />
                     <div className="flex-1 space-y-2 py-1">
                       <div className="h-4 w-2/3 bg-gray-200 dark:bg-[var(--cream)] rounded" />
-                      <div className="h-3 w-1/3 bg-gray-100 dark:bg-[#333] rounded" />
+                      <div className="h-3 w-1/3 bg-gray-100 dark:bg-[var(--ink-12)] rounded" />
                     </div>
                   </div>
                 </div>
               ))
             : services.length === 0
               ? (
-                <div className="bg-white dark:bg-[var(--white)] rounded-2xl border border-[#F0E8E0] dark:border-[var(--ink-12)] p-16 text-center">
-                  <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-[#FFF8F0] dark:bg-[var(--cream)] flex items-center justify-center">
+                <div className="bg-[var(--white)] dark:bg-[var(--white)] rounded-2xl border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] p-16 text-center">
+                  <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-[var(--cream)] dark:bg-[var(--cream)] flex items-center justify-center">
                     <svg className="w-8 h-8 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                     </svg>
@@ -116,7 +116,7 @@ export default function FreelanceServicesPage() {
                   <p className="text-gray-400 dark:text-gray-500 text-xs mb-5">Créez votre premier service pour commencer à recevoir des commandes</p>
                   <Link
                     href="/services/new"
-                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#FA8112] hover:bg-[#E8730F] text-white text-sm font-semibold rounded-xl shadow-md shadow-[#FA8112]/20 transition-all"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-[var(--orange)] hover:bg-[var(--orange-dark)] text-white text-sm font-semibold rounded-xl shadow-md shadow-[var(--orange)]/20 transition-all"
                   >
                     Publier un service →
                   </Link>
@@ -125,10 +125,10 @@ export default function FreelanceServicesPage() {
               : services.map(service => {
                   const thumb = service.gallery?.[0] ?? service.images?.[0]
                   return (
-                    <div key={service.id} className="bg-white dark:bg-[var(--white)] rounded-2xl border border-[#F0E8E0] dark:border-[var(--ink-12)] p-5 hover:border-[#FA8112]/20 transition-all">
+                    <div key={service.id} className="bg-[var(--white)] dark:bg-[var(--white)] rounded-2xl border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] p-5 hover:border-[var(--orange)]/20 transition-all">
                       <div className="flex gap-4">
                         {/* Thumbnail */}
-                        <div className="w-20 h-16 rounded-xl bg-[#FFF8F0] dark:bg-[var(--cream)] overflow-hidden shrink-0 flex items-center justify-center">
+                        <div className="w-20 h-16 rounded-xl bg-[var(--cream)] dark:bg-[var(--cream)] overflow-hidden shrink-0 flex items-center justify-center">
                           {thumb ? (
                             <img src={thumb} alt="" className="w-full h-full object-cover" />
                           ) : (
@@ -142,7 +142,7 @@ export default function FreelanceServicesPage() {
                         <div className="flex-1 min-w-0">
                           <div className="flex items-start justify-between gap-3">
                             <div className="min-w-0">
-                              <h3 className="text-sm font-semibold text-[#1A1A1A] dark:text-[#FAF3E1] truncate">{service.title}</h3>
+                              <h3 className="text-sm font-semibold text-[var(--ink)] dark:text-[var(--ink)] truncate">{service.title}</h3>
                               <div className="flex items-center gap-2 mt-1 flex-wrap">
                                 {service.category && (
                                   <span className="text-xs text-gray-400 dark:text-gray-500">{service.category}</span>
@@ -160,7 +160,7 @@ export default function FreelanceServicesPage() {
                               </div>
                             </div>
                             <div className="text-right shrink-0">
-                              <span className="text-sm font-black text-[#FA8112]">{(service.price ?? 0).toLocaleString("fr-DZ")} DA</span>
+                              <span className="text-sm font-black text-[var(--orange)]">{(service.price ?? 0).toLocaleString("fr-DZ")} DA</span>
                             </div>
                           </div>
 
@@ -168,19 +168,19 @@ export default function FreelanceServicesPage() {
                           <div className="flex items-center gap-2 mt-3 flex-wrap">
                             <button
                               onClick={() => handleToggleStatus(service.id, service.is_active)}
-                              className="px-3 py-1.5 rounded-lg border border-[#F0E8E0] dark:border-[var(--ink-12)] text-xs font-medium text-gray-600 dark:text-gray-400 hover:border-[#FA8112]/40 hover:text-[#FA8112] transition-all"
+                              className="px-3 py-1.5 rounded-lg border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] text-xs font-medium text-gray-600 dark:text-gray-400 hover:border-[var(--orange)]/40 hover:text-[var(--orange)] transition-all"
                             >
                               {service.is_active ? "Mettre en pause" : "Réactiver"}
                             </button>
                           <Link
                             href={`/dashboard/freelance/services/${service.id}/edit`}
-                            className="px-3 py-1.5 rounded-lg border border-[#F0E8E0] dark:border-[var(--ink-12)] text-xs font-medium text-gray-600 dark:text-gray-400 hover:border-[#FA8112]/40 hover:text-[#FA8112] transition-all"
+                            className="px-3 py-1.5 rounded-lg border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] text-xs font-medium text-gray-600 dark:text-gray-400 hover:border-[var(--orange)]/40 hover:text-[var(--orange)] transition-all"
                           >
                             Modifier
                           </Link>
                           <Link
                             href={`/services/${service.id}`}
-                            className="px-3 py-1.5 rounded-lg border border-[#F0E8E0] dark:border-[var(--ink-12)] text-xs font-medium text-gray-600 dark:text-gray-400 hover:border-[#FA8112]/40 hover:text-[#FA8112] transition-all"
+                            className="px-3 py-1.5 rounded-lg border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] text-xs font-medium text-gray-600 dark:text-gray-400 hover:border-[var(--orange)]/40 hover:text-[var(--orange)] transition-all"
                           >
                             Voir la fiche
                           </Link>

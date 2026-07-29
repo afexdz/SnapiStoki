@@ -51,7 +51,7 @@ type SortKey = "relevance" | "price_asc" | "price_desc" | "rating"
 
 /* ─── Constants ─────────────────────────────────────────────── */
 const GRADIENTS = [
-  "from-[#FA8112] to-[#E8730F]",
+  "from-[var(--orange)] to-[var(--orange-dark)]",
   "from-sky-500 to-blue-600",
   "from-emerald-500 to-teal-600",
   "from-pink-500 to-rose-600",
@@ -69,7 +69,7 @@ const SORT_OPTIONS: { value: SortKey; label: string }[] = [
 /* ─── Skeleton ───────────────────────────────────────────────── */
 function SkeletonCard() {
   return (
-    <div className="bg-white dark:bg-[var(--white)] rounded-2xl border border-[#F0E8E0] dark:border-[var(--ink-12)] overflow-hidden animate-pulse">
+    <div className="bg-[var(--white)] dark:bg-[var(--white)] rounded-2xl border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] overflow-hidden animate-pulse">
       <div className="h-40 bg-gray-100 dark:bg-[var(--cream)]" />
       <div className="p-4 space-y-2.5">
         <div className="h-4 bg-gray-100 dark:bg-[var(--cream)] rounded-lg w-3/4" />
@@ -111,7 +111,7 @@ function Avatar({ url, name, size = 10 }: { url: string | null; name: string | n
   const cls = `w-${size} h-${size} rounded-xl object-cover`
   if (url) return <img src={url} alt={name ?? ""} className={cls} />
   return (
-    <div className={`w-${size} h-${size} rounded-xl bg-gradient-to-br from-[#FA8112] to-[#E8730F] flex items-center justify-center text-white text-xs font-bold shrink-0`}>
+    <div className={`w-${size} h-${size} rounded-xl bg-gradient-to-br from-[var(--orange)] to-[var(--orange-dark)] flex items-center justify-center text-white text-xs font-bold shrink-0`}>
       {initials}
     </div>
   )
@@ -121,7 +121,7 @@ function Avatar({ url, name, size = 10 }: { url: string | null; name: string | n
 function EmptyState({ label }: { label: string }) {
   return (
     <div className="flex flex-col items-center justify-center py-14 text-center">
-      <div className="w-16 h-16 mb-4 rounded-2xl bg-[#FFF8F0] dark:bg-[var(--white)] flex items-center justify-center">
+      <div className="w-16 h-16 mb-4 rounded-2xl bg-[var(--cream)] dark:bg-[var(--white)] flex items-center justify-center">
         <svg className="w-8 h-8 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
         </svg>
@@ -136,7 +136,7 @@ function FreelancerCard({ svc, index }: { svc: ServiceResult; index: number }) {
   const img = svc.images?.[0]
   const name = svc.profile?.full_name ?? "Freelance"
   return (
-    <div className="group bg-white dark:bg-[var(--white)] rounded-2xl border border-[#F0E8E0] dark:border-[var(--ink-12)] hover:border-[#FA8112]/30 hover:shadow-xl hover:shadow-[#FA8112]/10 transition-all overflow-hidden flex flex-col">
+    <div className="group bg-[var(--white)] dark:bg-[var(--white)] rounded-2xl border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] hover:border-[var(--orange)]/30 hover:shadow-xl hover:shadow-[var(--orange)]/10 transition-all overflow-hidden flex flex-col">
       {/* Cover */}
       <div className={`h-36 relative overflow-hidden shrink-0 ${!img ? `bg-gradient-to-br ${GRADIENTS[index % GRADIENTS.length]}` : ""}`}>
         {img && <img src={img} alt={svc.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />}
@@ -152,10 +152,10 @@ function FreelancerCard({ svc, index }: { svc: ServiceResult; index: number }) {
         <div className="flex items-center gap-2">
           <Avatar url={svc.profile?.avatar_url ?? null} name={name} size={7} />
           <div className="min-w-0">
-            <p className="text-xs font-semibold text-[#1A1A1A] dark:text-[#FAF3E1] truncate">{name}</p>
+            <p className="text-xs font-semibold text-[var(--ink)] dark:text-[var(--ink)] truncate">{name}</p>
             {svc.profile?.wilaya && (
               <p className="text-xs text-gray-400 truncate flex items-center gap-0.5">
-                <svg className="w-3 h-3 shrink-0 text-[#FA8112]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-3 h-3 shrink-0 text-[var(--orange)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
@@ -166,7 +166,7 @@ function FreelancerCard({ svc, index }: { svc: ServiceResult; index: number }) {
         </div>
 
         {/* Title */}
-        <h3 className="text-sm font-semibold text-[#1A1A1A] dark:text-[#FAF3E1] leading-snug line-clamp-2 group-hover:text-[#FA8112] transition-colors flex-1">
+        <h3 className="text-sm font-semibold text-[var(--ink)] dark:text-[var(--ink)] leading-snug line-clamp-2 group-hover:text-[var(--orange)] transition-colors flex-1">
           {svc.title}
         </h3>
 
@@ -178,15 +178,15 @@ function FreelancerCard({ svc, index }: { svc: ServiceResult; index: number }) {
               <span className="text-xs text-gray-400">{svc.rating.toFixed(1)}</span>
             </div>
           ) : <span />}
-          <span className="text-sm font-extrabold text-[#1A1A1A] dark:text-[#FAF3E1]">
-            {svc.price.toLocaleString("fr-DZ")} <span className="text-[#FA8112] font-bold">DA</span>
+          <span className="text-sm font-extrabold text-[var(--ink)] dark:text-[var(--ink)]">
+            {svc.price.toLocaleString("fr-DZ")} <span className="text-[var(--orange)] font-bold">DA</span>
           </span>
         </div>
 
         {/* CTA */}
         <Link
           href={`/profile?seller=${svc.seller_id}`}
-          className="w-full flex items-center justify-center gap-1.5 py-2.5 bg-[#FA8112] hover:bg-[#E8730F] text-white text-sm font-semibold rounded-xl transition-colors shadow-md shadow-[#FA8112]/20"
+          className="w-full flex items-center justify-center gap-1.5 py-2.5 bg-[var(--orange)] hover:bg-[var(--orange-dark)] text-white text-sm font-semibold rounded-xl transition-colors shadow-md shadow-[var(--orange)]/20"
         >
           Voir le profil →
         </Link>
@@ -199,7 +199,7 @@ function FreelancerCard({ svc, index }: { svc: ServiceResult; index: number }) {
 function ProductCard({ product, index }: { product: ProductResult; index: number }) {
   const coverImg = product.preview_urls?.[0] ?? product.preview_images?.[0] ?? null
   return (
-    <div className="group bg-white dark:bg-[var(--white)] rounded-2xl border border-[#F0E8E0] dark:border-[var(--ink-12)] hover:border-[#FA8112]/30 hover:shadow-xl hover:shadow-[#FA8112]/10 transition-all overflow-hidden flex flex-col">
+    <div className="group bg-[var(--white)] dark:bg-[var(--white)] rounded-2xl border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] hover:border-[var(--orange)]/30 hover:shadow-xl hover:shadow-[var(--orange)]/10 transition-all overflow-hidden flex flex-col">
       {/* Thumbnail */}
       <div className={`h-36 relative overflow-hidden shrink-0 ${!coverImg ? `bg-gradient-to-br ${GRADIENTS[(index + 2) % GRADIENTS.length]}` : ""}`}>
         {coverImg && (
@@ -212,7 +212,7 @@ function ProductCard({ product, index }: { product: ProductResult; index: number
             </span>
           )}
           {(product.format ?? product.file_format) && (
-            <span className="px-2 py-0.5 bg-[#FA8112]/80 backdrop-blur-sm text-white text-xs rounded-lg font-medium">
+            <span className="px-2 py-0.5 bg-[var(--orange)]/80 backdrop-blur-sm text-white text-xs rounded-lg font-medium">
               {product.format ?? product.file_format}
             </span>
           )}
@@ -221,7 +221,7 @@ function ProductCard({ product, index }: { product: ProductResult; index: number
 
       <div className="p-4 flex flex-col flex-1 gap-3">
         {/* Title */}
-        <h3 className="text-sm font-semibold text-[#1A1A1A] dark:text-[#FAF3E1] leading-snug line-clamp-2 group-hover:text-[#FA8112] transition-colors flex-1">
+        <h3 className="text-sm font-semibold text-[var(--ink)] dark:text-[var(--ink)] leading-snug line-clamp-2 group-hover:text-[var(--orange)] transition-colors flex-1">
           {product.title}
         </h3>
 
@@ -237,12 +237,12 @@ function ProductCard({ product, index }: { product: ProductResult; index: number
 
         {/* Price + CTA */}
         <div className="flex items-center justify-between">
-          <span className="text-base font-extrabold text-[#1A1A1A] dark:text-[#FAF3E1]">
-            {product.price.toLocaleString("fr-DZ")} <span className="text-[#FA8112] font-bold text-sm">DA</span>
+          <span className="text-base font-extrabold text-[var(--ink)] dark:text-[var(--ink)]">
+            {product.price.toLocaleString("fr-DZ")} <span className="text-[var(--orange)] font-bold text-sm">DA</span>
           </span>
           <Link
             href={`/products/${product.id}`}
-            className="flex items-center gap-1 px-4 py-2 bg-[#FA8112] hover:bg-[#E8730F] text-white text-xs font-semibold rounded-xl transition-colors shadow-md shadow-[#FA8112]/20"
+            className="flex items-center gap-1 px-4 py-2 bg-[var(--orange)] hover:bg-[var(--orange-dark)] text-white text-xs font-semibold rounded-xl transition-colors shadow-md shadow-[var(--orange)]/20"
           >
             {product.is_free ? "Télécharger" : "Acheter"}
           </Link>
@@ -265,7 +265,7 @@ function FilterBar({
   categories: string[]
 }) {
   return (
-    <div className="flex flex-wrap gap-3 items-center py-4 border-y border-[#F0E8E0] dark:border-[var(--ink-12)]">
+    <div className="flex flex-wrap gap-3 items-center py-4 border-y border-[var(--border-subtle)] dark:border-[var(--border-subtle)]">
       <div className="flex items-center gap-2">
         <svg className="w-4 h-4 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L13 13.414V19a1 1 0 01-.553.894l-4 2A1 1 0 017 21v-7.586L3.293 6.707A1 1 0 013 6V4z" />
@@ -276,7 +276,7 @@ function FilterBar({
       <select
         value={sort}
         onChange={(e) => onSort(e.target.value as SortKey)}
-        className="text-sm px-3 py-1.5 rounded-xl border border-[#F0E8E0] dark:border-[var(--ink-12)] bg-white dark:bg-[var(--white)] text-[#1A1A1A] dark:text-[#FAF3E1] outline-none focus:border-[#FA8112] transition-colors cursor-pointer"
+        className="text-sm px-3 py-1.5 rounded-xl border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] bg-[var(--white)] dark:bg-[var(--white)] text-[var(--ink)] dark:text-[var(--ink)] outline-none focus:border-[var(--orange)] transition-colors cursor-pointer"
       >
         {SORT_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
       </select>
@@ -285,7 +285,7 @@ function FilterBar({
         <select
           value={filterCategory}
           onChange={(e) => onCategory(e.target.value)}
-          className="text-sm px-3 py-1.5 rounded-xl border border-[#F0E8E0] dark:border-[var(--ink-12)] bg-white dark:bg-[var(--white)] text-[#1A1A1A] dark:text-[#FAF3E1] outline-none focus:border-[#FA8112] transition-colors cursor-pointer"
+          className="text-sm px-3 py-1.5 rounded-xl border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] bg-[var(--white)] dark:bg-[var(--white)] text-[var(--ink)] dark:text-[var(--ink)] outline-none focus:border-[var(--orange)] transition-colors cursor-pointer"
         >
           <option value="">Toutes les catégories</option>
           {categories.map(c => <option key={c} value={c}>{c}</option>)}
@@ -295,7 +295,7 @@ function FilterBar({
       {filterCategory && (
         <button
           onClick={() => { onCategory("") }}
-          className="text-xs text-[#FA8112] hover:text-[#E8730F] font-medium transition-colors"
+          className="text-xs text-[var(--orange)] hover:text-[var(--orange-dark)] font-medium transition-colors"
         >
           Réinitialiser
         </button>
@@ -404,12 +404,12 @@ function SearchResults() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen bg-[#FFF8F0] dark:bg-[var(--color-bg)]">
+      <main className="min-h-screen bg-[var(--cream)] dark:bg-[var(--color-bg)]">
 
         {/* Search header */}
-        <div className="bg-white dark:bg-[var(--white)] border-b border-[#F0E8E0] dark:border-[var(--ink-12)] py-6">
+        <div className="bg-[var(--white)] dark:bg-[var(--white)] border-b border-[var(--border-subtle)] dark:border-[var(--border-subtle)] py-6">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <form onSubmit={handleSearch} className="flex items-center gap-3 bg-[#FFF8F0] dark:bg-[var(--color-bg)] rounded-xl border border-[#F0E8E0] dark:border-[var(--ink-12)] overflow-hidden focus-within:border-[#FA8112] focus-within:ring-2 focus-within:ring-[#FA8112]/20 transition-all">
+            <form onSubmit={handleSearch} className="flex items-center gap-3 bg-[var(--cream)] dark:bg-[var(--color-bg)] rounded-xl border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] overflow-hidden focus-within:border-[var(--orange)] focus-within:ring-2 focus-within:ring-[var(--orange)]/20 transition-all">
               <div className="pl-4 text-gray-400 shrink-0">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
@@ -420,11 +420,11 @@ function SearchResults() {
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 placeholder="Rechercher un service ou un produit…"
-                className="flex-1 py-3.5 bg-transparent text-sm text-[#1A1A1A] dark:text-[#FAF3E1] placeholder-gray-400 outline-none"
+                className="flex-1 py-3.5 bg-transparent text-sm text-[var(--ink)] dark:text-[var(--ink)] placeholder-gray-400 outline-none"
               />
               <button
                 type="submit"
-                className="m-1.5 px-5 py-2.5 bg-[#FA8112] hover:bg-[#E8730F] text-white text-sm font-semibold rounded-lg transition-colors shrink-0"
+                className="m-1.5 px-5 py-2.5 bg-[var(--orange)] hover:bg-[var(--orange-dark)] text-white text-sm font-semibold rounded-lg transition-colors shrink-0"
               >
                 Rechercher
               </button>
@@ -434,8 +434,8 @@ function SearchResults() {
             {!loading && q && (
               <p className="mt-3 text-sm text-gray-500 dark:text-gray-400">
                 {totalCount > 0
-                  ? <><span className="font-bold text-[#1A1A1A] dark:text-[#FAF3E1]">{totalCount}</span> résultat{totalCount > 1 ? "s" : ""} pour <span className="font-bold text-[#FA8112]">"{q}"</span></>
-                  : <>Aucun résultat pour <span className="font-bold text-[#FA8112]">"{q}"</span></>
+                  ? <><span className="font-bold text-[var(--ink)] dark:text-[var(--ink)]">{totalCount}</span> résultat{totalCount > 1 ? "s" : ""} pour <span className="font-bold text-[var(--orange)]">"{q}"</span></>
+                  : <>Aucun résultat pour <span className="font-bold text-[var(--orange)]">"{q}"</span></>
                 }
               </p>
             )}
@@ -461,12 +461,12 @@ function SearchResults() {
           ) : !q.trim() ? (
             /* No query */
             <div className="text-center py-24">
-              <div className="w-20 h-20 mx-auto mb-5 rounded-3xl bg-[#FA8112]/10 flex items-center justify-center">
-                <svg className="w-10 h-10 text-[#FA8112]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-20 h-20 mx-auto mb-5 rounded-3xl bg-[var(--orange)]/10 flex items-center justify-center">
+                <svg className="w-10 h-10 text-[var(--orange)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                 </svg>
               </div>
-              <h2 className="text-xl font-bold text-[#1A1A1A] dark:text-[#FAF3E1] mb-2">Que recherchez-vous ?</h2>
+              <h2 className="text-xl font-bold text-[var(--ink)] dark:text-[var(--ink)] mb-2">Que recherchez-vous ?</h2>
               <p className="text-gray-400 text-sm">Tapez un service, une compétence ou un produit digital…</p>
             </div>
           ) : (
@@ -475,20 +475,20 @@ function SearchResults() {
               <section>
                 <div className="flex items-center justify-between mb-5">
                   <div className="flex items-center gap-3">
-                    <h2 className="text-xl font-black text-[#1A1A1A] dark:text-[#FAF3E1]">Freelances disponibles</h2>
+                    <h2 className="text-xl font-black text-[var(--ink)] dark:text-[var(--ink)]">Freelances disponibles</h2>
                     {filteredServices.length > 0 && (
-                      <span className="px-2.5 py-0.5 bg-[#FA8112]/10 text-[#FA8112] text-xs font-bold rounded-full">
+                      <span className="px-2.5 py-0.5 bg-[var(--orange)]/10 text-[var(--orange)] text-xs font-bold rounded-full">
                         {filteredServices.length}
                       </span>
                     )}
                   </div>
-                  <Link href="/freelances" className="text-sm text-[#FA8112] hover:text-[#E8730F] font-medium transition-colors">
+                  <Link href="/freelances" className="text-sm text-[var(--orange)] hover:text-[var(--orange-dark)] font-medium transition-colors">
                     Voir tous →
                   </Link>
                 </div>
 
                 {filteredServices.length === 0 ? (
-                  <div className="bg-white dark:bg-[var(--white)] rounded-2xl border border-[#F0E8E0] dark:border-[var(--ink-12)]">
+                  <div className="bg-[var(--white)] dark:bg-[var(--white)] rounded-2xl border border-[var(--border-subtle)] dark:border-[var(--border-subtle)]">
                     <EmptyState label="Aucun freelance trouvé pour cette recherche" />
                   </div>
                 ) : (
@@ -502,29 +502,29 @@ function SearchResults() {
 
               {/* Divider */}
               <div className="flex items-center gap-4">
-                <div className="flex-1 h-px bg-[#F0E8E0] dark:bg-[var(--cream)]" />
+                <div className="flex-1 h-px bg-[var(--border-subtle)] dark:bg-[var(--border-subtle)]" />
                 <span className="text-xs font-semibold text-gray-400 uppercase tracking-widest">Produits digitaux</span>
-                <div className="flex-1 h-px bg-[#F0E8E0] dark:bg-[var(--cream)]" />
+                <div className="flex-1 h-px bg-[var(--border-subtle)] dark:bg-[var(--border-subtle)]" />
               </div>
 
               {/* ── Section 2: Marketplace ── */}
               <section>
                 <div className="flex items-center justify-between mb-5">
                   <div className="flex items-center gap-3">
-                    <h2 className="text-xl font-black text-[#1A1A1A] dark:text-[#FAF3E1]">Produits digitaux</h2>
+                    <h2 className="text-xl font-black text-[var(--ink)] dark:text-[var(--ink)]">Produits digitaux</h2>
                     {filteredProducts.length > 0 && (
-                      <span className="px-2.5 py-0.5 bg-[#FA8112]/10 text-[#FA8112] text-xs font-bold rounded-full">
+                      <span className="px-2.5 py-0.5 bg-[var(--orange)]/10 text-[var(--orange)] text-xs font-bold rounded-full">
                         {filteredProducts.length}
                       </span>
                     )}
                   </div>
-                  <Link href="/marketplace" className="text-sm text-[#FA8112] hover:text-[#E8730F] font-medium transition-colors">
+                  <Link href="/marketplace" className="text-sm text-[var(--orange)] hover:text-[var(--orange-dark)] font-medium transition-colors">
                     Voir tout →
                   </Link>
                 </div>
 
                 {filteredProducts.length === 0 ? (
-                  <div className="bg-white dark:bg-[var(--white)] rounded-2xl border border-[#F0E8E0] dark:border-[var(--ink-12)]">
+                  <div className="bg-[var(--white)] dark:bg-[var(--white)] rounded-2xl border border-[var(--border-subtle)] dark:border-[var(--border-subtle)]">
                     <EmptyState label="Aucun produit trouvé pour cette recherche" />
                   </div>
                 ) : (
@@ -548,8 +548,8 @@ function SearchResults() {
 export default function SearchPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-[#FFF8F0] dark:bg-[var(--color-bg)] flex items-center justify-center">
-        <div className="w-8 h-8 border-[3px] border-[#FA8112] border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen bg-[var(--cream)] dark:bg-[var(--color-bg)] flex items-center justify-center">
+        <div className="w-8 h-8 border-[3px] border-[var(--orange)] border-t-transparent rounded-full animate-spin" />
       </div>
     }>
       <SearchResults />

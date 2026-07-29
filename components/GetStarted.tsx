@@ -15,11 +15,11 @@ const points = [
 
 export default function GetStarted() {
   return (
-    <section className="py-[88px] bg-white dark:bg-[var(--color-bg)]">
+    <section className="py-[88px] bg-[var(--white)] dark:bg-[var(--color-bg)]">
       <div className="max-w-[1180px] mx-auto px-4 sm:px-6">
         <div
           id="vendre"
-          className="relative overflow-hidden rounded-[22px] grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] items-center gap-8 lg:gap-11 bg-[#1A1A1A] dark:bg-[var(--white)]"
+          className="relative overflow-hidden rounded-[22px] grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] items-center gap-8 lg:gap-11 bg-[var(--ink)] dark:bg-[var(--white)]"
           style={{
             padding: "clamp(32px, 5vw, 64px) clamp(20px, 5vw, 56px)",
           }}
@@ -59,7 +59,7 @@ export default function GetStarted() {
             </p>
             <a
               href="/register"
-              className="inline-flex items-center gap-2 font-bold text-[15px] text-white rounded-[10px] font-jakarta transition-all hover:-translate-y-px bg-[#FA8112] hover:bg-[#E06F05] shadow-[0_8px_20px_rgba(250,129,18,0.28)]"
+              className="inline-flex items-center gap-2 font-bold text-[15px] text-white rounded-[10px] font-jakarta transition-all hover:-translate-y-px bg-[var(--orange)] hover:bg-[var(--orange-dark)] shadow-[0_8px_20px_rgba(250,129,18,0.28)]"
               style={{ padding: "12px 22px" }}
             >
               Ouvrir ma boutique gratuitement

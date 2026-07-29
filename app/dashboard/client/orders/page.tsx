@@ -50,17 +50,17 @@ export default function ClientOrdersPage() {
   const skeleton = Array.from({ length: 4 })
 
   return (
-    <div className="min-h-screen bg-[#FFF8F0] dark:bg-[var(--color-bg)]">
+    <div className="min-h-screen bg-[var(--cream)] dark:bg-[var(--color-bg)]">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         {/* Header */}
         <div className="flex items-center gap-4 mb-8">
-          <Link href="/dashboard/client" className="p-2 rounded-xl border border-[#F0E8E0] dark:border-[var(--ink-12)] text-gray-500 hover:text-[#FA8112] hover:border-[#FA8112]/40 transition-all">
+          <Link href="/dashboard/client" className="p-2 rounded-xl border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] text-gray-500 hover:text-[var(--orange)] hover:border-[var(--orange)]/40 transition-all">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
           </Link>
           <div>
-            <h1 className="text-2xl font-extrabold text-[#1A1A1A] dark:text-[#FAF3E1]" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+            <h1 className="text-2xl font-extrabold text-[var(--ink)] dark:text-[var(--ink)]" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
               Mes commandes
             </h1>
             <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Suivez l'avancement de vos commandes</p>
@@ -81,8 +81,8 @@ export default function ClientOrdersPage() {
               onClick={() => setFilter(f.key)}
               className={`shrink-0 px-4 py-2 rounded-xl text-sm font-medium transition-all ${
                 filter === f.key
-                  ? "bg-[#FA8112] text-white shadow-md shadow-[#FA8112]/20"
-                  : "bg-white dark:bg-[var(--white)] border border-[#F0E8E0] dark:border-[var(--ink-12)] text-gray-600 dark:text-gray-400 hover:border-[#FA8112]/40"
+                  ? "bg-[var(--orange)] text-white shadow-md shadow-[var(--orange)]/20"
+                  : "bg-[var(--white)] dark:bg-[var(--white)] border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] text-gray-600 dark:text-gray-400 hover:border-[var(--orange)]/40"
               }`}
             >
               {f.label}
@@ -94,11 +94,11 @@ export default function ClientOrdersPage() {
         <div className="space-y-3">
           {loading
             ? skeleton.map((_, i) => (
-                <div key={i} className="bg-white dark:bg-[var(--white)] rounded-2xl border border-[#F0E8E0] dark:border-[var(--ink-12)] p-5 animate-pulse">
+                <div key={i} className="bg-[var(--white)] dark:bg-[var(--white)] rounded-2xl border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] p-5 animate-pulse">
                   <div className="flex items-center justify-between">
                     <div className="space-y-2">
                       <div className="h-4 w-40 bg-gray-200 dark:bg-[var(--cream)] rounded" />
-                      <div className="h-3 w-24 bg-gray-100 dark:bg-[#333] rounded" />
+                      <div className="h-3 w-24 bg-gray-100 dark:bg-[var(--ink-12)] rounded" />
                     </div>
                     <div className="h-6 w-20 bg-gray-200 dark:bg-[var(--cream)] rounded-full" />
                   </div>
@@ -106,8 +106,8 @@ export default function ClientOrdersPage() {
               ))
             : filtered.length === 0
               ? (
-                <div className="bg-white dark:bg-[var(--white)] rounded-2xl border border-[#F0E8E0] dark:border-[var(--ink-12)] p-16 text-center">
-                  <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-[#FFF8F0] dark:bg-[var(--cream)] flex items-center justify-center">
+                <div className="bg-[var(--white)] dark:bg-[var(--white)] rounded-2xl border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] p-16 text-center">
+                  <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-[var(--cream)] dark:bg-[var(--cream)] flex items-center justify-center">
                     <svg className="w-8 h-8 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                     </svg>
@@ -115,28 +115,28 @@ export default function ClientOrdersPage() {
                   <p className="text-gray-500 dark:text-gray-400 text-sm font-medium">Aucune commande trouvée</p>
                   <Link
                     href="/freelances"
-                    className="inline-flex items-center gap-1.5 mt-4 text-sm font-semibold text-[#FA8112] hover:text-[#E8730F] transition-colors"
+                    className="inline-flex items-center gap-1.5 mt-4 text-sm font-semibold text-[var(--orange)] hover:text-[var(--orange-dark)] transition-colors"
                   >
                     Trouver un freelance →
                   </Link>
                 </div>
               )
               : filtered.map(order => {
-                  const status = STATUS_LABELS[order.status] ?? { label: order.status, color: "bg-gray-100 text-gray-600" }
+                  const status = STATUS_LABELS[order.status] ?? { label: order.status, color: "bg-gray-100 dark:bg-[var(--ink-12)] text-gray-600" }
                   return (
                     <div
                       key={order.id}
-                      className="bg-white dark:bg-[var(--white)] rounded-2xl border border-[#F0E8E0] dark:border-[var(--ink-12)] p-5 hover:border-[#FA8112]/30 hover:shadow-md transition-all"
+                      className="bg-[var(--white)] dark:bg-[var(--white)] rounded-2xl border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] p-5 hover:border-[var(--orange)]/30 hover:shadow-md transition-all"
                     >
                       <div className="flex items-center justify-between gap-4">
                         <div className="flex items-center gap-4 min-w-0">
-                          <div className="w-10 h-10 rounded-xl bg-[#FA8112]/10 flex items-center justify-center shrink-0">
-                            <svg className="w-5 h-5 text-[#FA8112]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <div className="w-10 h-10 rounded-xl bg-[var(--orange)]/10 flex items-center justify-center shrink-0">
+                            <svg className="w-5 h-5 text-[var(--orange)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                             </svg>
                           </div>
                           <div className="min-w-0">
-                            <p className="text-sm font-semibold text-[#1A1A1A] dark:text-[#FAF3E1] truncate">
+                            <p className="text-sm font-semibold text-[var(--ink)] dark:text-[var(--ink)] truncate">
                               Commande #{order.id.slice(0, 8).toUpperCase()}
                             </p>
                             <p className="text-xs text-gray-400 mt-0.5 capitalize">
@@ -149,7 +149,7 @@ export default function ClientOrdersPage() {
                           <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${status.color}`}>
                             {status.label}
                           </span>
-                          <span className="text-sm font-bold text-[#1A1A1A] dark:text-[#FAF3E1]">
+                          <span className="text-sm font-bold text-[var(--ink)] dark:text-[var(--ink)]">
                             {(order.total_price ?? 0).toLocaleString("fr-DZ")} DA
                           </span>
                         </div>

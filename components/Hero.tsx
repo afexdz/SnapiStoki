@@ -268,7 +268,7 @@ export default function Hero({ servicesCount, profilesCount }: HeroProps) {
                 style={{ top: 0, left: "12%", transform: "rotate(-3deg)", zIndex: 3 }}
               >
                 <MiniServiceCard
-                  thumbBg="bg-gradient-to-br from-[#FA8112] via-[#FFB86B] to-[#FFE3C2]"
+                  thumbBg="bg-gradient-to-br from-[var(--orange)] via-[#FFB86B] to-[#FFE3C2]"
                   thumbContent={
                     <span className="font-extrabold text-[44px] text-white/90 font-jakarta" style={{ fontFamily: "serif" }}>
                       Aa
@@ -290,9 +290,9 @@ export default function Hero({ servicesCount, profilesCount }: HeroProps) {
                 style={{ top: "150px", right: 0, transform: "rotate(2.5deg)", zIndex: 2 }}
               >
                 <MiniServiceCard
-                  thumbBg="bg-[#1A1A1A]"
+                  thumbBg="bg-[var(--ink)]"
                   thumbContent={
-                    <span className="font-bold text-[34px] text-[#FA8112]" style={{ fontFamily: "monospace" }}>
+                    <span className="font-bold text-[34px] text-[var(--orange)]" style={{ fontFamily: "monospace" }}>
                       {"</>"}
                     </span>
                   }

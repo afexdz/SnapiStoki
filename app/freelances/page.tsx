@@ -124,11 +124,11 @@ export default function FreelancesPage() {
   const FilterPanel = () => (
     <div className="space-y-6">
       <div>
-        <h3 className="text-sm font-semibold text-[#1A1A1A] dark:text-[#FAF3E1] mb-3">Catégorie</h3>
+        <h3 className="text-sm font-semibold text-[var(--ink)] dark:text-[var(--ink)] mb-3">Catégorie</h3>
         <div className="space-y-1.5">
           <button
             onClick={() => setCategory("all")}
-            className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${category === "all" ? "bg-[#FA8112] text-white font-medium" : "text-gray-600 dark:text-gray-400 hover:bg-[#FFF8F0] dark:hover:bg-[#2a2a2a] hover:text-[#FA8112]"}`}
+            className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${category === "all" ? "bg-[var(--orange)] text-white font-medium" : "text-gray-600 dark:text-gray-400 hover:bg-[var(--cream)] dark:hover:bg-[#2a2a2a] hover:text-[var(--orange)]"}`}
           >
             Toutes
           </button>
@@ -136,7 +136,7 @@ export default function FreelancesPage() {
             <button
               key={c}
               onClick={() => setCategory(c)}
-              className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${category === c ? "bg-[#FA8112] text-white font-medium" : "text-gray-600 dark:text-gray-400 hover:bg-[#FFF8F0] dark:hover:bg-[#2a2a2a] hover:text-[#FA8112]"}`}
+              className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${category === c ? "bg-[var(--orange)] text-white font-medium" : "text-gray-600 dark:text-gray-400 hover:bg-[var(--cream)] dark:hover:bg-[#2a2a2a] hover:text-[var(--orange)]"}`}
             >
               {c}
             </button>
@@ -146,13 +146,13 @@ export default function FreelancesPage() {
 
 
       <div>
-        <h3 className="text-sm font-semibold text-[#1A1A1A] dark:text-[#FAF3E1] mb-3">Note minimale</h3>
+        <h3 className="text-sm font-semibold text-[var(--ink)] dark:text-[var(--ink)] mb-3">Note minimale</h3>
         <div className="space-y-1.5">
           {[0, 4, 4.5, 4.8].map(r => (
             <button
               key={r}
               onClick={() => setMinRating(r)}
-              className={`flex items-center gap-2 w-full px-3 py-1.5 rounded-lg text-sm transition-colors ${minRating === r ? "bg-[#FA8112] text-white" : "text-gray-600 dark:text-gray-400 hover:bg-[#FFF8F0] dark:hover:bg-[#2a2a2a] hover:text-[#FA8112]"}`}
+              className={`flex items-center gap-2 w-full px-3 py-1.5 rounded-lg text-sm transition-colors ${minRating === r ? "bg-[var(--orange)] text-white" : "text-gray-600 dark:text-gray-400 hover:bg-[var(--cream)] dark:hover:bg-[#2a2a2a] hover:text-[var(--orange)]"}`}
             >
               {r === 0 ? "Toutes" : <><Stars rating={r} /><span>{r}+</span></>}
             </button>
@@ -162,8 +162,8 @@ export default function FreelancesPage() {
 
       <div>
         <div className="flex items-center justify-between mb-3">
-          <h3 className="text-sm font-semibold text-[#1A1A1A] dark:text-[#FAF3E1]">Budget max</h3>
-          <span className="text-sm font-medium text-[#FA8112]">{maxPrice.toLocaleString()} DA</span>
+          <h3 className="text-sm font-semibold text-[var(--ink)] dark:text-[var(--ink)]">Budget max</h3>
+          <span className="text-sm font-medium text-[var(--orange)]">{maxPrice.toLocaleString()} DA</span>
         </div>
         <input type="range" min={1000} max={100000} step={1000} value={maxPrice} onChange={e => setMaxPrice(Number(e.target.value))} className="w-full accent-[#FA8112]" />
         <div className="flex justify-between text-xs text-gray-400 mt-1">
@@ -174,7 +174,7 @@ export default function FreelancesPage() {
 
       <button
         onClick={() => { setCategory("all"); setMinRating(0); setMaxPrice(100000); setSort("relevance"); setNearMeEnabled(false) }}
-        className="w-full py-2.5 text-sm text-gray-500 dark:text-gray-400 hover:text-[#FA8112] border border-[#F0E8E0] dark:border-[var(--ink-12)] rounded-xl transition-colors"
+        className="w-full py-2.5 text-sm text-gray-500 dark:text-gray-400 hover:text-[var(--orange)] border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] rounded-xl transition-colors"
       >
         Réinitialiser les filtres
       </button>
@@ -182,20 +182,20 @@ export default function FreelancesPage() {
   )
 
   return (
-    <div className="min-h-screen bg-white dark:bg-[var(--color-bg)]">
-      <div className="bg-[#FFF8F0] dark:bg-[var(--white)] border-b border-[#F0E8E0] dark:border-[var(--ink-12)]">
+    <div className="min-h-screen bg-[var(--white)] dark:bg-[var(--color-bg)]">
+      <div className="bg-[var(--cream)] dark:bg-[var(--white)] border-b border-[var(--border-subtle)] dark:border-[var(--border-subtle)]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mb-3">
-            <Link href="/" className="hover:text-[#FA8112] transition-colors">Accueil</Link>
+            <Link href="/" className="hover:text-[var(--orange)] transition-colors">Accueil</Link>
             <span>/</span>
-            <span className="text-[#1A1A1A] dark:text-[#FAF3E1]">Services</span>
+            <span className="text-[var(--ink)] dark:text-[var(--ink)]">Services</span>
           </div>
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-[#1A1A1A] dark:text-[#FAF3E1]">Services</h1>
+              <h1 className="text-3xl font-bold text-[var(--ink)] dark:text-[var(--ink)]">Services</h1>
               <p className="text-gray-500 dark:text-gray-400 mt-1">Trouvez le talent parfait pour votre projet</p>
             </div>
-            <Link href="/services/new" className="px-4 py-2.5 bg-[#FA8112] text-white text-sm font-bold rounded-xl hover:bg-[#E8730F] transition-colors shadow-md shadow-[#FA8112]/30">
+            <Link href="/services/new" className="px-4 py-2.5 bg-[var(--orange)] text-white text-sm font-bold rounded-xl hover:bg-[var(--orange-dark)] transition-colors shadow-md shadow-[var(--orange)]/30">
               + Publier un service
             </Link>
           </div>
@@ -206,11 +206,11 @@ export default function FreelancesPage() {
         <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
           <div className="flex items-center gap-3">
             <span className="text-sm text-gray-500 dark:text-gray-400">
-              {loading ? "Chargement…" : <><strong className="text-[#1A1A1A] dark:text-[#FAF3E1]">{filtered.length}</strong> services trouvés</>}
+              {loading ? "Chargement…" : <><strong className="text-[var(--ink)] dark:text-[var(--ink)]">{filtered.length}</strong> services trouvés</>}
             </span>
             <button
               onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="lg:hidden flex items-center gap-1.5 px-3 py-2 border border-[#F0E8E0] dark:border-[var(--ink-12)] rounded-xl text-sm text-gray-600 dark:text-gray-400 hover:border-[#FA8112]/40 transition-colors"
+              className="lg:hidden flex items-center gap-1.5 px-3 py-2 border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] rounded-xl text-sm text-gray-600 dark:text-gray-400 hover:border-[var(--orange)]/40 transition-colors"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
@@ -223,7 +223,7 @@ export default function FreelancesPage() {
             <button
               onClick={handleNearMe}
               disabled={locLoading}
-              className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium transition-all ${nearMeEnabled ? "bg-[#FA8112] text-white shadow-md shadow-[#FA8112]/30" : "border border-[#F0E8E0] dark:border-[var(--ink-12)] text-gray-600 dark:text-gray-400 hover:border-[#FA8112]/40 hover:text-[#FA8112]"}`}
+              className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium transition-all ${nearMeEnabled ? "bg-[var(--orange)] text-white shadow-md shadow-[var(--orange)]/30" : "border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] text-gray-600 dark:text-gray-400 hover:border-[var(--orange)]/40 hover:text-[var(--orange)]"}`}
             >
               {locLoading ? (
                 <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
@@ -243,7 +243,7 @@ export default function FreelancesPage() {
               <select
                 value={sort}
                 onChange={e => { setSort(e.target.value); if (e.target.value !== "distance") setNearMeEnabled(false) }}
-                className="pl-3 pr-8 py-2 rounded-xl border border-[#F0E8E0] dark:border-[var(--ink-12)] bg-white dark:bg-[var(--color-bg)] text-[#1A1A1A] dark:text-[#FAF3E1] text-sm outline-none focus:border-[#FA8112] appearance-none cursor-pointer"
+                className="pl-3 pr-8 py-2 rounded-xl border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] bg-[var(--white)] dark:bg-[var(--color-bg)] text-[var(--ink)] dark:text-[var(--ink)] text-sm outline-none focus:border-[var(--orange)] appearance-none cursor-pointer"
               >
                 {SORT_OPTIONS.map(o => <option key={o.id} value={o.id}>{o.label}</option>)}
               </select>
@@ -259,8 +259,8 @@ export default function FreelancesPage() {
         <div className="flex gap-8">
           {/* Sidebar — desktop */}
           <aside className="hidden lg:block w-64 shrink-0">
-            <div className="sticky top-6 bg-white dark:bg-[var(--white)] rounded-2xl border border-[#F0E8E0] dark:border-[var(--ink-12)] p-5">
-              <h2 className="font-semibold text-[#1A1A1A] dark:text-[#FAF3E1] mb-5">Filtres</h2>
+            <div className="sticky top-6 bg-[var(--white)] dark:bg-[var(--surface-3)] rounded-2xl border border-[var(--border-subtle)] dark:border-[var(--border-strong)] p-5 shadow-sm dark:shadow-[var(--shadow-elevation)]">
+              <h2 className="font-semibold text-[var(--ink)] dark:text-[var(--ink)] mb-5">Filtres</h2>
               <FilterPanel />
             </div>
           </aside>
@@ -269,9 +269,9 @@ export default function FreelancesPage() {
           {sidebarOpen && (
             <div className="fixed inset-0 z-50 lg:hidden">
               <div className="absolute inset-0 bg-black/50" onClick={() => setSidebarOpen(false)} />
-              <div className="absolute left-0 top-0 bottom-0 w-72 bg-white dark:bg-[var(--white)] overflow-y-auto p-5 shadow-2xl">
+              <div className="absolute left-0 top-0 bottom-0 w-72 bg-[var(--white)] dark:bg-[var(--white)] overflow-y-auto p-5 shadow-2xl">
                 <div className="flex items-center justify-between mb-5">
-                  <h2 className="font-semibold text-[#1A1A1A] dark:text-[#FAF3E1]">Filtres</h2>
+                  <h2 className="font-semibold text-[var(--ink)] dark:text-[var(--ink)]">Filtres</h2>
                   <button onClick={() => setSidebarOpen(false)} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -293,12 +293,12 @@ export default function FreelancesPage() {
               </div>
             ) : filtered.length === 0 ? (
               <div className="text-center py-20">
-                <div className="w-16 h-16 bg-[#FFF8F0] dark:bg-[var(--white)] rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <div className="w-16 h-16 bg-[var(--cream)] dark:bg-[var(--white)] rounded-2xl flex items-center justify-center mx-auto mb-4">
                   <svg className="w-8 h-8 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15.182 16.318A4.486 4.486 0 0012.016 15a4.486 4.486 0 00-3.198 1.318M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 </div>
-                <h3 className="text-lg font-semibold text-[#1A1A1A] dark:text-[#FAF3E1] mb-1">Aucun service trouvé</h3>
+                <h3 className="text-lg font-semibold text-[var(--ink)] dark:text-[var(--ink)] mb-1">Aucun service trouvé</h3>
                 <p className="text-gray-500 dark:text-gray-400 text-sm">Essayez de modifier vos filtres.</p>
               </div>
             ) : (

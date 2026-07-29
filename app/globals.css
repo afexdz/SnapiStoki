@@ -7,12 +7,16 @@
 
   --white: #FFFFFF;
   --cream: #FFF8F0;
+  --surface-3: #F5F0E8;
   --orange: #FA8112;
   --orange-dark: #E06F05;
   --orange-soft: #FFEAD5;
   --ink: #1A1A1A;
   --ink-60: rgba(26, 26, 26, 0.62);
   --ink-12: rgba(26, 26, 26, 0.12);
+  --border-subtle: rgba(26, 26, 26, 0.08);
+  --border-strong: rgba(26, 26, 26, 0.16);
+  --shadow-elevation: 0 4px 16px rgba(0,0,0,0.08);
 
   --background: #FFFFFF;
   --foreground: #1A1A1A;
@@ -30,18 +34,22 @@ html {
 html.dark {
   color-scheme: dark;
 
-  --background: #16181D;
-  --white: #1E222B;
-  --cream: #262B36;
-  --orange: #FA8112;
-  --orange-dark: #FF9633;
-  --orange-soft: rgba(250, 129, 18, 0.14);
-  --ink: #EDEAE4;
-  --ink-60: rgba(237, 234, 228, 0.66);
-  --ink-12: rgba(237, 234, 228, 0.10);
-  --foreground: #EDEAE4;
-  --color-bg: #16181D;
-  --color-surface: #1E222B;
+  --background: #0F1115;
+  --white: #181B21;
+  --cream: #1F232B;
+  --surface-3: #262B35;
+  --orange: #FF9736;
+  --orange-dark: #FFB066;
+  --orange-soft: rgba(255, 151, 54, 0.16);
+  --ink: #F2F1EE;
+  --ink-60: rgba(242, 241, 238, 0.64);
+  --ink-12: rgba(242, 241, 238, 0.09);
+  --border-subtle: rgba(242, 241, 238, 0.08);
+  --border-strong: rgba(242, 241, 238, 0.16);
+  --shadow-elevation: 0 8px 24px rgba(0,0,0,0.45);
+  --foreground: #F2F1EE;
+  --color-bg: #0F1115;
+  --color-surface: #181B21;
 }
 
 body {

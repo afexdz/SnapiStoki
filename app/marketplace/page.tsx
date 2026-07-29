@@ -87,21 +87,21 @@ export default function MarketplacePage() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen bg-[#FAFAFA] dark:bg-[var(--color-bg)]">
+      <main className="min-h-screen bg-[var(--background)] dark:bg-[var(--color-bg)]">
         {/* Hero — orange brand */}
-        <div className="relative overflow-hidden bg-[#FA8112] py-14 px-4 text-center">
+        <div className="relative overflow-hidden bg-[var(--orange)] py-14 px-4 text-center">
           <div className="absolute inset-0 pointer-events-none overflow-hidden">
-            <div className="absolute -top-20 right-20 w-72 h-72 bg-white/10 rounded-full blur-3xl" />
-            <div className="absolute -bottom-20 left-20 w-72 h-72 bg-white/10 rounded-full blur-3xl" />
+            <div className="absolute -top-20 right-20 w-72 h-72 bg-[var(--white)]/10 rounded-full blur-3xl" />
+            <div className="absolute -bottom-20 left-20 w-72 h-72 bg-[var(--white)]/10 rounded-full blur-3xl" />
           </div>
           <div className="relative">
-            <span className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/15 backdrop-blur-sm rounded-full text-white/90 text-sm font-medium mb-4 border border-white/20">
+            <span className="inline-flex items-center gap-2 px-4 py-1.5 bg-[var(--white)]/15 backdrop-blur-sm rounded-full text-white/90 text-sm font-medium mb-4 border border-white/20">
               Ressources numériques prêtes à télécharger
             </span>
             <h1 className="text-3xl sm:text-4xl font-extrabold text-white mb-3">Marketplace Numérique</h1>
             <p className="text-white/80 text-lg max-w-lg mx-auto">Templates, icônes, polices, mockups et bien plus — créés par des designers algériens.</p>
             <div className="mt-5 flex items-center justify-center gap-3">
-              <Link href="/products/new" className="px-5 py-2.5 bg-white text-[#FA8112] text-sm font-bold rounded-xl hover:bg-[#FFF8F0] transition-colors shadow-md">
+              <Link href="/products/new" className="px-5 py-2.5 bg-[var(--white)] text-[var(--orange)] text-sm font-bold rounded-xl hover:bg-[var(--cream)] transition-colors shadow-md">
                 + Vendre un produit
               </Link>
             </div>
@@ -113,7 +113,7 @@ export default function MarketplacePage() {
           <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1 mb-6">
             <button
               onClick={() => setActiveCategory("Tout")}
-              className={`shrink-0 px-4 py-2 rounded-xl text-sm font-medium transition-all ${activeCategory === "Tout" ? "bg-[#FA8112] text-white shadow-md shadow-[#FA8112]/30" : "bg-white dark:bg-[var(--white)] text-gray-600 dark:text-gray-300 border border-[#EEEEEE] dark:border-[var(--ink-12)] hover:border-[#FA8112]/40 hover:text-[#FA8112]"}`}
+              className={`shrink-0 px-4 py-2 rounded-xl text-sm font-medium transition-all ${activeCategory === "Tout" ? "bg-[var(--orange)] text-white shadow-md shadow-[var(--orange)]/30" : "bg-[var(--white)] dark:bg-[var(--white)] text-gray-600 dark:text-gray-300 border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] hover:border-[var(--orange)]/40 hover:text-[var(--orange)]"}`}
             >
               Tout
             </button>
@@ -121,7 +121,7 @@ export default function MarketplacePage() {
               <button
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
-                className={`shrink-0 px-4 py-2 rounded-xl text-sm font-medium transition-all ${activeCategory === cat ? "bg-[#FA8112] text-white shadow-md shadow-[#FA8112]/30" : "bg-white dark:bg-[var(--white)] text-gray-600 dark:text-gray-300 border border-[#EEEEEE] dark:border-[var(--ink-12)] hover:border-[#FA8112]/40 hover:text-[#FA8112]"}`}
+                className={`shrink-0 px-4 py-2 rounded-xl text-sm font-medium transition-all ${activeCategory === cat ? "bg-[var(--orange)] text-white shadow-md shadow-[var(--orange)]/30" : "bg-[var(--white)] dark:bg-[var(--white)] text-gray-600 dark:text-gray-300 border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] hover:border-[var(--orange)]/40 hover:text-[var(--orange)]"}`}
               >
                 {cat}
               </button>
@@ -134,7 +134,7 @@ export default function MarketplacePage() {
               <select
                 value={sort}
                 onChange={e => setSort(e.target.value)}
-                className="pl-3 pr-8 py-2 rounded-xl border border-[#EEEEEE] dark:border-[var(--ink-12)] bg-white dark:bg-[var(--white)] text-[#1A1A1A] dark:text-[#FAF3E1] text-sm outline-none focus:border-[#FA8112] appearance-none cursor-pointer"
+                className="pl-3 pr-8 py-2 rounded-xl border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] bg-[var(--white)] dark:bg-[var(--white)] text-[var(--ink)] dark:text-[var(--ink)] text-sm outline-none focus:border-[var(--orange)] appearance-none cursor-pointer"
               >
                 {SORT_OPTIONS.map(o => <option key={o.id} value={o.id}>{o.label}</option>)}
               </select>
@@ -146,8 +146,8 @@ export default function MarketplacePage() {
             </div>
 
             <label className="flex items-center gap-2 cursor-pointer">
-              <div onClick={() => setShowFreeOnly(p => !p)} className={`relative w-9 h-5 rounded-full transition-colors cursor-pointer ${showFreeOnly ? "bg-green-500" : "bg-gray-200"}`}>
-                <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow transition-all ${showFreeOnly ? "left-4" : "left-0.5"}`} />
+              <div onClick={() => setShowFreeOnly(p => !p)} className={`relative w-9 h-5 rounded-full transition-colors cursor-pointer ${showFreeOnly ? "bg-green-500" : "bg-gray-200 dark:bg-[var(--ink-12)]"}`}>
+                <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-[var(--white)] shadow transition-all ${showFreeOnly ? "left-4" : "left-0.5"}`} />
               </div>
               <span className="text-sm text-gray-600 dark:text-gray-400">Gratuits uniquement</span>
             </label>
@@ -156,12 +156,12 @@ export default function MarketplacePage() {
               <div className="flex items-center gap-2">
                 <span className="text-sm text-gray-500 dark:text-gray-400">Max:</span>
                 <input type="range" min={1000} max={50000} step={500} value={maxPrice} onChange={e => setMaxPrice(Number(e.target.value))} className="w-28 accent-[#FA8112]" />
-                <span className="text-sm font-medium text-[#FA8112] w-24">{maxPrice.toLocaleString()} DA</span>
+                <span className="text-sm font-medium text-[var(--orange)] w-24">{maxPrice.toLocaleString()} DA</span>
               </div>
             )}
 
             <span className="ml-auto text-sm text-gray-500 dark:text-gray-400">
-              {loading ? "Chargement…" : <><strong className="text-[#1A1A1A] dark:text-[#FAF3E1]">{filtered.length}</strong> produits</>}
+              {loading ? "Chargement…" : <><strong className="text-[var(--ink)] dark:text-[var(--ink)]">{filtered.length}</strong> produits</>}
             </span>
           </div>
 
@@ -174,14 +174,14 @@ export default function MarketplacePage() {
             </div>
           ) : filtered.length === 0 ? (
             <div className="text-center py-20">
-              <div className="w-16 h-16 bg-[#FFF8F0] dark:bg-[var(--white)] rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <div className="w-16 h-16 bg-[var(--cream)] dark:bg-[var(--white)] rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <svg className="w-8 h-8 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                 </svg>
               </div>
-              <h3 className="text-lg font-semibold text-[#1A1A1A] dark:text-[#FAF3E1] mb-1">Aucun produit trouvé</h3>
+              <h3 className="text-lg font-semibold text-[var(--ink)] dark:text-[var(--ink)] mb-1">Aucun produit trouvé</h3>
               <p className="text-gray-500 dark:text-gray-400 text-sm mb-4">Essayez de modifier vos filtres</p>
-              <Link href="/products/new" className="text-sm text-[#FA8112] font-semibold">
+              <Link href="/products/new" className="text-sm text-[var(--orange)] font-semibold">
                 + Vendre votre premier produit
               </Link>
             </div>

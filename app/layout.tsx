@@ -39,7 +39,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="min-h-full flex flex-col bg-white text-[#1A1A1A] dark:bg-[var(--color-bg)] dark:text-[#FAF3E1] transition-colors duration-300">
+      <body className="min-h-full flex flex-col bg-[var(--white)] text-[var(--ink)] dark:bg-[var(--color-bg)] dark:text-[var(--ink)] transition-colors duration-300">
         {children}
       </body>
     </html>

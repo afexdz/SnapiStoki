@@ -28,7 +28,7 @@ const DEFAULT_PKG = (name: string, price: number): Package => ({
   name, description: "", delivery_days: 3, revisions: 1, price,
 })
 
-const inputCls = "w-full px-4 py-2.5 border border-[var(--ink-12)] rounded-xl text-sm text-[var(--ink)] bg-[var(--white)] outline-none focus:border-[#FA8112] focus:ring-2 focus:ring-[#FA8112]/10 transition-all"
+const inputCls = "w-full px-4 py-2.5 border border-[var(--ink-12)] rounded-xl text-sm text-[var(--ink)] bg-[var(--white)] dark:bg-[var(--background)] outline-none focus:border-[var(--orange)] focus:ring-2 focus:ring-[var(--orange)]/10 transition-all"
 const labelCls = "block text-sm font-semibold text-[var(--ink)] mb-1.5"
 
 const PkgColumn = ({
@@ -89,9 +89,9 @@ function StepBar({ step }: { step: number }) {
           <div key={num} className="flex items-center flex-1">
             <div className="flex flex-col items-center">
               <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold border-2 transition-colors ${
-                done   ? "bg-[#FA8112] border-[#FA8112] text-white" :
-                active ? "bg-[#FA8112] border-[#FA8112] text-white" :
-                         "bg-white border-gray-300 text-gray-400"
+                done   ? "bg-[var(--orange)] border-[var(--orange)] text-white" :
+                active ? "bg-[var(--orange)] border-[var(--orange)] text-white" :
+                         "bg-[var(--white)] border-gray-300 text-gray-400"
               }`}>
                 {done ? (
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -99,12 +99,12 @@ function StepBar({ step }: { step: number }) {
                   </svg>
                 ) : num}
               </div>
-              <span className={`hidden sm:block text-[10px] mt-1 whitespace-nowrap font-medium ${active ? "text-[#FA8112]" : "text-gray-400"}`}>
+              <span className={`hidden sm:block text-[10px] mt-1 whitespace-nowrap font-medium ${active ? "text-[var(--orange)]" : "text-gray-400"}`}>
                 {label}
               </span>
             </div>
             {i < steps.length - 1 && (
-              <div className={`flex-1 h-0.5 sm:mb-4 mx-1 ${num < step ? "bg-[#FA8112]" : "bg-gray-200"}`} />
+              <div className={`flex-1 h-0.5 sm:mb-4 mx-1 ${num < step ? "bg-[var(--orange)]" : "bg-gray-200 dark:bg-[var(--ink-12)]"}`} />
             )}
           </div>
         )
@@ -265,8 +265,8 @@ export default function NewServicePage() {
 
   if (!authChecked) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white">
-        <div className="w-8 h-8 border-[3px] border-[#FA8112] border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen flex items-center justify-center bg-[var(--white)]">
+        <div className="w-8 h-8 border-[3px] border-[var(--orange)] border-t-transparent rounded-full animate-spin" />
       </div>
     )
   }
@@ -274,7 +274,7 @@ export default function NewServicePage() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen bg-[#FAFAFA] py-8 px-4">
+      <main className="min-h-screen bg-[var(--background)] py-8 px-4">
         <div className="max-w-3xl mx-auto">
           <div className="mb-6">
             <h1 className="text-2xl font-bold text-[var(--ink)]">Publier un service</h1>
@@ -283,7 +283,7 @@ export default function NewServicePage() {
 
           <StepBar step={step} />
 
-          <div className="bg-white rounded-2xl border border-[var(--ink-12)] p-6 shadow-sm">
+          <div className="bg-[var(--white)] rounded-2xl border border-[var(--ink-12)] p-6 shadow-sm">
 
             {/* ── STEP 1 ── */}
             {step === 1 && (
@@ -317,7 +317,7 @@ export default function NewServicePage() {
                   <label className={labelCls}>Tags <span className="text-gray-400 font-normal">(max 5)</span></label>
                   <div className="flex flex-wrap gap-2 mb-2">
                     {tags.map(t => (
-                      <span key={t} className="flex items-center gap-1 px-2.5 py-1 bg-[var(--cream)] text-[#FA8112] text-xs rounded-lg border border-[#FA8112]/20">
+                      <span key={t} className="flex items-center gap-1 px-2.5 py-1 bg-[var(--cream)] text-[var(--orange)] text-xs rounded-lg border border-[var(--orange)]/20">
                         {t}
                         <button onClick={() => setTags(prev => prev.filter(x => x !== t))} className="ml-1 hover:text-red-500">×</button>
                       </span>
@@ -333,7 +333,7 @@ export default function NewServicePage() {
                         placeholder="Ex: logo, design, branding"
                         className={inputCls + " flex-1"}
                       />
-                      <button onClick={addTag} className="px-4 py-2.5 bg-[#FA8112] text-white text-sm font-semibold rounded-xl">+</button>
+                      <button onClick={addTag} className="px-4 py-2.5 bg-[var(--orange)] text-white text-sm font-semibold rounded-xl">+</button>
                     </div>
                   )}
                 </div>
@@ -349,9 +349,9 @@ export default function NewServicePage() {
                     <span className="text-sm text-gray-600">Package unique</span>
                     <div
                       onClick={() => setSinglePkg(p => !p)}
-                      className={`relative w-10 h-5 rounded-full transition-colors cursor-pointer ${singlePkg ? "bg-[#FA8112]" : "bg-gray-200"}`}
+                      className={`relative w-10 h-5 rounded-full transition-colors cursor-pointer ${singlePkg ? "bg-[var(--orange)]" : "bg-gray-200 dark:bg-[var(--ink-12)]"}`}
                     >
-                      <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow transition-all ${singlePkg ? "left-5" : "left-0.5"}`} />
+                      <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-[var(--white)] shadow transition-all ${singlePkg ? "left-5" : "left-0.5"}`} />
                     </div>
                   </label>
                 </div>
@@ -392,7 +392,7 @@ export default function NewServicePage() {
                     {faqItems.length < 5 && (
                       <button
                         onClick={() => setFaqItems(prev => [...prev, { q: "", a: "" }])}
-                        className="text-sm text-[#FA8112] font-semibold hover:text-[#E8730F]"
+                        className="text-sm text-[var(--orange)] font-semibold hover:text-[var(--orange-dark)]"
                       >
                         + Ajouter une question
                       </button>
@@ -438,13 +438,13 @@ export default function NewServicePage() {
                       ref={dropRef}
                       onDrop={onDrop}
                       onDragOver={e => e.preventDefault()}
-                      className="border-2 border-dashed border-[var(--ink-12)] rounded-xl p-8 text-center cursor-pointer hover:border-[#FA8112]/40 transition-colors"
+                      className="border-2 border-dashed border-[var(--ink-12)] rounded-xl p-8 text-center cursor-pointer hover:border-[var(--orange)]/40 transition-colors"
                       onClick={() => document.getElementById("img-input")?.click()}
                     >
                       <svg className="w-10 h-10 text-gray-300 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                       </svg>
-                      <p className="text-sm text-gray-500">Glissez des images ici ou <span className="text-[#FA8112] font-semibold">cliquez pour sélectionner</span></p>
+                      <p className="text-sm text-gray-500">Glissez des images ici ou <span className="text-[var(--orange)] font-semibold">cliquez pour sélectionner</span></p>
                       <p className="text-xs text-gray-400 mt-1">JPG, PNG, WebP — max 5MB</p>
                       <input id="img-input" type="file" accept="image/jpeg,image/png,image/webp" multiple className="hidden" onChange={onFileInput} />
                     </div>
@@ -456,7 +456,7 @@ export default function NewServicePage() {
                   {images.length > 0 && (
                     <div className="mt-4 grid grid-cols-3 gap-3">
                       {images.map((img, i) => (
-                        <div key={i} className="relative aspect-video bg-gray-100 rounded-xl overflow-hidden">
+                        <div key={i} className="relative aspect-video bg-gray-100 dark:bg-[var(--ink-12)] rounded-xl overflow-hidden">
                           <img src={img.preview} alt="" className="w-full h-full object-cover" />
                           {img.uploading && (
                             <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
@@ -470,7 +470,7 @@ export default function NewServicePage() {
                             ×
                           </button>
                           {i === 0 && (
-                            <span className="absolute bottom-1.5 left-1.5 px-1.5 py-0.5 bg-[#FA8112] text-white text-[9px] font-bold rounded">Cover</span>
+                            <span className="absolute bottom-1.5 left-1.5 px-1.5 py-0.5 bg-[var(--orange)] text-white text-[9px] font-bold rounded">Cover</span>
                           )}
                         </div>
                       ))}
@@ -504,7 +504,7 @@ export default function NewServicePage() {
               <button
                 onClick={() => setStep(s => s + 1)}
                 disabled={(step === 1 && !step1Valid) || (step === 2 && !step2Valid) || (step === 3 && !step3Valid)}
-                className="px-6 py-2.5 bg-[#FA8112] text-white text-sm font-bold rounded-xl hover:bg-[#E8730F] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                className="px-6 py-2.5 bg-[var(--orange)] text-white text-sm font-bold rounded-xl hover:bg-[var(--orange-dark)] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 Continuer →
               </button>
@@ -512,7 +512,7 @@ export default function NewServicePage() {
               <button
                 onClick={handleSubmit}
                 disabled={submitting || images.length === 0}
-                className="px-6 py-2.5 bg-[#FA8112] text-white text-sm font-bold rounded-xl hover:bg-[#E8730F] transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
+                className="px-6 py-2.5 bg-[var(--orange)] text-white text-sm font-bold rounded-xl hover:bg-[var(--orange-dark)] transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
               >
                 {submitting ? (
                   <><div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> Publication...</>

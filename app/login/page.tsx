@@ -65,37 +65,37 @@ function LoginForm() {
   };
 
   return (
-    <div className="min-h-screen bg-white dark:from-[#1a1a1a] dark:via-[#2a2a2a] dark:to-[#1a1a1a] flex flex-col">
+    <div className="min-h-screen bg-[var(--white)] dark:from-[#1a1a1a] dark:via-[#2a2a2a] dark:to-[#1a1a1a] flex flex-col">
       {/* Header */}
       <header className="px-6 py-4 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-0.5">
-          <span className="text-xl font-extrabold text-[#FA8112]">Pix</span>
-          <span className="text-xl font-extrabold text-[#1A1A1A] dark:text-[#FAF3E1]">Raise</span>
+          <span className="text-xl font-extrabold text-[var(--orange)]">Pix</span>
+          <span className="text-xl font-extrabold text-[var(--ink)] dark:text-[var(--ink)]">Raise</span>
         </Link>
-        <Link href="/register" className="text-sm text-gray-600 dark:text-gray-400 hover:text-[#FA8112] transition-colors">
+        <Link href="/register" className="text-sm text-gray-600 dark:text-gray-400 hover:text-[var(--orange)] transition-colors">
           Créer un compte →
         </Link>
       </header>
 
       {/* Background blobs */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-96 h-96 bg-[#FA8112]/15 dark:bg-[#FA8112]/10 rounded-full blur-3xl" />
-        <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-[#E8730F]/15 dark:bg-[#FA8112]/10 rounded-full blur-3xl" />
+        <div className="absolute -top-40 -right-40 w-96 h-96 bg-[var(--orange)]/15 dark:bg-[var(--orange)]/10 rounded-full blur-3xl" />
+        <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-[var(--orange-dark)]/15 dark:bg-[var(--orange)]/10 rounded-full blur-3xl" />
       </div>
 
       {/* Card */}
       <div className="flex-1 flex items-center justify-center px-4 py-8">
         <div className="relative w-full max-w-md">
-          <div className="bg-white dark:bg-[var(--white)] rounded-3xl shadow-2xl shadow-[#FA8112]/10 dark:shadow-[#FA8112]/5 border border-[#F0E8E0] dark:border-[var(--ink-12)] p-8 sm:p-10">
+          <div className="bg-[var(--white)] dark:bg-[var(--white)] rounded-3xl shadow-2xl shadow-[var(--orange)]/10 dark:shadow-[var(--orange)]/5 border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] p-8 sm:p-10">
 
             {/* Header */}
             <div className="text-center mb-8">
-              <div className="w-14 h-14 bg-gradient-to-br from-[#FA8112] to-[#E8730F] rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-[#FA8112]/30">
+              <div className="w-14 h-14 bg-gradient-to-br from-[var(--orange)] to-[var(--orange-dark)] rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-[var(--orange)]/30">
                 <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>
               </div>
-              <h1 className="text-2xl font-extrabold text-[#1A1A1A] dark:text-[#FAF3E1]">Bon retour !</h1>
+              <h1 className="text-2xl font-extrabold text-[var(--ink)] dark:text-[var(--ink)]">Bon retour !</h1>
               <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">Connectez-vous à votre compte PixRaise</p>
             </div>
 
@@ -113,7 +113,7 @@ function LoginForm() {
             <button
               onClick={handleGoogle}
               disabled={googleLoading}
-              className="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-xl border-2 border-[#F0E8E0] dark:border-[var(--ink-12)] bg-white dark:bg-[var(--white)] text-gray-700 dark:text-gray-200 text-sm font-semibold hover:border-[#FA8112]/30 dark:hover:border-[#FA8112]/30 hover:bg-[#FFF8F0] dark:hover:bg-[#3a3a3a] transition-all mb-6 disabled:opacity-60 disabled:cursor-not-allowed"
+              className="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-xl border-2 border-[var(--border-subtle)] dark:border-[var(--border-subtle)] bg-[var(--white)] dark:bg-[var(--white)] text-gray-700 dark:text-gray-200 text-sm font-semibold hover:border-[var(--orange)]/30 dark:hover:border-[var(--orange)]/30 hover:bg-[var(--cream)] dark:hover:bg-[var(--surface-3)] transition-all mb-6 disabled:opacity-60 disabled:cursor-not-allowed"
             >
               {googleLoading ? (
                 <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
@@ -132,15 +132,15 @@ function LoginForm() {
             </button>
 
             <div className="flex items-center gap-3 mb-6">
-              <div className="flex-1 h-px bg-[#FFF8F0] dark:bg-[var(--cream)]" />
+              <div className="flex-1 h-px bg-[var(--cream)] dark:bg-[var(--cream)]" />
               <span className="text-xs text-gray-400 dark:text-gray-500 font-medium">ou par email</span>
-              <div className="flex-1 h-px bg-[#FFF8F0] dark:bg-[var(--cream)]" />
+              <div className="flex-1 h-px bg-[var(--cream)] dark:bg-[var(--cream)]" />
             </div>
 
             {/* Form */}
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-[#1A1A1A] dark:text-[#FAF3E1] mb-1.5">
+                <label className="block text-sm font-medium text-[var(--ink)] dark:text-[var(--ink)] mb-1.5">
                   Adresse email
                 </label>
                 <div className="relative">
@@ -155,17 +155,17 @@ function LoginForm() {
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="vous@exemple.com"
                     required
-                    className="w-full pl-10 pr-4 py-3 rounded-xl border border-[#F0E8E0] dark:border-[var(--ink-12)] bg-[#FFF8F0] dark:bg-[var(--color-bg)] text-[#1A1A1A] dark:text-[#FAF3E1] placeholder-gray-400 dark:placeholder-gray-500 outline-none focus:border-[#FA8112] focus:ring-2 focus:ring-[#FA8112]/20 transition-all text-sm"
+                    className="w-full pl-10 pr-4 py-3 rounded-xl border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] bg-[var(--cream)] dark:bg-[var(--color-bg)] text-[var(--ink)] dark:text-[var(--ink)] placeholder-gray-400 dark:placeholder-gray-500 outline-none focus:border-[var(--orange)] focus:ring-2 focus:ring-[var(--orange)]/20 transition-all text-sm"
                   />
                 </div>
               </div>
 
               <div>
                 <div className="flex items-center justify-between mb-1.5">
-                  <label className="block text-sm font-medium text-[#1A1A1A] dark:text-[#FAF3E1]">
+                  <label className="block text-sm font-medium text-[var(--ink)] dark:text-[var(--ink)]">
                     Mot de passe
                   </label>
-                  <a href="#" className="text-xs text-[#FA8112] hover:text-[#E8730F] transition-colors">
+                  <a href="#" className="text-xs text-[var(--orange)] hover:text-[var(--orange-dark)] transition-colors">
                     Mot de passe oublié ?
                   </a>
                 </div>
@@ -181,7 +181,7 @@ function LoginForm() {
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
                     required
-                    className="w-full pl-10 pr-12 py-3 rounded-xl border border-[#F0E8E0] dark:border-[var(--ink-12)] bg-[#FFF8F0] dark:bg-[var(--color-bg)] text-[#1A1A1A] dark:text-[#FAF3E1] placeholder-gray-400 dark:placeholder-gray-500 outline-none focus:border-[#FA8112] focus:ring-2 focus:ring-[#FA8112]/20 transition-all text-sm"
+                    className="w-full pl-10 pr-12 py-3 rounded-xl border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] bg-[var(--cream)] dark:bg-[var(--color-bg)] text-[var(--ink)] dark:text-[var(--ink)] placeholder-gray-400 dark:placeholder-gray-500 outline-none focus:border-[var(--orange)] focus:ring-2 focus:ring-[var(--orange)]/20 transition-all text-sm"
                   />
                   <button
                     type="button"
@@ -206,7 +206,7 @@ function LoginForm() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-3.5 bg-[#FA8112] hover:bg-[#E8730F] active:bg-[#D46A0E] text-white font-bold rounded-xl shadow-lg shadow-[#FA8112]/30 transition-all hover:scale-[1.02] active:scale-100 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-2"
+                className="w-full py-3.5 bg-[var(--orange)] hover:bg-[var(--orange-dark)] active:bg-[var(--orange-dark)] text-white font-bold rounded-xl shadow-lg shadow-[var(--orange)]/30 transition-all hover:scale-[1.02] active:scale-100 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-2"
               >
                 {loading ? (
                   <>
@@ -222,7 +222,7 @@ function LoginForm() {
 
             <p className="mt-6 text-center text-sm text-gray-500 dark:text-gray-400">
               Pas encore de compte ?{" "}
-              <Link href="/register" className="text-[#FA8112] font-semibold hover:text-[#E8730F] transition-colors">
+              <Link href="/register" className="text-[var(--orange)] font-semibold hover:text-[var(--orange-dark)] transition-colors">
                 S'inscrire gratuitement
               </Link>
             </p>

@@ -39,8 +39,8 @@ export default async function PublicProfilePage({ params }: Props) {
       <>
         <Navbar />
         <div className="min-h-screen flex flex-col items-center justify-center gap-4">
-          <p className="text-lg font-semibold text-[#1A1A1A]">Profil introuvable</p>
-          <Link href="/" className="text-[#FA8112] underline text-sm">Retour à l'accueil</Link>
+          <p className="text-lg font-semibold text-[var(--ink)]">Profil introuvable</p>
+          <Link href="/" className="text-[var(--orange)] underline text-sm">Retour à l'accueil</Link>
         </div>
         <Footer />
       </>
@@ -76,10 +76,10 @@ export default async function PublicProfilePage({ params }: Props) {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen bg-[#FAFAFA] dark:bg-[var(--color-bg)]">
+      <main className="min-h-screen bg-[var(--background)] dark:bg-[var(--color-bg)]">
         {/* Cover */}
         <div
-          className="relative w-full bg-gradient-to-r from-[#FA8112] to-[#E8730F]"
+          className="relative w-full bg-gradient-to-r from-[var(--orange)] to-[var(--orange-dark)]"
           style={{
             height: "200px",
             ...(profile.cover_url ? { backgroundImage: `url(${profile.cover_url})`, backgroundSize: "cover", backgroundPosition: profile.cover_position ?? "center" } : {}),
@@ -88,8 +88,8 @@ export default async function PublicProfilePage({ params }: Props) {
 
         <div className="max-w-5xl mx-auto px-4">
           {/* Profile header */}
-          <div className="relative -mt-16 mb-6 flex flex-col sm:flex-row sm:items-end gap-5 pb-6 border-b border-[#F0E8E0] dark:border-[var(--ink-12)]">
-            <div className="w-28 h-28 rounded-2xl border-4 border-white dark:border-[var(--color-surface)] overflow-hidden bg-[#FA8112] flex items-center justify-center shadow-lg shrink-0">
+          <div className="relative -mt-16 mb-6 flex flex-col sm:flex-row sm:items-end gap-5 pb-6 border-b border-[var(--border-subtle)] dark:border-[var(--border-subtle)]">
+            <div className="w-28 h-28 rounded-2xl border-4 border-white dark:border-[var(--color-surface)] overflow-hidden bg-[var(--orange)] flex items-center justify-center shadow-lg shrink-0">
               {profile.avatar_url ? (
                 <img src={profile.avatar_url} alt={name} className="w-full h-full object-cover" />
               ) : (
@@ -98,7 +98,7 @@ export default async function PublicProfilePage({ params }: Props) {
             </div>
 
             <div className="flex-1 min-w-0">
-              <h1 className="text-2xl font-extrabold text-[#1A1A1A] dark:text-[var(--ink)]" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+              <h1 className="text-2xl font-extrabold text-[var(--ink)] dark:text-[var(--ink)]" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
                 {name}
               </h1>
               {profile.wilaya && (
@@ -115,10 +115,10 @@ export default async function PublicProfilePage({ params }: Props) {
 
             <div className="shrink-0">
               <div className="group relative inline-block">
-                <button disabled className="px-5 py-2.5 bg-[#FA8112] text-white text-sm font-semibold rounded-xl opacity-60 cursor-not-allowed">
+                <button disabled className="px-5 py-2.5 bg-[var(--orange)] text-white text-sm font-semibold rounded-xl opacity-60 cursor-not-allowed">
                   Contacter
                 </button>
-                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 bg-[#1A1A1A] text-white text-xs rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 bg-[var(--ink)] text-white text-xs rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
                   Messagerie bientôt disponible
                 </div>
               </div>
@@ -127,16 +127,16 @@ export default async function PublicProfilePage({ params }: Props) {
 
           {/* Stats row */}
           <div className="grid grid-cols-3 gap-4 mb-8">
-            <div className="bg-white dark:bg-[var(--white)] rounded-2xl border border-[#F0E8E0] dark:border-[var(--ink-12)] p-4 text-center">
-              <p className="text-xl font-extrabold text-[#FA8112]">{(services ?? []).length}</p>
+            <div className="bg-[var(--white)] dark:bg-[var(--white)] rounded-2xl border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] p-4 text-center">
+              <p className="text-xl font-extrabold text-[var(--orange)]">{(services ?? []).length}</p>
               <p className="text-xs text-gray-500 mt-0.5">services actifs</p>
             </div>
-            <div className="bg-white dark:bg-[var(--white)] rounded-2xl border border-[#F0E8E0] dark:border-[var(--ink-12)] p-4 text-center">
-              <p className="text-xl font-extrabold text-[#FA8112]">{(products ?? []).length}</p>
+            <div className="bg-[var(--white)] dark:bg-[var(--white)] rounded-2xl border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] p-4 text-center">
+              <p className="text-xl font-extrabold text-[var(--orange)]">{(products ?? []).length}</p>
               <p className="text-xs text-gray-500 mt-0.5">produits actifs</p>
             </div>
-            <div className="bg-white dark:bg-[var(--white)] rounded-2xl border border-[#F0E8E0] dark:border-[var(--ink-12)] p-4 text-center">
-              <p className="text-xl font-extrabold text-[#FA8112]">{avgRating != null ? avgRating.toFixed(1) : "—"}</p>
+            <div className="bg-[var(--white)] dark:bg-[var(--white)] rounded-2xl border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] p-4 text-center">
+              <p className="text-xl font-extrabold text-[var(--orange)]">{avgRating != null ? avgRating.toFixed(1) : "—"}</p>
               <p className="text-xs text-gray-500 mt-0.5">note moyenne</p>
             </div>
           </div>
@@ -144,20 +144,20 @@ export default async function PublicProfilePage({ params }: Props) {
           {/* Services */}
           {(services ?? []).length > 0 && (
             <section className="mb-10">
-              <h2 className="text-lg font-bold text-[#1A1A1A] dark:text-[var(--ink)] mb-4">Services</h2>
+              <h2 className="text-lg font-bold text-[var(--ink)] dark:text-[var(--ink)] mb-4">Services</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {(services ?? []).map((s: { id: string; title: string; price: number; avg_rating: number | null; reviews_count: number | null; category: string | null; gallery: string[] | null; images: string[] | null }) => {
                   const thumb = s.gallery?.[0] ?? s.images?.[0]
                   return (
-                    <Link key={s.id} href={`/services/${s.id}`} className="group bg-white dark:bg-[var(--white)] rounded-2xl border border-[#F0E8E0] dark:border-[var(--ink-12)] hover:border-[#FA8112]/30 hover:shadow-xl hover:shadow-[#FA8112]/10 transition-all overflow-hidden">
-                      <div className="h-36 bg-gradient-to-br from-[#FA8112] to-[#E8730F] overflow-hidden">
+                    <Link key={s.id} href={`/services/${s.id}`} className="group bg-[var(--white)] dark:bg-[var(--white)] rounded-2xl border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] hover:border-[var(--orange)]/30 hover:shadow-xl hover:shadow-[var(--orange)]/10 transition-all overflow-hidden">
+                      <div className="h-36 bg-gradient-to-br from-[var(--orange)] to-[var(--orange-dark)] overflow-hidden">
                         {thumb && <img src={thumb} alt={s.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />}
                       </div>
                       <div className="p-4">
-                        {s.category && <p className="text-xs text-[#FA8112] font-semibold mb-1">{s.category}</p>}
-                        <h3 className="text-sm font-semibold text-[#1A1A1A] dark:text-[var(--ink)] line-clamp-2 group-hover:text-[#FA8112] transition-colors mb-2">{s.title}</h3>
+                        {s.category && <p className="text-xs text-[var(--orange)] font-semibold mb-1">{s.category}</p>}
+                        <h3 className="text-sm font-semibold text-[var(--ink)] dark:text-[var(--ink)] line-clamp-2 group-hover:text-[var(--orange)] transition-colors mb-2">{s.title}</h3>
                         <div className="flex items-center justify-between">
-                          <span className="text-sm font-bold text-[#1A1A1A] dark:text-[var(--ink)]">{s.price.toLocaleString("fr-FR")} <span className="text-[#FA8112]">DA</span></span>
+                          <span className="text-sm font-bold text-[var(--ink)] dark:text-[var(--ink)]">{s.price.toLocaleString("fr-FR")} <span className="text-[var(--orange)]">DA</span></span>
                           {s.avg_rating != null && (
                             <span className="text-xs text-gray-400">★ {s.avg_rating.toFixed(1)} ({s.reviews_count ?? 0})</span>
                           )}
@@ -173,22 +173,22 @@ export default async function PublicProfilePage({ params }: Props) {
           {/* Products */}
           {(products ?? []).length > 0 && (
             <section className="mb-10">
-              <h2 className="text-lg font-bold text-[#1A1A1A] dark:text-[var(--ink)] mb-4">Produits numériques</h2>
+              <h2 className="text-lg font-bold text-[var(--ink)] dark:text-[var(--ink)] mb-4">Produits numériques</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {(products ?? []).map((p: { id: string; title: string; price: number; is_free: boolean | null; format: string | null; file_format: string | null; preview_urls: string[] | null; preview_images: string[] | null; sales_count: number | null }) => {
                   const thumb = p.preview_urls?.[0] ?? p.preview_images?.[0]
                   const fmt = p.format ?? p.file_format
                   return (
-                    <Link key={p.id} href={`/products/${p.id}`} className="group bg-white dark:bg-[var(--white)] rounded-2xl border border-[#F0E8E0] dark:border-[var(--ink-12)] hover:border-[#FA8112]/30 hover:shadow-xl hover:shadow-[#FA8112]/10 transition-all overflow-hidden">
+                    <Link key={p.id} href={`/products/${p.id}`} className="group bg-[var(--white)] dark:bg-[var(--white)] rounded-2xl border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] hover:border-[var(--orange)]/30 hover:shadow-xl hover:shadow-[var(--orange)]/10 transition-all overflow-hidden">
                       <div className="h-36 bg-gradient-to-br from-slate-700 to-slate-900 relative overflow-hidden">
                         {thumb && <img src={thumb} alt={p.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />}
                         {fmt && <span className="absolute bottom-2 left-2 px-2 py-0.5 bg-black/50 text-white text-xs rounded-lg">{fmt}</span>}
                         {p.is_free && <span className="absolute top-2 right-2 px-2 py-0.5 bg-green-500 text-white text-xs font-bold rounded-lg">Gratuit</span>}
                       </div>
                       <div className="p-4">
-                        <h3 className="text-sm font-semibold text-[#1A1A1A] dark:text-[var(--ink)] line-clamp-2 group-hover:text-[#FA8112] transition-colors mb-2">{p.title}</h3>
+                        <h3 className="text-sm font-semibold text-[var(--ink)] dark:text-[var(--ink)] line-clamp-2 group-hover:text-[var(--orange)] transition-colors mb-2">{p.title}</h3>
                         <div className="flex items-center justify-between">
-                          <span className="text-sm font-bold text-[#1A1A1A] dark:text-[var(--ink)]">{p.is_free ? "Gratuit" : `${p.price.toLocaleString("fr-FR")} DA`}</span>
+                          <span className="text-sm font-bold text-[var(--ink)] dark:text-[var(--ink)]">{p.is_free ? "Gratuit" : `${p.price.toLocaleString("fr-FR")} DA`}</span>
                           <span className="text-xs text-gray-400">{p.sales_count ?? 0} vente{(p.sales_count ?? 0) !== 1 ? "s" : ""}</span>
                         </div>
                       </div>

@@ -94,23 +94,23 @@ const categories = [
 
 export default function Categories() {
   return (
-    <section className="py-[88px] bg-white dark:bg-[var(--color-bg)]">
+    <section className="py-[88px] bg-[var(--white)] dark:bg-[var(--color-bg)]">
       <div className="max-w-[1180px] mx-auto px-6">
 
         {/* Section head */}
         <div className="flex items-end justify-between gap-6 flex-wrap mb-11">
           <div>
-            <span className="eyebrow inline-block font-jakarta font-bold text-[13px] tracking-[.08em] uppercase text-[#FA8112] mb-3">
+            <span className="eyebrow inline-block font-jakarta font-bold text-[13px] tracking-[.08em] uppercase text-[var(--orange)] mb-3">
               Catégories
             </span>
-            <h2 className="font-extrabold text-[#1A1A1A] dark:text-[#FAF3E1]" style={{ fontSize: "clamp(26px, 3.4vw, 38px)", letterSpacing: "-0.02em", lineHeight: 1.15 }}>
+            <h2 className="font-extrabold text-[var(--ink)] dark:text-[var(--ink)]" style={{ fontSize: "clamp(26px, 3.4vw, 38px)", letterSpacing: "-0.02em", lineHeight: 1.15 }}>
               Explorez par domaine
             </h2>
             <p className="text-[rgba(26,26,26,0.62)] dark:text-gray-400 max-w-[460px] mt-2">
               Des compétences créatives aux services techniques, tout ce dont votre projet a besoin.
             </p>
           </div>
-          <Link href="/freelances" className="font-semibold text-[#FA8112] hover:underline whitespace-nowrap font-jakarta">
+          <Link href="/freelances" className="font-semibold text-[var(--orange)] hover:underline whitespace-nowrap font-jakarta">
             Toutes les catégories →
           </Link>
         </div>
@@ -121,7 +121,7 @@ export default function Categories() {
             <Link
               key={cat.label}
               href={`/search?q=${encodeURIComponent(cat.q)}`}
-              className="group block border-[1.5px] border-[rgba(26,26,26,0.12)] dark:border-[var(--ink-12)] rounded-[14px] bg-white dark:bg-[var(--white)] transition-all duration-[180ms] ease-out hover:border-[#FA8112] hover:shadow-[0_12px_30px_rgba(250,129,18,0.14)] hover:-translate-y-[3px]"
+              className="group block border-[1.5px] border-[rgba(26,26,26,0.12)] dark:border-[var(--border-subtle)] rounded-[14px] bg-[var(--white)] dark:bg-[var(--white)] transition-all duration-[180ms] ease-out hover:border-[var(--orange)] hover:shadow-[0_12px_30px_rgba(250,129,18,0.14)] hover:-translate-y-[3px]"
               style={{ padding: "26px 22px" }}
             >
               <div
@@ -130,7 +130,7 @@ export default function Categories() {
               >
                 {cat.icon}
               </div>
-              <h3 className="font-bold text-[16.5px] text-[#1A1A1A] dark:text-[#FAF3E1] mb-1 group-hover:text-[#FA8112] transition-colors font-jakarta">
+              <h3 className="font-bold text-[16.5px] text-[var(--ink)] dark:text-[var(--ink)] mb-1 group-hover:text-[var(--orange)] transition-colors font-jakarta">
                 {cat.label}
               </h3>
               <p className="text-[13.5px] text-[rgba(26,26,26,0.62)] dark:text-gray-500">

@@ -113,12 +113,12 @@ const STATUS_LABELS: Record<string, { label: string; color: string }> = {
 }
 
 function StatCard({
-  label, value, sub, color = "text-[#FA8112]",
+  label, value, sub, color = "text-[var(--orange)]",
 }: { label: string; value: string; sub?: string; color?: string }) {
   return (
-    <div className="bg-white dark:bg-[var(--white)] rounded-2xl border border-[#F0E8E0] dark:border-[var(--ink-12)] p-5 shadow-sm">
+    <div className="bg-[var(--white)] dark:bg-[var(--white)] rounded-2xl border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] p-5 shadow-sm">
       <div className={`text-2xl font-black ${color}`}>{value}</div>
-      <div className="text-sm font-medium text-[#1A1A1A] dark:text-[#FAF3E1] mt-0.5">{label}</div>
+      <div className="text-sm font-medium text-[var(--ink)] dark:text-[var(--ink)] mt-0.5">{label}</div>
       {sub && <div className="text-xs text-gray-400 mt-0.5">{sub}</div>}
     </div>
   )
@@ -203,14 +203,14 @@ export default function FreelanceDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#FFF8F0] dark:bg-[var(--color-bg)] flex items-center justify-center">
-        <div className="w-8 h-8 border-3 border-[#FA8112] border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen bg-[var(--cream)] dark:bg-[var(--color-bg)] flex items-center justify-center">
+        <div className="w-8 h-8 border-3 border-[var(--orange)] border-t-transparent rounded-full animate-spin" />
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-[#FFF8F0] dark:bg-[var(--color-bg)] flex">
+    <div className="min-h-screen bg-[var(--cream)] dark:bg-[var(--color-bg)] flex">
       {/* Sidebar overlay (mobile) */}
       {sidebarOpen && (
         <div
@@ -221,31 +221,31 @@ export default function FreelanceDashboard() {
 
       {/* Sidebar */}
       <aside
-        className={`fixed inset-y-0 left-0 z-30 w-64 bg-white dark:bg-[var(--white)] border-r border-[#F0E8E0] dark:border-[var(--ink-12)] flex flex-col transition-transform duration-300 ${
+        className={`fixed inset-y-0 left-0 z-30 w-64 bg-[var(--white)] dark:bg-[var(--surface-3)] border-r border-[var(--border-subtle)] dark:border-[var(--border-strong)] flex flex-col transition-transform duration-300 ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         } lg:static lg:translate-x-0 lg:flex`}
       >
         {/* Logo */}
-        <div className="px-5 py-5 border-b border-[#F0E8E0] dark:border-[var(--ink-12)]">
+        <div className="px-5 py-5 border-b border-[var(--border-subtle)] dark:border-[var(--border-subtle)]">
           <Link href="/" className="flex items-center gap-0.5">
-            <span className="text-xl font-extrabold text-[#FA8112]">Pix</span>
-            <span className="text-xl font-extrabold text-[#1A1A1A] dark:text-[#FAF3E1]">Raise</span>
+            <span className="text-xl font-extrabold text-[var(--orange)]">Pix</span>
+            <span className="text-xl font-extrabold text-[var(--ink)] dark:text-[var(--ink)]">Raise</span>
           </Link>
           <p className="text-xs text-gray-400 mt-0.5">Espace Freelance</p>
         </div>
 
         {/* Profile snippet */}
-        <div className="px-5 py-4 border-b border-[#F0E8E0] dark:border-[var(--ink-12)]">
+        <div className="px-5 py-4 border-b border-[var(--border-subtle)] dark:border-[var(--border-subtle)]">
           <Link href="/profile" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
             {profile?.avatar_url ? (
               <img src={profile.avatar_url} alt="avatar" className="w-10 h-10 rounded-xl object-cover" />
             ) : (
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#FA8112] to-[#E8730F] flex items-center justify-center text-white font-bold text-sm shadow-md shadow-[#FA8112]/30">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[var(--orange)] to-[var(--orange-dark)] flex items-center justify-center text-white font-bold text-sm shadow-md shadow-[var(--orange)]/30">
                 {initials}
               </div>
             )}
             <div className="min-w-0">
-              <p className="text-sm font-semibold text-[#1A1A1A] dark:text-[#FAF3E1] truncate">{displayName}</p>
+              <p className="text-sm font-semibold text-[var(--ink)] dark:text-[var(--ink)] truncate">{displayName}</p>
               {stats.rating > 0 && (
                 <p className="text-xs text-amber-500 flex items-center gap-0.5">
                   ★ {stats.rating.toFixed(1)} · {stats.reviewCount} avis
@@ -262,9 +262,9 @@ export default function FreelanceDashboard() {
               key={item.href}
               href={item.href}
               onClick={() => setSidebarOpen(false)}
-              className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-[#FFF8F0] dark:hover:bg-[#3a3a3a] hover:text-[#FA8112] transition-all group"
+              className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-[var(--cream)] dark:hover:bg-[var(--surface-3)] hover:text-[var(--orange)] transition-all group"
             >
-              <svg className="w-5 h-5 shrink-0 group-hover:text-[#FA8112] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 shrink-0 group-hover:text-[var(--orange)] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 {item.icon}
               </svg>
               {item.label}
@@ -273,7 +273,7 @@ export default function FreelanceDashboard() {
         </nav>
 
         {/* Bottom: sign out */}
-        <div className="px-3 pb-5 pt-3 border-t border-[#F0E8E0] dark:border-[var(--ink-12)]">
+        <div className="px-3 pb-5 pt-3 border-t border-[var(--border-subtle)] dark:border-[var(--border-subtle)]">
           <button
             onClick={async () => {
               const sb = createClient()
@@ -293,20 +293,20 @@ export default function FreelanceDashboard() {
       {/* Main content */}
       <div className="flex-1 min-w-0 flex flex-col">
         {/* Top bar (mobile) */}
-        <header className="lg:hidden sticky top-0 z-10 bg-white dark:bg-[var(--white)] border-b border-[#F0E8E0] dark:border-[var(--ink-12)] px-4 py-3 flex items-center justify-between">
+        <header className="lg:hidden sticky top-0 z-10 bg-[var(--white)] dark:bg-[var(--surface-3)] border-b border-[var(--border-subtle)] dark:border-[var(--border-strong)] px-4 py-3 flex items-center justify-between">
           <button
             onClick={() => setSidebarOpen(true)}
-            className="p-1.5 rounded-lg hover:bg-[#FFF8F0] dark:hover:bg-[#3a3a3a] transition-colors"
+            className="p-1.5 rounded-lg hover:bg-[var(--cream)] dark:hover:bg-[var(--surface-3)] transition-colors"
           >
-            <svg className="w-6 h-6 text-[#1A1A1A] dark:text-[#FAF3E1]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-6 h-6 text-[var(--ink)] dark:text-[var(--ink)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           </button>
           <Link href="/" className="flex items-center gap-0.5">
-            <span className="text-lg font-extrabold text-[#FA8112]">Pix</span>
-            <span className="text-lg font-extrabold text-[#1A1A1A] dark:text-[#FAF3E1]">Raise</span>
+            <span className="text-lg font-extrabold text-[var(--orange)]">Pix</span>
+            <span className="text-lg font-extrabold text-[var(--ink)] dark:text-[var(--ink)]">Raise</span>
           </Link>
-          <Link href="/profile" className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#FA8112] to-[#E8730F] flex items-center justify-center text-white text-xs font-bold">
+          <Link href="/profile" className="w-8 h-8 rounded-lg bg-gradient-to-br from-[var(--orange)] to-[var(--orange-dark)] flex items-center justify-center text-white text-xs font-bold">
             {initials}
           </Link>
         </header>
@@ -316,7 +316,7 @@ export default function FreelanceDashboard() {
           {/* Header */}
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-black text-[#1A1A1A] dark:text-[#FAF3E1]">
+              <h1 className="text-2xl font-black text-[var(--ink)] dark:text-[var(--ink)]">
                 Bonjour, {displayName.split(" ")[0]} 👋
               </h1>
               <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
@@ -325,7 +325,7 @@ export default function FreelanceDashboard() {
             </div>
             <Link
               href="/profile"
-              className="hidden sm:inline-flex items-center gap-2 px-4 py-2 bg-[#FA8112] hover:bg-[#E8730F] text-white text-sm font-semibold rounded-xl transition-colors shadow-md shadow-[#FA8112]/30"
+              className="hidden sm:inline-flex items-center gap-2 px-4 py-2 bg-[var(--orange)] hover:bg-[var(--orange-dark)] text-white text-sm font-semibold rounded-xl transition-colors shadow-md shadow-[var(--orange)]/30"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -352,7 +352,7 @@ export default function FreelanceDashboard() {
               label="Revenu total"
               value={`${stats.revenueTotal.toLocaleString("fr-DZ")} DA`}
               sub="depuis le début"
-              color="text-[#FA8112]"
+              color="text-[var(--orange)]"
             />
             <StatCard
               label="Note moyenne"
@@ -364,16 +364,16 @@ export default function FreelanceDashboard() {
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Recent orders */}
-            <div className="lg:col-span-2 bg-white dark:bg-[var(--white)] rounded-2xl border border-[#F0E8E0] dark:border-[var(--ink-12)] shadow-sm">
-              <div className="flex items-center justify-between px-5 py-4 border-b border-[#F0E8E0] dark:border-[var(--ink-12)]">
-                <h2 className="font-bold text-[#1A1A1A] dark:text-[#FAF3E1]">Commandes récentes</h2>
-                <Link href="/dashboard/freelance/orders" className="text-xs text-[#FA8112] hover:text-[#E8730F] font-medium transition-colors">
+            <div className="lg:col-span-2 bg-[var(--white)] dark:bg-[var(--white)] rounded-2xl border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] shadow-sm">
+              <div className="flex items-center justify-between px-5 py-4 border-b border-[var(--border-subtle)] dark:border-[var(--border-subtle)]">
+                <h2 className="font-bold text-[var(--ink)] dark:text-[var(--ink)]">Commandes récentes</h2>
+                <Link href="/dashboard/freelance/orders" className="text-xs text-[var(--orange)] hover:text-[var(--orange-dark)] font-medium transition-colors">
                   Voir tout →
                 </Link>
               </div>
               {recentOrders.length === 0 ? (
                 <div className="px-5 py-12 text-center">
-                  <div className="w-14 h-14 mx-auto mb-3 rounded-2xl bg-[#FFF8F0] dark:bg-[var(--cream)] flex items-center justify-center">
+                  <div className="w-14 h-14 mx-auto mb-3 rounded-2xl bg-[var(--cream)] dark:bg-[var(--cream)] flex items-center justify-center">
                     <svg className="w-7 h-7 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                     </svg>
@@ -384,17 +384,17 @@ export default function FreelanceDashboard() {
               ) : (
                 <div className="divide-y divide-[#F0E8E0] dark:divide-[#3a3a3a]">
                   {recentOrders.map((order) => {
-                    const status = STATUS_LABELS[order.status] ?? { label: order.status, color: "bg-gray-100 text-gray-600" }
+                    const status = STATUS_LABELS[order.status] ?? { label: order.status, color: "bg-gray-100 dark:bg-[var(--ink-12)] text-gray-600" }
                     return (
-                      <div key={order.id} className="flex items-center justify-between px-5 py-3.5 hover:bg-[#FFF8F0] dark:hover:bg-[#3a3a3a] transition-colors">
+                      <div key={order.id} className="flex items-center justify-between px-5 py-3.5 hover:bg-[var(--cream)] dark:hover:bg-[var(--surface-3)] transition-colors">
                         <div className="flex items-center gap-3 min-w-0">
-                          <div className="w-8 h-8 rounded-lg bg-[#FA8112]/10 flex items-center justify-center shrink-0">
-                            <svg className="w-4 h-4 text-[#FA8112]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <div className="w-8 h-8 rounded-lg bg-[var(--orange)]/10 flex items-center justify-center shrink-0">
+                            <svg className="w-4 h-4 text-[var(--orange)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                             </svg>
                           </div>
                           <div className="min-w-0">
-                            <p className="text-sm font-medium text-[#1A1A1A] dark:text-[#FAF3E1] truncate">
+                            <p className="text-sm font-medium text-[var(--ink)] dark:text-[var(--ink)] truncate">
                               {order.service_title ?? `Commande #${order.id.slice(0, 8)}`}
                             </p>
                             <p className="text-xs text-gray-400">
@@ -406,7 +406,7 @@ export default function FreelanceDashboard() {
                           <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${status.color}`}>
                             {status.label}
                           </span>
-                          <span className="text-sm font-bold text-[#1A1A1A] dark:text-[#FAF3E1]">
+                          <span className="text-sm font-bold text-[var(--ink)] dark:text-[var(--ink)]">
                             {(order.total_price ?? 0).toLocaleString("fr-DZ")} DA
                           </span>
                         </div>
@@ -420,8 +420,8 @@ export default function FreelanceDashboard() {
             {/* Quick actions + services count */}
             <div className="space-y-4">
               {/* Quick actions */}
-              <div className="bg-white dark:bg-[var(--white)] rounded-2xl border border-[#F0E8E0] dark:border-[var(--ink-12)] shadow-sm p-5">
-                <h2 className="font-bold text-[#1A1A1A] dark:text-[#FAF3E1] mb-4">Actions rapides</h2>
+              <div className="bg-[var(--white)] dark:bg-[var(--white)] rounded-2xl border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] shadow-sm p-5">
+                <h2 className="font-bold text-[var(--ink)] dark:text-[var(--ink)] mb-4">Actions rapides</h2>
                 <div className="space-y-2">
                   {[
                     { label: "Publier un service", href: "/services/new",   icon: "M12 4v16m8-8H4", primary: true },
@@ -434,8 +434,8 @@ export default function FreelanceDashboard() {
                       href={a.href}
                       className={`flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${
                         a.primary
-                          ? "bg-[#FA8112] hover:bg-[#E8730F] text-white shadow-md shadow-[#FA8112]/20"
-                          : "bg-[#FFF8F0] dark:bg-[var(--cream)] hover:bg-[#FA8112]/10 text-[#1A1A1A] dark:text-[#FAF3E1] hover:text-[#FA8112]"
+                          ? "bg-[var(--orange)] hover:bg-[var(--orange-dark)] text-white shadow-md shadow-[var(--orange)]/20"
+                          : "bg-[var(--cream)] dark:bg-[var(--cream)] hover:bg-[var(--orange)]/10 text-[var(--ink)] dark:text-[var(--ink)] hover:text-[var(--orange)]"
                       }`}
                     >
                       <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -448,10 +448,10 @@ export default function FreelanceDashboard() {
               </div>
 
               {/* Services summary */}
-              <div className="bg-white dark:bg-[var(--white)] rounded-2xl border border-[#F0E8E0] dark:border-[var(--ink-12)] shadow-sm p-5">
+              <div className="bg-[var(--white)] dark:bg-[var(--white)] rounded-2xl border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] shadow-sm p-5">
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="font-bold text-[#1A1A1A] dark:text-[#FAF3E1]">Mes services</h2>
-                  <span className="text-xs bg-[#FA8112]/10 text-[#FA8112] font-semibold px-2 py-0.5 rounded-full">
+                  <h2 className="font-bold text-[var(--ink)] dark:text-[var(--ink)]">Mes services</h2>
+                  <span className="text-xs bg-[var(--orange)]/10 text-[var(--orange)] font-semibold px-2 py-0.5 rounded-full">
                     {stats.serviceCount}
                   </span>
                 </div>
@@ -462,12 +462,12 @@ export default function FreelanceDashboard() {
                 ) : (
                   <div className="space-y-2">
                     {services.map((svc) => (
-                      <div key={svc.id} className="flex items-center justify-between py-2 border-b border-[#F0E8E0] dark:border-[var(--ink-12)] last:border-0">
+                      <div key={svc.id} className="flex items-center justify-between py-2 border-b border-[var(--border-subtle)] dark:border-[var(--border-subtle)] last:border-0">
                         <div className="min-w-0">
-                          <p className="text-sm font-medium text-[#1A1A1A] dark:text-[#FAF3E1] truncate">{svc.title}</p>
+                          <p className="text-sm font-medium text-[var(--ink)] dark:text-[var(--ink)] truncate">{svc.title}</p>
                           <p className="text-xs text-gray-400">{svc.category ?? "Sans catégorie"}</p>
                         </div>
-                        <span className="text-sm font-bold text-[#FA8112] shrink-0 ml-2">
+                        <span className="text-sm font-bold text-[var(--orange)] shrink-0 ml-2">
                           {(svc.price ?? 0).toLocaleString("fr-DZ")} DA
                         </span>
                       </div>
@@ -479,8 +479,8 @@ export default function FreelanceDashboard() {
           </div>
 
           {/* Wilaya + account info */}
-          <div className="bg-white dark:bg-[var(--white)] rounded-2xl border border-[#F0E8E0] dark:border-[var(--ink-12)] shadow-sm p-5">
-            <h2 className="font-bold text-[#1A1A1A] dark:text-[#FAF3E1] mb-4">Informations du compte</h2>
+          <div className="bg-[var(--white)] dark:bg-[var(--white)] rounded-2xl border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] shadow-sm p-5">
+            <h2 className="font-bold text-[var(--ink)] dark:text-[var(--ink)] mb-4">Informations du compte</h2>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               {[
                 { label: "Email", value: user?.email ?? "—" },
@@ -489,7 +489,7 @@ export default function FreelanceDashboard() {
               ].map((info) => (
                 <div key={info.label}>
                   <p className="text-xs text-gray-400 mb-0.5">{info.label}</p>
-                  <p className="text-sm font-medium text-[#1A1A1A] dark:text-[#FAF3E1]">{info.value}</p>
+                  <p className="text-sm font-medium text-[var(--ink)] dark:text-[var(--ink)]">{info.value}</p>
                 </div>
               ))}
             </div>

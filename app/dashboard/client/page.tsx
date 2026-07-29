@@ -71,13 +71,13 @@ const STATUS_LABELS: Record<string, { label: string; color: string }> = {
   paid:      { label: "Payée",       color: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400" },
 }
 
-function StatCard({ label, value, sub, color = "text-[#FA8112]" }: {
+function StatCard({ label, value, sub, color = "text-[var(--orange)]" }: {
   label: string; value: string; sub?: string; color?: string
 }) {
   return (
-    <div className="bg-white dark:bg-[var(--white)] rounded-2xl border border-[#F0E8E0] dark:border-[var(--ink-12)] p-5 shadow-sm">
+    <div className="bg-[var(--white)] dark:bg-[var(--white)] rounded-2xl border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] p-5 shadow-sm">
       <div className={`text-2xl font-black ${color}`}>{value}</div>
-      <div className="text-sm font-medium text-[#1A1A1A] dark:text-[#FAF3E1] mt-0.5">{label}</div>
+      <div className="text-sm font-medium text-[var(--ink)] dark:text-[var(--ink)] mt-0.5">{label}</div>
       {sub && <div className="text-xs text-gray-400 mt-0.5">{sub}</div>}
     </div>
   )
@@ -136,43 +136,43 @@ export default function ClientDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#FFF8F0] dark:bg-[var(--color-bg)] flex items-center justify-center">
-        <div className="w-8 h-8 border-3 border-[#FA8112] border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen bg-[var(--cream)] dark:bg-[var(--color-bg)] flex items-center justify-center">
+        <div className="w-8 h-8 border-3 border-[var(--orange)] border-t-transparent rounded-full animate-spin" />
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-[#FFF8F0] dark:bg-[var(--color-bg)] flex">
+    <div className="min-h-screen bg-[var(--cream)] dark:bg-[var(--color-bg)] flex">
       {sidebarOpen && (
         <div className="fixed inset-0 bg-black/40 z-20 lg:hidden" onClick={() => setSidebarOpen(false)} />
       )}
 
       {/* Sidebar */}
       <aside
-        className={`fixed inset-y-0 left-0 z-30 w-64 bg-white dark:bg-[var(--white)] border-r border-[#F0E8E0] dark:border-[var(--ink-12)] flex flex-col transition-transform duration-300 ${
+        className={`fixed inset-y-0 left-0 z-30 w-64 bg-[var(--white)] dark:bg-[var(--surface-3)] border-r border-[var(--border-subtle)] dark:border-[var(--border-strong)] flex flex-col transition-transform duration-300 ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         } lg:static lg:translate-x-0 lg:flex`}
       >
-        <div className="px-5 py-5 border-b border-[#F0E8E0] dark:border-[var(--ink-12)]">
+        <div className="px-5 py-5 border-b border-[var(--border-subtle)] dark:border-[var(--border-subtle)]">
           <Link href="/" className="flex items-center gap-0.5">
-            <span className="text-xl font-extrabold text-[#FA8112]">Pix</span>
-            <span className="text-xl font-extrabold text-[#1A1A1A] dark:text-[#FAF3E1]">Raise</span>
+            <span className="text-xl font-extrabold text-[var(--orange)]">Pix</span>
+            <span className="text-xl font-extrabold text-[var(--ink)] dark:text-[var(--ink)]">Raise</span>
           </Link>
           <p className="text-xs text-gray-400 mt-0.5">Espace Client</p>
         </div>
 
-        <div className="px-5 py-4 border-b border-[#F0E8E0] dark:border-[var(--ink-12)]">
+        <div className="px-5 py-4 border-b border-[var(--border-subtle)] dark:border-[var(--border-subtle)]">
           <Link href="/profile" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
             {profile?.avatar_url ? (
               <img src={profile.avatar_url} alt="avatar" className="w-10 h-10 rounded-xl object-cover" />
             ) : (
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#FA8112] to-[#E8730F] flex items-center justify-center text-white font-bold text-sm shadow-md shadow-[#FA8112]/30">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[var(--orange)] to-[var(--orange-dark)] flex items-center justify-center text-white font-bold text-sm shadow-md shadow-[var(--orange)]/30">
                 {initials}
               </div>
             )}
             <div className="min-w-0">
-              <p className="text-sm font-semibold text-[#1A1A1A] dark:text-[#FAF3E1] truncate">{displayName}</p>
+              <p className="text-sm font-semibold text-[var(--ink)] dark:text-[var(--ink)] truncate">{displayName}</p>
               <p className="text-xs text-gray-400">Compte Acheteur</p>
             </div>
           </Link>
@@ -184,9 +184,9 @@ export default function ClientDashboard() {
               key={item.href}
               href={item.href}
               onClick={() => setSidebarOpen(false)}
-              className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-[#FFF8F0] dark:hover:bg-[#3a3a3a] hover:text-[#FA8112] transition-all group"
+              className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-[var(--cream)] dark:hover:bg-[var(--surface-3)] hover:text-[var(--orange)] transition-all group"
             >
-              <svg className="w-5 h-5 shrink-0 group-hover:text-[#FA8112]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 shrink-0 group-hover:text-[var(--orange)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d={item.icon} />
               </svg>
               {item.label}
@@ -194,7 +194,7 @@ export default function ClientDashboard() {
           ))}
         </nav>
 
-        <div className="px-3 pb-5 pt-3 border-t border-[#F0E8E0] dark:border-[var(--ink-12)]">
+        <div className="px-3 pb-5 pt-3 border-t border-[var(--border-subtle)] dark:border-[var(--border-subtle)]">
           <button
             onClick={async () => {
               const sb = createClient()
@@ -213,20 +213,20 @@ export default function ClientDashboard() {
 
       {/* Main */}
       <div className="flex-1 min-w-0 flex flex-col">
-        <header className="lg:hidden sticky top-0 z-10 bg-white dark:bg-[var(--white)] border-b border-[#F0E8E0] dark:border-[var(--ink-12)] px-4 py-3 flex items-center justify-between">
+        <header className="lg:hidden sticky top-0 z-10 bg-[var(--white)] dark:bg-[var(--surface-3)] border-b border-[var(--border-subtle)] dark:border-[var(--border-strong)] px-4 py-3 flex items-center justify-between">
           <button
             onClick={() => setSidebarOpen(true)}
-            className="p-1.5 rounded-lg hover:bg-[#FFF8F0] dark:hover:bg-[#3a3a3a] transition-colors"
+            className="p-1.5 rounded-lg hover:bg-[var(--cream)] dark:hover:bg-[var(--surface-3)] transition-colors"
           >
-            <svg className="w-6 h-6 text-[#1A1A1A] dark:text-[#FAF3E1]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-6 h-6 text-[var(--ink)] dark:text-[var(--ink)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           </button>
           <Link href="/" className="flex items-center gap-0.5">
-            <span className="text-lg font-extrabold text-[#FA8112]">Pix</span>
-            <span className="text-lg font-extrabold text-[#1A1A1A] dark:text-[#FAF3E1]">Raise</span>
+            <span className="text-lg font-extrabold text-[var(--orange)]">Pix</span>
+            <span className="text-lg font-extrabold text-[var(--ink)] dark:text-[var(--ink)]">Raise</span>
           </Link>
-          <Link href="/profile" className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#FA8112] to-[#E8730F] flex items-center justify-center text-white text-xs font-bold">
+          <Link href="/profile" className="w-8 h-8 rounded-lg bg-gradient-to-br from-[var(--orange)] to-[var(--orange-dark)] flex items-center justify-center text-white text-xs font-bold">
             {initials}
           </Link>
         </header>
@@ -234,7 +234,7 @@ export default function ClientDashboard() {
         <main className="flex-1 p-4 sm:p-6 lg:p-8 space-y-6">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-black text-[#1A1A1A] dark:text-[#FAF3E1]">
+              <h1 className="text-2xl font-black text-[var(--ink)] dark:text-[var(--ink)]">
                 Bonjour, {displayName.split(" ")[0]} 👋
               </h1>
               <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
@@ -243,7 +243,7 @@ export default function ClientDashboard() {
             </div>
             <Link
               href="/freelances"
-              className="hidden sm:inline-flex items-center gap-2 px-4 py-2 bg-[#FA8112] hover:bg-[#E8730F] text-white text-sm font-semibold rounded-xl transition-colors shadow-md shadow-[#FA8112]/30"
+              className="hidden sm:inline-flex items-center gap-2 px-4 py-2 bg-[var(--orange)] hover:bg-[var(--orange-dark)] text-white text-sm font-semibold rounded-xl transition-colors shadow-md shadow-[var(--orange)]/30"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -270,7 +270,7 @@ export default function ClientDashboard() {
               label="Total dépensé"
               value={`${stats.totalSpent.toLocaleString("fr-DZ")} DA`}
               sub="toutes commandes"
-              color="text-[#FA8112]"
+              color="text-[var(--orange)]"
             />
             <StatCard
               label="Favoris"
@@ -282,16 +282,16 @@ export default function ClientDashboard() {
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Orders */}
-            <div className="lg:col-span-2 bg-white dark:bg-[var(--white)] rounded-2xl border border-[#F0E8E0] dark:border-[var(--ink-12)] shadow-sm">
-              <div className="flex items-center justify-between px-5 py-4 border-b border-[#F0E8E0] dark:border-[var(--ink-12)]">
-                <h2 className="font-bold text-[#1A1A1A] dark:text-[#FAF3E1]">Mes commandes récentes</h2>
-                <Link href="/dashboard/client/orders" className="text-xs text-[#FA8112] hover:text-[#E8730F] font-medium transition-colors">
+            <div className="lg:col-span-2 bg-[var(--white)] dark:bg-[var(--white)] rounded-2xl border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] shadow-sm">
+              <div className="flex items-center justify-between px-5 py-4 border-b border-[var(--border-subtle)] dark:border-[var(--border-subtle)]">
+                <h2 className="font-bold text-[var(--ink)] dark:text-[var(--ink)]">Mes commandes récentes</h2>
+                <Link href="/dashboard/client/orders" className="text-xs text-[var(--orange)] hover:text-[var(--orange-dark)] font-medium transition-colors">
                   Voir tout →
                 </Link>
               </div>
               {recentOrders.length === 0 ? (
                 <div className="px-5 py-12 text-center">
-                  <div className="w-14 h-14 mx-auto mb-3 rounded-2xl bg-[#FFF8F0] dark:bg-[var(--cream)] flex items-center justify-center">
+                  <div className="w-14 h-14 mx-auto mb-3 rounded-2xl bg-[var(--cream)] dark:bg-[var(--cream)] flex items-center justify-center">
                     <svg className="w-7 h-7 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                     </svg>
@@ -299,7 +299,7 @@ export default function ClientDashboard() {
                   <p className="text-sm text-gray-400 dark:text-gray-500">Aucune commande pour l'instant</p>
                   <Link
                     href="/freelances"
-                    className="inline-flex items-center gap-1.5 mt-3 text-sm font-medium text-[#FA8112] hover:text-[#E8730F] transition-colors"
+                    className="inline-flex items-center gap-1.5 mt-3 text-sm font-medium text-[var(--orange)] hover:text-[var(--orange-dark)] transition-colors"
                   >
                     Trouver un freelance →
                   </Link>
@@ -307,17 +307,17 @@ export default function ClientDashboard() {
               ) : (
                 <div className="divide-y divide-[#F0E8E0] dark:divide-[#3a3a3a]">
                   {recentOrders.map((order) => {
-                    const status = STATUS_LABELS[order.status] ?? { label: order.status, color: "bg-gray-100 text-gray-600" }
+                    const status = STATUS_LABELS[order.status] ?? { label: order.status, color: "bg-gray-100 dark:bg-[var(--ink-12)] text-gray-600" }
                     return (
-                      <div key={order.id} className="flex items-center justify-between px-5 py-3.5 hover:bg-[#FFF8F0] dark:hover:bg-[#3a3a3a] transition-colors">
+                      <div key={order.id} className="flex items-center justify-between px-5 py-3.5 hover:bg-[var(--cream)] dark:hover:bg-[var(--surface-3)] transition-colors">
                         <div className="flex items-center gap-3 min-w-0">
-                          <div className="w-8 h-8 rounded-lg bg-[#FA8112]/10 flex items-center justify-center shrink-0">
-                            <svg className="w-4 h-4 text-[#FA8112]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <div className="w-8 h-8 rounded-lg bg-[var(--orange)]/10 flex items-center justify-center shrink-0">
+                            <svg className="w-4 h-4 text-[var(--orange)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                             </svg>
                           </div>
                           <div className="min-w-0">
-                            <p className="text-sm font-medium text-[#1A1A1A] dark:text-[#FAF3E1] truncate">
+                            <p className="text-sm font-medium text-[var(--ink)] dark:text-[var(--ink)] truncate">
                               {order.service_title ?? `Commande #${order.id.slice(0, 8)}`}
                             </p>
                             <p className="text-xs text-gray-400">
@@ -329,7 +329,7 @@ export default function ClientDashboard() {
                           <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${status.color}`}>
                             {status.label}
                           </span>
-                          <span className="text-sm font-bold text-[#1A1A1A] dark:text-[#FAF3E1]">
+                          <span className="text-sm font-bold text-[var(--ink)] dark:text-[var(--ink)]">
                             {(order.total_price ?? 0).toLocaleString("fr-DZ")} DA
                           </span>
                         </div>
@@ -343,8 +343,8 @@ export default function ClientDashboard() {
             {/* Right column */}
             <div className="space-y-4">
               {/* Quick actions */}
-              <div className="bg-white dark:bg-[var(--white)] rounded-2xl border border-[#F0E8E0] dark:border-[var(--ink-12)] shadow-sm p-5">
-                <h2 className="font-bold text-[#1A1A1A] dark:text-[#FAF3E1] mb-4">Actions rapides</h2>
+              <div className="bg-[var(--white)] dark:bg-[var(--white)] rounded-2xl border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] shadow-sm p-5">
+                <h2 className="font-bold text-[var(--ink)] dark:text-[var(--ink)] mb-4">Actions rapides</h2>
                 <div className="space-y-2">
                   {[
                     {
@@ -369,8 +369,8 @@ export default function ClientDashboard() {
                       href={a.href}
                       className={`flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${
                         a.primary
-                          ? "bg-[#FA8112] hover:bg-[#E8730F] text-white shadow-md shadow-[#FA8112]/20"
-                          : "bg-[#FFF8F0] dark:bg-[var(--cream)] hover:bg-[#FA8112]/10 text-[#1A1A1A] dark:text-[#FAF3E1] hover:text-[#FA8112]"
+                          ? "bg-[var(--orange)] hover:bg-[var(--orange-dark)] text-white shadow-md shadow-[var(--orange)]/20"
+                          : "bg-[var(--cream)] dark:bg-[var(--cream)] hover:bg-[var(--orange)]/10 text-[var(--ink)] dark:text-[var(--ink)] hover:text-[var(--orange)]"
                       }`}
                     >
                       <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -383,8 +383,8 @@ export default function ClientDashboard() {
               </div>
 
               {/* Account info */}
-              <div className="bg-white dark:bg-[var(--white)] rounded-2xl border border-[#F0E8E0] dark:border-[var(--ink-12)] shadow-sm p-5">
-                <h2 className="font-bold text-[#1A1A1A] dark:text-[#FAF3E1] mb-4">Mon compte</h2>
+              <div className="bg-[var(--white)] dark:bg-[var(--white)] rounded-2xl border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] shadow-sm p-5">
+                <h2 className="font-bold text-[var(--ink)] dark:text-[var(--ink)] mb-4">Mon compte</h2>
                 <div className="space-y-3">
                   {[
                     { label: "Email", value: user?.email ?? "—" },
@@ -393,13 +393,13 @@ export default function ClientDashboard() {
                   ].map((info) => (
                     <div key={info.label} className="flex items-center justify-between">
                       <span className="text-xs text-gray-400">{info.label}</span>
-                      <span className="text-xs font-medium text-[#1A1A1A] dark:text-[#FAF3E1]">{info.value}</span>
+                      <span className="text-xs font-medium text-[var(--ink)] dark:text-[var(--ink)]">{info.value}</span>
                     </div>
                   ))}
                 </div>
                 <Link
                   href="/profile"
-                  className="mt-4 flex items-center justify-center gap-1.5 w-full py-2 rounded-xl border border-[#FA8112]/30 text-[#FA8112] text-sm font-medium hover:bg-[#FA8112]/5 transition-colors"
+                  className="mt-4 flex items-center justify-center gap-1.5 w-full py-2 rounded-xl border border-[var(--orange)]/30 text-[var(--orange)] text-sm font-medium hover:bg-[var(--orange)]/5 transition-colors"
                 >
                   Modifier le profil →
                 </Link>

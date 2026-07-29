@@ -47,16 +47,16 @@ export default function Marketplace() {
   }, [])
 
   return (
-    <section className="py-[88px] bg-white dark:bg-[var(--color-bg)]">
+    <section className="py-[88px] bg-[var(--white)] dark:bg-[var(--color-bg)]">
       <div className="max-w-[1180px] mx-auto px-6">
 
         {/* Section head */}
         <div className="flex items-end justify-between mb-10">
           <div>
-            <span className="inline-block text-[#FA8112] text-xs font-bold uppercase tracking-widest mb-3 font-jakarta">
+            <span className="inline-block text-[var(--orange)] text-xs font-bold uppercase tracking-widest mb-3 font-jakarta">
               Marketplace
             </span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-[#1A1A1A] dark:text-[#FAF3E1]">
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-[var(--ink)] dark:text-[var(--ink)]">
               Téléchargez, c&apos;est prêt
             </h2>
             <p className="mt-2 text-[rgba(26,26,26,0.55)] dark:text-gray-400 text-sm max-w-md">
@@ -65,7 +65,7 @@ export default function Marketplace() {
           </div>
           <Link
             href="/marketplace"
-            className="hidden sm:inline-flex text-sm font-semibold text-[#FA8112] hover:text-[#E06F05] transition-colors font-jakarta"
+            className="hidden sm:inline-flex text-sm font-semibold text-[var(--orange)] hover:text-[var(--orange-dark)] transition-colors font-jakarta"
           >
             Voir tous les produits →
           </Link>
@@ -78,16 +78,16 @@ export default function Marketplace() {
             ))}
           </div>
         ) : products.length === 0 ? (
-          <div className="text-center py-16 bg-[#FFF8F0] dark:bg-[var(--white)] rounded-[14px] border border-[rgba(26,26,26,0.08)]">
+          <div className="text-center py-16 bg-[var(--cream)] dark:bg-[var(--white)] rounded-[14px] border border-[var(--border-subtle)]">
             <div className="w-14 h-14 mx-auto mb-4 rounded-xl bg-[var(--orange-soft)] flex items-center justify-center">
-              <svg className="w-7 h-7 text-[#FA8112]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-7 h-7 text-[var(--orange)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
               </svg>
             </div>
             <p className="text-[rgba(26,26,26,0.55)] text-sm mb-3">Aucun produit pour le moment</p>
             <Link
               href="/products/new"
-              className="inline-flex items-center gap-1.5 px-5 py-2.5 bg-[#FA8112] hover:bg-[#E06F05] text-white text-sm font-semibold rounded-[10px] transition-all hover:-translate-y-px shadow-[0_4px_12px_rgba(250,129,18,0.35)] font-jakarta"
+              className="inline-flex items-center gap-1.5 px-5 py-2.5 bg-[var(--orange)] hover:bg-[var(--orange-dark)] text-white text-sm font-semibold rounded-[10px] transition-all hover:-translate-y-px shadow-[0_4px_12px_rgba(250,129,18,0.35)] font-jakarta"
             >
               Vendre un produit →
             </Link>

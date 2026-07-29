@@ -45,7 +45,7 @@ type Tab = "services" | "produits" | "avis" | "parametres"
 
 /* ─── Constants ─────────────────────────────────────────────── */
 const GRADIENTS = [
-  "from-[#FA8112] to-[#E8730F]",
+  "from-[var(--orange)] to-[var(--orange-dark)]",
   "from-sky-500 to-blue-600",
   "from-emerald-500 to-teal-600",
   "from-pink-500 to-rose-600",
@@ -89,7 +89,7 @@ function Stars({ rating, size = "sm" }: { rating: number; size?: "sm" | "md" }) 
 
 function Spinner({ cls = "w-5 h-5" }: { cls?: string }) {
   return (
-    <svg className={`${cls} animate-spin text-[#FA8112]`} fill="none" viewBox="0 0 24 24">
+    <svg className={`${cls} animate-spin text-[var(--orange)]`} fill="none" viewBox="0 0 24 24">
       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
     </svg>
@@ -194,14 +194,14 @@ function CropModal({ src, mode, onConfirm, onCancel }: CropModalProps) {
         <div className="flex gap-3 px-6 py-5">
           <button
             onClick={onCancel}
-            className="flex-1 py-2.5 border-2 border-[#3a3a3a] text-gray-300 text-sm font-semibold rounded-xl hover:border-[#FA8112]/40 transition-colors"
+            className="flex-1 py-2.5 border-2 border-[#3a3a3a] text-gray-300 text-sm font-semibold rounded-xl hover:border-[var(--orange)]/40 transition-colors"
           >
             Annuler
           </button>
           <button
             onClick={handleConfirm}
             disabled={!completedCrop || confirming}
-            className="flex-1 py-2.5 bg-[#FA8112] hover:bg-[#E8730F] text-white text-sm font-semibold rounded-xl transition-all shadow-lg shadow-[#FA8112]/30 disabled:opacity-50 flex items-center justify-center gap-2"
+            className="flex-1 py-2.5 bg-[var(--orange)] hover:bg-[var(--orange-dark)] text-white text-sm font-semibold rounded-xl transition-all shadow-lg shadow-[var(--orange)]/30 disabled:opacity-50 flex items-center justify-center gap-2"
           >
             {confirming
               ? <><svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg> Envoi...</>
@@ -535,7 +535,7 @@ export default function ProfilePage() {
     return (
       <>
         <Navbar />
-        <main className="min-h-screen bg-white dark:bg-[var(--color-bg)] flex items-center justify-center">
+        <main className="min-h-screen bg-[var(--white)] dark:bg-[var(--color-bg)] flex items-center justify-center">
           <Spinner cls="w-10 h-10" />
         </main>
         <Footer />
@@ -570,7 +570,7 @@ export default function ProfilePage() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen bg-[#FFF8F0] dark:bg-[var(--color-bg)] pb-20">
+      <main className="min-h-screen bg-[var(--cream)] dark:bg-[var(--color-bg)] pb-20">
 
         {/* Hidden file inputs */}
         <input ref={avatarRef} type="file" accept="image/*" className="hidden" onChange={handleAvatarSelect} />
@@ -605,8 +605,8 @@ export default function ProfilePage() {
                 className="absolute inset-0"
                 style={{ background: "linear-gradient(135deg, #FA8112 0%, #e06b00 100%)", zIndex: 0 }}
               >
-                <div className="absolute -top-20 -right-20 w-64 h-64 bg-white/10 rounded-full blur-3xl" />
-                <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-white/5 rounded-full blur-3xl" />
+                <div className="absolute -top-20 -right-20 w-64 h-64 bg-[var(--white)]/10 rounded-full blur-3xl" />
+                <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-[var(--white)]/5 rounded-full blur-3xl" />
                 <div className="absolute inset-0 flex items-center justify-center opacity-10">
                   <svg className="w-24 h-24 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -637,17 +637,17 @@ export default function ProfilePage() {
                   {uploading ? <Spinner cls="w-3.5 h-3.5" /> : <span className="text-base font-bold leading-none tracking-widest">···</span>}
                 </button>
                 {showCoverMenu && (
-                  <div className="absolute right-0 top-10 w-52 bg-white dark:bg-[var(--white)] rounded-xl shadow-xl border border-[#F0E8E0] dark:border-[var(--ink-12)] overflow-hidden">
+                  <div className="absolute right-0 top-10 w-52 bg-[var(--white)] dark:bg-[var(--white)] rounded-xl shadow-xl border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] overflow-hidden">
                     <button
                       onClick={() => { coverRef.current?.click(); setShowCoverMenu(false) }}
-                      className="w-full text-left px-4 py-2.5 text-sm text-[#1A1A1A] dark:text-[#FAF3E1] hover:bg-[#FA8112] hover:text-white transition-colors"
+                      className="w-full text-left px-4 py-2.5 text-sm text-[var(--ink)] dark:text-[var(--ink)] hover:bg-[var(--orange)] hover:text-white transition-colors"
                     >
                       Changer la couverture
                     </button>
                     {coverUrl && (
                       <button
                         onClick={enterRepositionMode}
-                        className="w-full text-left px-4 py-2.5 text-sm text-[#1A1A1A] dark:text-[#FAF3E1] hover:bg-[#FA8112] hover:text-white transition-colors"
+                        className="w-full text-left px-4 py-2.5 text-sm text-[var(--ink)] dark:text-[var(--ink)] hover:bg-[var(--orange)] hover:text-white transition-colors"
                       >
                         Repositionner
                       </button>
@@ -667,7 +667,7 @@ export default function ProfilePage() {
           {/* Avatar */}
           <div className="absolute left-6 sm:left-10 bottom-0 translate-y-1/2" style={{ zIndex: 10 }}>
             <div className="relative">
-              <div className="relative w-[72px] h-[72px] sm:w-28 sm:h-28 rounded-2xl overflow-hidden shadow-xl border-4 border-white dark:border-[#1a1a1a]">
+              <div className="relative w-[72px] h-[72px] sm:w-28 sm:h-28 rounded-2xl overflow-hidden shadow-xl border-4 border-white dark:border-[var(--background)]">
                 <div style={{ width: "100%", height: "100%", overflow: "hidden", background: "linear-gradient(135deg, #FA8112 0%, #e06b00 100%)" }}>
                   {avatarUrl ? (
                     <img
@@ -695,15 +695,15 @@ export default function ProfilePage() {
               <div ref={avatarMenuRef} className="absolute -bottom-1 -right-1">
                 <button
                   onClick={() => setShowAvatarMenu((v) => !v)}
-                  className="w-8 h-8 bg-[#FA8112] hover:bg-[#E8730F] rounded-xl flex items-center justify-center text-white shadow-lg transition-colors"
+                  className="w-8 h-8 bg-[var(--orange)] hover:bg-[var(--orange-dark)] rounded-xl flex items-center justify-center text-white shadow-lg transition-colors"
                 >
                   <span className="text-sm font-bold leading-none tracking-widest">···</span>
                 </button>
                 {showAvatarMenu && (
-                  <div className="absolute left-0 bottom-10 w-44 bg-white dark:bg-[var(--white)] rounded-xl shadow-xl border border-[#F0E8E0] dark:border-[var(--ink-12)] overflow-hidden">
+                  <div className="absolute left-0 bottom-10 w-44 bg-[var(--white)] dark:bg-[var(--white)] rounded-xl shadow-xl border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] overflow-hidden">
                     <button
                       onClick={() => { avatarRef.current?.click(); setShowAvatarMenu(false) }}
-                      className="w-full text-left px-4 py-2.5 text-sm text-[#1A1A1A] dark:text-[#FAF3E1] hover:bg-[#FA8112] hover:text-white transition-colors"
+                      className="w-full text-left px-4 py-2.5 text-sm text-[var(--ink)] dark:text-[var(--ink)] hover:bg-[var(--orange)] hover:text-white transition-colors"
                     >
                       Changer la photo
                     </button>
@@ -717,7 +717,7 @@ export default function ProfilePage() {
                 )}
               </div>
 
-              <span className="absolute top-1 right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-white dark:border-[#1a1a1a]" />
+              <span className="absolute top-1 right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-white dark:border-[var(--background)]" />
             </div>
           </div>
         </div>
@@ -727,16 +727,16 @@ export default function ProfilePage() {
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between pt-16 sm:pt-14 mb-6 gap-4">
             <div>
               <div className="flex items-center gap-3 flex-wrap">
-                <h1 className="text-2xl sm:text-3xl font-extrabold text-[#1A1A1A] dark:text-[#FAF3E1]">
+                <h1 className="text-2xl sm:text-3xl font-extrabold text-[var(--ink)] dark:text-[var(--ink)]">
                   {displayName}
                 </h1>
                 {memberRole && memberRole !== "buyer" && memberRole !== "seller" && (
-                  <span className="px-3 py-1 bg-[#FA8112]/15 dark:bg-[#FA8112]/20 text-[#FA8112] text-xs font-bold rounded-full">
+                  <span className="px-3 py-1 bg-[var(--orange)]/15 dark:bg-[var(--orange)]/20 text-[var(--orange)] text-xs font-bold rounded-full">
                     {memberRole}
                   </span>
                 )}
                 {memberRole === "seller" && (
-                  <span className="px-3 py-1 bg-[#FA8112]/15 dark:bg-[#FA8112]/20 text-[#FA8112] text-xs font-bold rounded-full">
+                  <span className="px-3 py-1 bg-[var(--orange)]/15 dark:bg-[var(--orange)]/20 text-[var(--orange)] text-xs font-bold rounded-full">
                     Vendeur
                   </span>
                 )}
@@ -752,13 +752,13 @@ export default function ProfilePage() {
                 {profile?.rating != null && (
                   <div className="flex items-center gap-1.5">
                     <Stars rating={profile.rating} size="md" />
-                    <span className="font-bold text-[#1A1A1A] dark:text-[#FAF3E1]">{profile.rating.toFixed(1)}</span>
+                    <span className="font-bold text-[var(--ink)] dark:text-[var(--ink)]">{profile.rating.toFixed(1)}</span>
                     <span>({stats.reviews} avis)</span>
                   </div>
                 )}
                 {(profile?.location_city || profile?.location_country || profile?.wilaya) && (
                   <div className="flex items-center gap-1">
-                    <svg className="w-4 h-4 text-[#FA8112]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-4 h-4 text-[var(--orange)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                     </svg>
@@ -779,7 +779,7 @@ export default function ProfilePage() {
             <div className="flex gap-3 shrink-0">
               <button
                 onClick={openEdit}
-                className="px-5 py-2.5 bg-[#FA8112] hover:bg-[#E8730F] text-white text-sm font-semibold rounded-xl transition-all hover:scale-105 shadow-lg shadow-[#FA8112]/30"
+                className="px-5 py-2.5 bg-[var(--orange)] hover:bg-[var(--orange-dark)] text-white text-sm font-semibold rounded-xl transition-all hover:scale-105 shadow-lg shadow-[var(--orange)]/30"
               >
                 Modifier le profil
               </button>
@@ -791,33 +791,33 @@ export default function ProfilePage() {
             {statsCards.map((s) => (
               <div
                 key={s.label}
-                className="bg-white dark:bg-[var(--white)] rounded-2xl border border-[#F0E8E0] dark:border-[var(--ink-12)] p-4 text-center hover:border-[#FA8112]/30 hover:shadow-lg hover:shadow-[#FA8112]/10 transition-all"
+                className="bg-[var(--white)] dark:bg-[var(--white)] rounded-2xl border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] p-4 text-center hover:border-[var(--orange)]/30 hover:shadow-lg hover:shadow-[var(--orange)]/10 transition-all"
               >
                 <div className="text-2xl mb-1">{s.icon}</div>
-                <div className="text-xl sm:text-2xl font-extrabold text-[#1A1A1A] dark:text-[#FAF3E1]">{s.value}</div>
+                <div className="text-xl sm:text-2xl font-extrabold text-[var(--ink)] dark:text-[var(--ink)]">{s.value}</div>
                 <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{s.label}</div>
               </div>
             ))}
           </div>
 
           {/* ── Tabs nav ── */}
-          <div className="flex gap-1 bg-[#F0E8E0] dark:bg-[var(--white)] p-1 rounded-2xl mb-8 overflow-x-auto scrollbar-hide">
+          <div className="flex gap-1 bg-[var(--cream)] dark:bg-[var(--white)] p-1 rounded-2xl mb-8 overflow-x-auto scrollbar-hide">
             {TABS.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex-1 min-w-max flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 ${
                   activeTab === tab.id
-                    ? "bg-white dark:bg-[var(--color-bg)] text-[#FA8112] shadow-sm"
-                    : "text-gray-500 dark:text-gray-400 hover:text-[#1A1A1A] dark:hover:text-[#FAF3E1]"
+                    ? "bg-[var(--white)] dark:bg-[var(--color-bg)] text-[var(--orange)] shadow-sm"
+                    : "text-gray-500 dark:text-gray-400 hover:text-[var(--ink)] dark:hover:text-[var(--ink)]"
                 }`}
               >
                 {tab.label}
                 {tab.count !== undefined && tab.count > 0 && (
                   <span className={`w-5 h-5 flex items-center justify-center rounded-full text-xs font-bold ${
                     activeTab === tab.id
-                      ? "bg-[#FA8112]/15 text-[#FA8112]"
-                      : "bg-white dark:bg-[var(--cream)] text-gray-500 dark:text-gray-400"
+                      ? "bg-[var(--orange)]/15 text-[var(--orange)]"
+                      : "bg-[var(--white)] dark:bg-[var(--cream)] text-gray-500 dark:text-gray-400"
                   }`}>
                     {tab.count}
                   </span>
@@ -835,7 +835,7 @@ export default function ProfilePage() {
               {activeTab === "services" && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                   {services.map((s, i) => (
-                    <div key={s.id} className="group bg-white dark:bg-[var(--white)] rounded-2xl border border-[#F0E8E0] dark:border-[var(--ink-12)] hover:border-[#FA8112]/30 hover:shadow-xl hover:shadow-[#FA8112]/10 transition-all overflow-hidden">
+                    <div key={s.id} className="group bg-[var(--white)] dark:bg-[var(--white)] rounded-2xl border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] hover:border-[var(--orange)]/30 hover:shadow-xl hover:shadow-[var(--orange)]/10 transition-all overflow-hidden">
                       <div
                         className={`h-36 relative overflow-hidden ${!(s.gallery?.[0] ?? s.images?.[0]) ? `bg-gradient-to-br ${GRADIENTS[i % GRADIENTS.length]}` : ""}`}
                         style={(s.gallery?.[0] ?? s.images?.[0]) ? { backgroundImage: `url(${s.gallery?.[0] ?? s.images?.[0]})`, backgroundSize: "cover", backgroundPosition: "center" } : undefined}
@@ -845,7 +845,7 @@ export default function ProfilePage() {
                         )}
                       </div>
                       <div className="p-4">
-                        <h3 className="text-sm font-semibold text-[#1A1A1A] dark:text-[#FAF3E1] mb-2 group-hover:text-[#FA8112] transition-colors line-clamp-2">{s.title}</h3>
+                        <h3 className="text-sm font-semibold text-[var(--ink)] dark:text-[var(--ink)] mb-2 group-hover:text-[var(--orange)] transition-colors line-clamp-2">{s.title}</h3>
                         {s.avg_rating != null && (
                           <div className="flex items-center gap-1.5 mb-3">
                             <Stars rating={s.avg_rating} />
@@ -853,10 +853,10 @@ export default function ProfilePage() {
                           </div>
                         )}
                         <div className="flex items-center justify-between">
-                          <span className="text-sm font-bold text-[#1A1A1A] dark:text-[#FAF3E1]">
-                            {s.price.toLocaleString("fr-FR")} <span className="text-[#FA8112]">DA</span>
+                          <span className="text-sm font-bold text-[var(--ink)] dark:text-[var(--ink)]">
+                            {s.price.toLocaleString("fr-FR")} <span className="text-[var(--orange)]">DA</span>
                           </span>
-                          <Link href={`/dashboard/freelance/services/${s.id}/edit`} className="px-3 py-1.5 text-xs font-medium text-gray-600 dark:text-gray-400 border border-[#F0E8E0] dark:border-[var(--ink-12)] rounded-lg hover:border-[#FA8112]/40 hover:text-[#FA8112] transition-all">
+                          <Link href={`/dashboard/freelance/services/${s.id}/edit`} className="px-3 py-1.5 text-xs font-medium text-gray-600 dark:text-gray-400 border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] rounded-lg hover:border-[var(--orange)]/40 hover:text-[var(--orange)] transition-all">
                             Modifier
                           </Link>
                         </div>
@@ -865,13 +865,13 @@ export default function ProfilePage() {
                   ))}
 
                   {/* Add service card */}
-                  <Link href="/services/new" className="flex flex-col items-center justify-center gap-3 bg-white dark:bg-[var(--white)] rounded-2xl border-2 border-dashed border-[#F0E8E0] dark:border-[var(--ink-12)] hover:border-[#FA8112]/40 hover:bg-[#FA8112]/5 dark:hover:bg-[#FA8112]/10 transition-all p-8 group min-h-[180px]">
-                    <div className="w-12 h-12 rounded-xl bg-[#FFF8F0] dark:bg-[var(--color-bg)] group-hover:bg-[#FA8112]/15 flex items-center justify-center transition-colors">
-                      <svg className="w-6 h-6 text-gray-400 group-hover:text-[#FA8112] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <Link href="/services/new" className="flex flex-col items-center justify-center gap-3 bg-[var(--white)] dark:bg-[var(--white)] rounded-2xl border-2 border-dashed border-[var(--border-subtle)] dark:border-[var(--border-subtle)] hover:border-[var(--orange)]/40 hover:bg-[var(--orange)]/5 dark:hover:bg-[var(--orange)]/10 transition-all p-8 group min-h-[180px]">
+                    <div className="w-12 h-12 rounded-xl bg-[var(--cream)] dark:bg-[var(--color-bg)] group-hover:bg-[var(--orange)]/15 flex items-center justify-center transition-colors">
+                      <svg className="w-6 h-6 text-gray-400 group-hover:text-[var(--orange)] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                       </svg>
                     </div>
-                    <span className="text-sm font-medium text-gray-500 dark:text-gray-400 group-hover:text-[#FA8112] transition-colors">Ajouter un service</span>
+                    <span className="text-sm font-medium text-gray-500 dark:text-gray-400 group-hover:text-[var(--orange)] transition-colors">Ajouter un service</span>
                   </Link>
                 </div>
               )}
@@ -880,7 +880,7 @@ export default function ProfilePage() {
               {activeTab === "produits" && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                   {products.map((p, i) => (
-                    <div key={p.id} className="group bg-white dark:bg-[var(--white)] rounded-2xl border border-[#F0E8E0] dark:border-[var(--ink-12)] hover:border-[#FA8112]/30 hover:shadow-xl hover:shadow-[#FA8112]/10 transition-all overflow-hidden">
+                    <div key={p.id} className="group bg-[var(--white)] dark:bg-[var(--white)] rounded-2xl border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] hover:border-[var(--orange)]/30 hover:shadow-xl hover:shadow-[var(--orange)]/10 transition-all overflow-hidden">
                       <div
                         className={`h-36 relative overflow-hidden ${!(p.preview_urls?.[0] ?? p.preview_images?.[0]) ? `bg-gradient-to-br ${GRADIENTS[i % GRADIENTS.length]}` : ""}`}
                         style={(p.preview_urls?.[0] ?? p.preview_images?.[0]) ? { backgroundImage: `url(${p.preview_urls?.[0] ?? p.preview_images?.[0]})`, backgroundSize: "cover", backgroundPosition: "center" } : undefined}
@@ -890,15 +890,15 @@ export default function ProfilePage() {
                         )}
                       </div>
                       <div className="p-4">
-                        <h3 className="text-sm font-semibold text-[#1A1A1A] dark:text-[#FAF3E1] mb-1 line-clamp-2 group-hover:text-[#FA8112] transition-colors">{p.title}</h3>
+                        <h3 className="text-sm font-semibold text-[var(--ink)] dark:text-[var(--ink)] mb-1 line-clamp-2 group-hover:text-[var(--orange)] transition-colors">{p.title}</h3>
                         <p className="text-xs text-gray-400 mb-3">
                           {p.sales_count ?? 0} vente{(p.sales_count ?? 0) !== 1 ? "s" : ""}
                         </p>
                         <div className="flex items-center justify-between">
-                          <span className="text-sm font-bold text-[#1A1A1A] dark:text-[#FAF3E1]">
-                            {p.price.toLocaleString("fr-FR")} <span className="text-[#FA8112]">DA</span>
+                          <span className="text-sm font-bold text-[var(--ink)] dark:text-[var(--ink)]">
+                            {p.price.toLocaleString("fr-FR")} <span className="text-[var(--orange)]">DA</span>
                           </span>
-                          <Link href={`/dashboard/freelance/products/${p.id}/edit`} className="px-3 py-1.5 text-xs font-medium text-gray-600 dark:text-gray-400 border border-[#F0E8E0] dark:border-[var(--ink-12)] rounded-lg hover:border-[#FA8112]/40 hover:text-[#FA8112] transition-all">
+                          <Link href={`/dashboard/freelance/products/${p.id}/edit`} className="px-3 py-1.5 text-xs font-medium text-gray-600 dark:text-gray-400 border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] rounded-lg hover:border-[var(--orange)]/40 hover:text-[var(--orange)] transition-all">
                             Modifier
                           </Link>
                         </div>
@@ -906,13 +906,13 @@ export default function ProfilePage() {
                     </div>
                   ))}
 
-                  <Link href="/products/new" className="flex flex-col items-center justify-center gap-3 bg-white dark:bg-[var(--white)] rounded-2xl border-2 border-dashed border-[#F0E8E0] dark:border-[var(--ink-12)] hover:border-[#FA8112]/40 hover:bg-[#FA8112]/5 dark:hover:bg-[#FA8112]/10 transition-all p-8 group min-h-[180px]">
-                    <div className="w-12 h-12 rounded-xl bg-[#FFF8F0] dark:bg-[var(--color-bg)] group-hover:bg-[#FA8112]/15 flex items-center justify-center transition-colors">
-                      <svg className="w-6 h-6 text-gray-400 group-hover:text-[#FA8112] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <Link href="/products/new" className="flex flex-col items-center justify-center gap-3 bg-[var(--white)] dark:bg-[var(--white)] rounded-2xl border-2 border-dashed border-[var(--border-subtle)] dark:border-[var(--border-subtle)] hover:border-[var(--orange)]/40 hover:bg-[var(--orange)]/5 dark:hover:bg-[var(--orange)]/10 transition-all p-8 group min-h-[180px]">
+                    <div className="w-12 h-12 rounded-xl bg-[var(--cream)] dark:bg-[var(--color-bg)] group-hover:bg-[var(--orange)]/15 flex items-center justify-center transition-colors">
+                      <svg className="w-6 h-6 text-gray-400 group-hover:text-[var(--orange)] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                       </svg>
                     </div>
-                    <span className="text-sm font-medium text-gray-500 dark:text-gray-400 group-hover:text-[#FA8112] transition-colors">Ajouter un produit</span>
+                    <span className="text-sm font-medium text-gray-500 dark:text-gray-400 group-hover:text-[var(--orange)] transition-colors">Ajouter un produit</span>
                   </Link>
                 </div>
               )}
@@ -926,9 +926,9 @@ export default function ProfilePage() {
                       <p className="text-gray-500 dark:text-gray-400 text-sm">Aucun avis reçu pour l'instant.</p>
                     </div>
                   ) : reviews.map((r) => (
-                    <div key={r.id} className="bg-white dark:bg-[var(--white)] rounded-2xl border border-[#F0E8E0] dark:border-[var(--ink-12)] p-6 hover:border-[#FA8112]/30 hover:shadow-lg hover:shadow-[#FA8112]/10 transition-all">
+                    <div key={r.id} className="bg-[var(--white)] dark:bg-[var(--white)] rounded-2xl border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] p-6 hover:border-[var(--orange)]/30 hover:shadow-lg hover:shadow-[var(--orange)]/10 transition-all">
                       <div className="flex items-start gap-4">
-                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#FA8112] to-[#E8730F] flex items-center justify-center text-white text-sm font-bold shrink-0 overflow-hidden">
+                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[var(--orange)] to-[var(--orange-dark)] flex items-center justify-center text-white text-sm font-bold shrink-0 overflow-hidden">
                           {r.reviewer?.avatar_url
                             ? <img src={r.reviewer.avatar_url} alt="" className="w-full h-full object-cover" />
                             : (r.reviewer?.full_name?.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2) || "?")}
@@ -936,7 +936,7 @@ export default function ProfilePage() {
                         <div className="flex-1 min-w-0">
                           <div className="flex items-start justify-between gap-2">
                             <div>
-                              <span className="font-semibold text-[#1A1A1A] dark:text-[#FAF3E1] text-sm">
+                              <span className="font-semibold text-[var(--ink)] dark:text-[var(--ink)] text-sm">
                                 {r.reviewer?.full_name || "Anonyme"}
                               </span>
                               <div className="flex items-center gap-2 mt-0.5">
@@ -958,43 +958,43 @@ export default function ProfilePage() {
               {/* Settings */}
               {activeTab === "parametres" && (
                 <div className="max-w-2xl space-y-6">
-                  <div className="bg-white dark:bg-[var(--white)] rounded-2xl border border-[#F0E8E0] dark:border-[var(--ink-12)] p-6">
-                    <h3 className="font-bold text-[#1A1A1A] dark:text-[#FAF3E1] mb-5">Informations du compte</h3>
+                  <div className="bg-[var(--white)] dark:bg-[var(--white)] rounded-2xl border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] p-6">
+                    <h3 className="font-bold text-[var(--ink)] dark:text-[var(--ink)] mb-5">Informations du compte</h3>
                     <div className="space-y-4">
                       <div>
-                        <label className="block text-sm font-medium text-[#1A1A1A] dark:text-[#FAF3E1] mb-1.5">
+                        <label className="block text-sm font-medium text-[var(--ink)] dark:text-[var(--ink)] mb-1.5">
                           Adresse email
                         </label>
                         <input
                           type="email"
                           readOnly
                           value={user?.email || ""}
-                          className="w-full px-4 py-3 rounded-xl border border-[#F0E8E0] dark:border-[var(--ink-12)] bg-[#FFF8F0] dark:bg-[var(--color-bg)] text-[#1A1A1A] dark:text-[#FAF3E1] text-sm outline-none opacity-70 cursor-not-allowed"
+                          className="w-full px-4 py-3 rounded-xl border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] bg-[var(--cream)] dark:bg-[var(--color-bg)] text-[var(--ink)] dark:text-[var(--ink)] text-sm outline-none opacity-70 cursor-not-allowed"
                         />
                         <p className="text-xs text-gray-400 mt-1">L'adresse email ne peut pas être modifiée ici.</p>
                       </div>
                       {profile?.created_at && (
                         <div>
-                          <label className="block text-sm font-medium text-[#1A1A1A] dark:text-[#FAF3E1] mb-1.5">
+                          <label className="block text-sm font-medium text-[var(--ink)] dark:text-[var(--ink)] mb-1.5">
                             Membre depuis
                           </label>
                           <input
                             readOnly
                             value={memberSince(profile.created_at)}
-                            className="w-full px-4 py-3 rounded-xl border border-[#F0E8E0] dark:border-[var(--ink-12)] bg-[#FFF8F0] dark:bg-[var(--color-bg)] text-[#1A1A1A] dark:text-[#FAF3E1] text-sm outline-none opacity-70 cursor-not-allowed"
+                            className="w-full px-4 py-3 rounded-xl border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] bg-[var(--cream)] dark:bg-[var(--color-bg)] text-[var(--ink)] dark:text-[var(--ink)] text-sm outline-none opacity-70 cursor-not-allowed"
                           />
                         </div>
                       )}
                     </div>
                     <button
                       onClick={openEdit}
-                      className="mt-5 px-6 py-2.5 bg-[#FA8112] hover:bg-[#E8730F] text-white text-sm font-semibold rounded-xl transition-all shadow-lg shadow-[#FA8112]/30"
+                      className="mt-5 px-6 py-2.5 bg-[var(--orange)] hover:bg-[var(--orange-dark)] text-white text-sm font-semibold rounded-xl transition-all shadow-lg shadow-[var(--orange)]/30"
                     >
                       Modifier les informations du profil
                     </button>
                   </div>
 
-                  <div className="bg-white dark:bg-[var(--white)] rounded-2xl border border-red-100 dark:border-red-900/30 p-6">
+                  <div className="bg-[var(--white)] dark:bg-[var(--white)] rounded-2xl border border-red-100 dark:border-red-900/30 p-6">
                     <h3 className="font-bold text-red-600 dark:text-red-400 mb-2">Zone de danger</h3>
                     <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
                       Une fois votre compte supprimé, toutes vos données seront définitivement perdues.
@@ -1016,9 +1016,9 @@ export default function ProfilePage() {
               className="absolute inset-0 bg-black/60 backdrop-blur-sm"
               onClick={() => setShowEdit(false)}
             />
-            <div className="relative w-full max-w-md bg-white dark:bg-[var(--white)] rounded-3xl shadow-2xl shadow-[#FA8112]/10 border border-[#F0E8E0] dark:border-[var(--ink-12)] p-8 z-10 max-h-[90vh] overflow-y-auto">
+            <div className="relative w-full max-w-md bg-[var(--white)] dark:bg-[var(--surface-3)] rounded-3xl shadow-2xl shadow-[var(--orange)]/10 dark:shadow-[var(--shadow-elevation)] border border-[var(--border-subtle)] dark:border-[var(--border-strong)] p-8 z-10 max-h-[90vh] overflow-y-auto">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-extrabold text-[#1A1A1A] dark:text-[#FAF3E1]">Modifier le profil</h2>
+                <h2 className="text-xl font-extrabold text-[var(--ink)] dark:text-[var(--ink)]">Modifier le profil</h2>
                 <button
                   onClick={() => setShowEdit(false)}
                   className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
@@ -1032,19 +1032,19 @@ export default function ProfilePage() {
               <div className="space-y-4">
                 {/* Full name */}
                 <div>
-                  <label className="block text-sm font-medium text-[#1A1A1A] dark:text-[#FAF3E1] mb-1.5">Nom complet</label>
+                  <label className="block text-sm font-medium text-[var(--ink)] dark:text-[var(--ink)] mb-1.5">Nom complet</label>
                   <input
                     type="text"
                     value={editForm.full_name}
                     onChange={(e) => setEditForm((f) => ({ ...f, full_name: e.target.value }))}
                     placeholder="Votre nom complet"
-                    className="w-full px-4 py-3 rounded-xl border border-[#F0E8E0] dark:border-[var(--ink-12)] bg-[#FFF8F0] dark:bg-[var(--color-bg)] text-[#1A1A1A] dark:text-[#FAF3E1] placeholder-gray-400 outline-none focus:border-[#FA8112] focus:ring-2 focus:ring-[#FA8112]/20 transition-all text-sm"
+                    className="w-full px-4 py-3 rounded-xl border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] bg-[var(--cream)] dark:bg-[var(--color-bg)] text-[var(--ink)] dark:text-[var(--ink)] placeholder-gray-400 outline-none focus:border-[var(--orange)] focus:ring-2 focus:ring-[var(--orange)]/20 transition-all text-sm"
                   />
                 </div>
 
                 {/* Role / métier */}
                 <div>
-                  <label className="block text-sm font-medium text-[#1A1A1A] dark:text-[#FAF3E1] mb-1.5">
+                  <label className="block text-sm font-medium text-[var(--ink)] dark:text-[var(--ink)] mb-1.5">
                     Métier / spécialité <span className="text-gray-400 font-normal">(optionnel)</span>
                   </label>
                   <input
@@ -1052,42 +1052,42 @@ export default function ProfilePage() {
                     value={editForm.role}
                     onChange={(e) => setEditForm((f) => ({ ...f, role: e.target.value }))}
                     placeholder="ex: Designer graphique, Développeur web…"
-                    className="w-full px-4 py-3 rounded-xl border border-[#F0E8E0] dark:border-[var(--ink-12)] bg-[#FFF8F0] dark:bg-[var(--color-bg)] text-[#1A1A1A] dark:text-[#FAF3E1] placeholder-gray-400 outline-none focus:border-[#FA8112] focus:ring-2 focus:ring-[#FA8112]/20 transition-all text-sm"
+                    className="w-full px-4 py-3 rounded-xl border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] bg-[var(--cream)] dark:bg-[var(--color-bg)] text-[var(--ink)] dark:text-[var(--ink)] placeholder-gray-400 outline-none focus:border-[var(--orange)] focus:ring-2 focus:ring-[var(--orange)]/20 transition-all text-sm"
                   />
                 </div>
 
                 {/* Bio */}
                 <div>
-                  <label className="block text-sm font-medium text-[#1A1A1A] dark:text-[#FAF3E1] mb-1.5">Bio</label>
+                  <label className="block text-sm font-medium text-[var(--ink)] dark:text-[var(--ink)] mb-1.5">Bio</label>
                   <textarea
                     rows={3}
                     value={editForm.bio}
                     onChange={(e) => setEditForm((f) => ({ ...f, bio: e.target.value }))}
                     placeholder="Décrivez votre expérience et vos compétences…"
-                    className="w-full px-4 py-3 rounded-xl border border-[#F0E8E0] dark:border-[var(--ink-12)] bg-[#FFF8F0] dark:bg-[var(--color-bg)] text-[#1A1A1A] dark:text-[#FAF3E1] placeholder-gray-400 outline-none focus:border-[#FA8112] focus:ring-2 focus:ring-[#FA8112]/20 transition-all text-sm resize-none"
+                    className="w-full px-4 py-3 rounded-xl border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] bg-[var(--cream)] dark:bg-[var(--color-bg)] text-[var(--ink)] dark:text-[var(--ink)] placeholder-gray-400 outline-none focus:border-[var(--orange)] focus:ring-2 focus:ring-[var(--orange)]/20 transition-all text-sm resize-none"
                   />
                 </div>
 
                 {/* Location */}
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-sm font-medium text-[#1A1A1A] dark:text-[#FAF3E1] mb-1.5">Ville</label>
+                    <label className="block text-sm font-medium text-[var(--ink)] dark:text-[var(--ink)] mb-1.5">Ville</label>
                     <input
                       type="text"
                       value={editForm.location_city}
                       onChange={(e) => setEditForm((f) => ({ ...f, location_city: e.target.value }))}
                       placeholder="Ex: Alger"
-                      className="w-full px-4 py-3 rounded-xl border border-[#F0E8E0] dark:border-[var(--ink-12)] bg-[#FFF8F0] dark:bg-[var(--color-bg)] text-[#1A1A1A] dark:text-[#FAF3E1] outline-none focus:border-[#FA8112] focus:ring-2 focus:ring-[#FA8112]/20 transition-all text-sm"
+                      className="w-full px-4 py-3 rounded-xl border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] bg-[var(--cream)] dark:bg-[var(--color-bg)] text-[var(--ink)] dark:text-[var(--ink)] outline-none focus:border-[var(--orange)] focus:ring-2 focus:ring-[var(--orange)]/20 transition-all text-sm"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-[#1A1A1A] dark:text-[#FAF3E1] mb-1.5">Pays</label>
+                    <label className="block text-sm font-medium text-[var(--ink)] dark:text-[var(--ink)] mb-1.5">Pays</label>
                     <input
                       type="text"
                       value={editForm.location_country}
                       onChange={(e) => setEditForm((f) => ({ ...f, location_country: e.target.value }))}
                       placeholder="Ex: Algérie"
-                      className="w-full px-4 py-3 rounded-xl border border-[#F0E8E0] dark:border-[var(--ink-12)] bg-[#FFF8F0] dark:bg-[var(--color-bg)] text-[#1A1A1A] dark:text-[#FAF3E1] outline-none focus:border-[#FA8112] focus:ring-2 focus:ring-[#FA8112]/20 transition-all text-sm"
+                      className="w-full px-4 py-3 rounded-xl border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] bg-[var(--cream)] dark:bg-[var(--color-bg)] text-[var(--ink)] dark:text-[var(--ink)] outline-none focus:border-[var(--orange)] focus:ring-2 focus:ring-[var(--orange)]/20 transition-all text-sm"
                     />
                   </div>
                 </div>
@@ -1096,14 +1096,14 @@ export default function ProfilePage() {
                 <div className="flex gap-3 pt-2">
                   <button
                     onClick={() => setShowEdit(false)}
-                    className="flex-1 py-3 border-2 border-[#F0E8E0] dark:border-[var(--ink-12)] text-[#1A1A1A] dark:text-[#FAF3E1] text-sm font-semibold rounded-xl hover:border-[#FA8112]/40 transition-colors"
+                    className="flex-1 py-3 border-2 border-[var(--border-subtle)] dark:border-[var(--border-subtle)] text-[var(--ink)] dark:text-[var(--ink)] text-sm font-semibold rounded-xl hover:border-[var(--orange)]/40 transition-colors"
                   >
                     Annuler
                   </button>
                   <button
                     onClick={saveProfile}
                     disabled={saving}
-                    className="flex-1 py-3 bg-[#FA8112] hover:bg-[#E8730F] text-white text-sm font-semibold rounded-xl transition-all shadow-lg shadow-[#FA8112]/30 disabled:opacity-60 flex items-center justify-center gap-2"
+                    className="flex-1 py-3 bg-[var(--orange)] hover:bg-[var(--orange-dark)] text-white text-sm font-semibold rounded-xl transition-all shadow-lg shadow-[var(--orange)]/30 disabled:opacity-60 flex items-center justify-center gap-2"
                   >
                     {saving ? <><Spinner cls="w-4 h-4" /> Sauvegarde…</> : "Sauvegarder"}
                   </button>
