@@ -160,3 +160,40 @@ button, .btn {
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
 }
+
+/* ─── PhoneInput (react-phone-number-input) ─────────────────── */
+.wa-phone-wrap .PhoneInput {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 10px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--border-subtle);
+  background: var(--cream);
+  font-size: 0.875rem;
+  color: var(--ink);
+  gap: 8px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.wa-phone-wrap .PhoneInput:focus-within {
+  border-color: var(--orange);
+  box-shadow: 0 0 0 2px var(--orange-soft);
+  outline: none;
+}
+.wa-phone-wrap .PhoneInputInput {
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: 0.875rem;
+  color: var(--ink);
+  font-family: inherit;
+  flex: 1;
+  min-width: 0;
+}
+.wa-phone-wrap .PhoneInputInput::placeholder {
+  color: var(--ink-60);
+}
+.wa-phone-wrap .PhoneInputCountrySelectArrow {
+  opacity: 0.5;
+  color: var(--ink);
+}

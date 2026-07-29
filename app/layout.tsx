@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, Inter } from "next/font/google";
 import "./globals.css";
+import "react-phone-number-input/style.css";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   variable: "--font-jakarta",
