@@ -24,7 +24,8 @@ type ProfileRow = {
 type MsgRow = {
   id: string
   conversation_id: string
-  content: string
+  content: string | null
+  attachment_type: string | null
   created_at: string
   sender_id: string
 }
@@ -96,7 +97,7 @@ export default function MessagesPage() {
 
         const [profilesRes, lastMsgsRes, unreadRes] = await Promise.all([
           sb.from("profiles").select("id, full_name, avatar_url").in("id", profileIds),
-          sb.from("messages").select("id, conversation_id, content, created_at, sender_id")
+          sb.from("messages").select("id, conversation_id, content, attachment_type, created_at, sender_id")
             .in("conversation_id", convIds).order("created_at", { ascending: false }),
           sb.from("messages").select("conversation_id")
             .in("conversation_id", convIds).is("read_at", null).neq("sender_id", user.id),
@@ -198,11 +199,15 @@ export default function MessagesPage() {
               {convs.map((conv) => {
                 const name = conv.interlocutor.full_name ?? "Utilisateur"
                 const initials = getInitials(conv.interlocutor.full_name)
-                const preview = conv.lastMessage
-                  ? conv.lastMessage.sender_id === userId
-                    ? `Vous : ${conv.lastMessage.content}`
-                    : conv.lastMessage.content
-                  : "Démarrez la conversation"
+                const preview = (() => {
+                  const m = conv.lastMessage
+                  if (!m) return "Démarrez la conversation"
+                  const prefix = m.sender_id === userId ? "Vous : " : ""
+                  if (m.content) return prefix + m.content
+                  if (m.attachment_type?.startsWith("image/")) return prefix + "📎 Image"
+                  if (m.attachment_type === "application/pdf") return prefix + "📎 Document"
+                  return prefix + "📎 Fichier"
+                })()
                 return (
                   <Link
                     key={conv.id}
