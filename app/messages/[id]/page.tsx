@@ -24,7 +24,7 @@ export default async function ThreadPage({ params }: { params: Promise<{ id: str
   const [msgsResult, interlocutorResult] = await Promise.all([
     sb
       .from("messages")
-      .select("id, conversation_id, sender_id, content, read_at, created_at, attachment_path, attachment_type, attachment_name, attachment_size, attachment_width, attachment_height")
+      .select("id, conversation_id, sender_id, content, read_at, created_at")
       .eq("conversation_id", convId)
       .order("created_at", { ascending: true }),
     sb
@@ -56,7 +56,7 @@ export default async function ThreadPage({ params }: { params: Promise<{ id: str
       listingTitle={listingTitle}
       listingType={conv.listing_type}
       listingId={conv.listing_id}
-      initialMessages={msgsResult.data ?? []}
+      initialMessages={(msgsResult.data ?? []) as Parameters<typeof ThreadClient>[0]["initialMessages"]}
     />
   )
 }

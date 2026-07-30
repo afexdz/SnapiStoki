@@ -295,7 +295,7 @@ export default function ThreadClient({
           content: text || null,
           ...attachmentFields,
         })
-        .select("id, conversation_id, sender_id, content, read_at, created_at, attachment_path, attachment_type, attachment_name, attachment_size, attachment_width, attachment_height")
+        .select("id, conversation_id, sender_id, content, read_at, created_at")
         .single()
 
       if (error) {
@@ -312,8 +312,24 @@ export default function ThreadClient({
       }
 
       if (data) {
+        // Attachment fields are not re-selected from DB (columns may not exist
+        // before fix-lot3.sql is applied). They are merged from local state.
+        const newMsg: Message = {
+          id: data.id,
+          conversation_id: data.conversation_id,
+          sender_id: data.sender_id,
+          content: (data.content as string | null) ?? null,
+          read_at: (data.read_at as string | null) ?? null,
+          created_at: data.created_at,
+          attachment_path: attachmentFields.attachment_path ?? null,
+          attachment_type: attachmentFields.attachment_type ?? null,
+          attachment_name: attachmentFields.attachment_name ?? null,
+          attachment_size: attachmentFields.attachment_size ?? null,
+          attachment_width: attachmentFields.attachment_width ?? null,
+          attachment_height: attachmentFields.attachment_height ?? null,
+        }
         setMessages((prev) =>
-          prev.some((m) => m.id === data.id) ? prev : [...prev, data as Message]
+          prev.some((m) => m.id === newMsg.id) ? prev : [...prev, newMsg]
         )
         setContent("")
         setPendingAttachment(null)
