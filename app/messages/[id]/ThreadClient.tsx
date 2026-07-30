@@ -38,6 +38,7 @@ interface Props {
   listingType: string
   listingId: string
   initialMessages: Message[]
+  initialSignedUrls: Record<string, string>
 }
 
 const QUOTA_BYTES = 50 * 1024 * 1024
@@ -67,6 +68,7 @@ export default function ThreadClient({
   listingType,
   listingId,
   initialMessages,
+  initialSignedUrls,
 }: Props) {
   const sbRef = useRef(createClient())
   const [messages, setMessages] = useState<Message[]>(initialMessages)
@@ -80,9 +82,10 @@ export default function ThreadClient({
   const [attachError, setAttachError] = useState<string | null>(null)
   const [sendError, setSendError] = useState<string | null>(null)
 
-  // Signed URLs for received messages
-  const [signedUrls, setSignedUrls] = useState<Record<string, string>>({})
-  const fetchedPathsRef = useRef<Set<string>>(new Set())
+  // Signed URLs — seeded server-side on initial load (see page.tsx → createSignedUrls)
+  const [signedUrls, setSignedUrls] = useState<Record<string, string>>(initialSignedUrls)
+  // Pre-populate so the useEffect doesn't re-fetch what the server already resolved
+  const fetchedPathsRef = useRef<Set<string>>(new Set(Object.keys(initialSignedUrls)))
 
   // Lightbox
   const [lightboxSrc, setLightboxSrc] = useState<string | null>(null)

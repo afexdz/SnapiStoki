@@ -24,7 +24,7 @@ export default async function ThreadPage({ params }: { params: Promise<{ id: str
   const [msgsResult, interlocutorResult] = await Promise.all([
     sb
       .from("messages")
-      .select("id, conversation_id, sender_id, content, read_at, created_at")
+      .select("id, conversation_id, sender_id, content, read_at, created_at, attachment_path, attachment_type, attachment_name, attachment_size, attachment_width, attachment_height")
       .eq("conversation_id", convId)
       .order("created_at", { ascending: true }),
     sb
@@ -36,6 +36,30 @@ export default async function ThreadPage({ params }: { params: Promise<{ id: str
 
   if (msgsResult.error) console.error("[thread/page] messages query error:", msgsResult.error)
   if (interlocutorResult.error) console.error("[thread/page] interlocutor query error:", interlocutorResult.error)
+
+  // Batch-generate signed URLs for every message that has an attachment.
+  // One API call for the entire thread — bucket is private so there are no
+  // public URLs; signed URLs are mandatory for display.
+  const initialSignedUrls: Record<string, string> = {}
+  const attachmentPaths = (msgsResult.data ?? [])
+    .map((m) => m.attachment_path)
+    .filter((p): p is string => !!p)
+
+  if (attachmentPaths.length > 0) {
+    const { data: signedData, error: signedError } = await sb.storage
+      .from("message-attachments")
+      .createSignedUrls(attachmentPaths, 3600)
+
+    if (signedError) {
+      console.error("[thread/page] createSignedUrls error:", signedError)
+    } else {
+      for (const item of signedData ?? []) {
+        if (item.path && item.signedUrl && !item.error) {
+          initialSignedUrls[item.path] = item.signedUrl
+        }
+      }
+    }
+  }
 
   const interlocutorId = conv.buyer_id === user.id ? conv.seller_id : conv.buyer_id
 
@@ -57,6 +81,7 @@ export default async function ThreadPage({ params }: { params: Promise<{ id: str
       listingType={conv.listing_type}
       listingId={conv.listing_id}
       initialMessages={(msgsResult.data ?? []) as Parameters<typeof ThreadClient>[0]["initialMessages"]}
+      initialSignedUrls={initialSignedUrls}
     />
   )
 }
