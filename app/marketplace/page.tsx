@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useMemo } from "react"
+import { useState, useEffect, useMemo, useRef } from "react"
 import Navbar from "@/components/Navbar"
 import Footer from "@/components/Footer"
 import Link from "next/link"
@@ -37,6 +37,9 @@ const SORT_OPTIONS = [
   { id: "popular",    label: "Populaires"      },
 ]
 
+// Position maximale du curseur = pas de limite haute
+const SLIDER_MAX = 200_000
+
 export default function MarketplacePage() {
   const [allProducts, setAllProducts] = useState<Product[]>([])
   const [categories, setCategories]   = useState<string[]>([])
@@ -45,7 +48,24 @@ export default function MarketplacePage() {
   const [activeCategory, setActiveCategory] = useState("Tout")
   const [sort, setSort]                     = useState("relevance")
   const [showFreeOnly, setShowFreeOnly]     = useState(false)
-  const [maxPrice, setMaxPrice]             = useState(50000)
+
+  // Prix min/max effectifs pour le filtre (0 = pas de limite)
+  const [minPrice, setMinPrice] = useState(0)
+  const [maxPrice, setMaxPrice] = useState(0)
+
+  // Valeurs affichées dans les champs texte
+  const [minInput, setMinInput] = useState("")
+  const [maxInput, setMaxInput] = useState("")
+
+  const minTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const maxTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  useEffect(() => {
+    return () => {
+      if (minTimerRef.current) clearTimeout(minTimerRef.current)
+      if (maxTimerRef.current) clearTimeout(maxTimerRef.current)
+    }
+  }, [])
 
   useEffect(() => {
     createClient()
@@ -68,11 +88,50 @@ export default function MarketplacePage() {
       })
   }, [])
 
+  // Slider → immédiat
+  const handleSlider = (v: number) => {
+    if (maxTimerRef.current) clearTimeout(maxTimerRef.current)
+    const isAtMax = v >= SLIDER_MAX
+    const newMax = isAtMax ? 0 : v
+    setMaxPrice(newMax)
+    setMaxInput(isAtMax ? "" : String(v))
+  }
+
+  // Saisie min → debounce 400 ms
+  const handleMinInput = (raw: string) => {
+    setMinInput(raw)
+    if (minTimerRef.current) clearTimeout(minTimerRef.current)
+    minTimerRef.current = setTimeout(() => {
+      if (raw === "") { setMinPrice(0); return }
+      const v = parseInt(raw, 10)
+      if (!isNaN(v) && v >= 0) setMinPrice(v)
+    }, 400)
+  }
+
+  // Saisie max → debounce 400 ms; vide = illimité
+  const handleMaxInput = (raw: string) => {
+    setMaxInput(raw)
+    if (maxTimerRef.current) clearTimeout(maxTimerRef.current)
+    maxTimerRef.current = setTimeout(() => {
+      if (raw === "") { setMaxPrice(0); return }
+      const v = parseInt(raw, 10)
+      if (!isNaN(v) && v >= 0) setMaxPrice(v)
+    }, 400)
+  }
+
+  const priceRangeError = minPrice > 0 && maxPrice > 0 && minPrice > maxPrice
+
+  // Valeur du curseur : 0 (illimité) → position max du slider
+  const sliderValue = maxPrice === 0 ? SLIDER_MAX : Math.min(maxPrice, SLIDER_MAX)
+
   const filtered = useMemo(() => {
     let list = allProducts.filter(p => {
       if (activeCategory !== "Tout" && p.category !== activeCategory) return false
       if (showFreeOnly && !p.is_free) return false
-      if (!p.is_free && p.price > maxPrice) return false
+      if (!p.is_free) {
+        if (minPrice > 0 && p.price < minPrice) return false
+        if (maxPrice > 0 && p.price > maxPrice) return false
+      }
       return true
     })
 
@@ -82,7 +141,9 @@ export default function MarketplacePage() {
     if (sort === "popular")    list = [...list].sort((a, b) => (b.sales_count ?? b.downloads ?? 0) - (a.sales_count ?? a.downloads ?? 0))
 
     return list
-  }, [allProducts, activeCategory, sort, showFreeOnly, maxPrice])
+  }, [allProducts, activeCategory, sort, showFreeOnly, minPrice, maxPrice])
+
+  const inputCls = "w-24 pl-2 pr-7 py-1.5 text-xs rounded-lg border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] bg-[var(--white)] dark:bg-[var(--white)] text-[var(--ink)] dark:text-[var(--ink)] outline-none focus:border-[var(--orange)] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
 
   return (
     <>
@@ -129,7 +190,7 @@ export default function MarketplacePage() {
           </div>
 
           {/* Filter bar */}
-          <div className="flex flex-wrap items-center gap-3 mb-6">
+          <div className="flex flex-wrap items-end gap-3 mb-6">
             <div className="relative">
               <select
                 value={sort}
@@ -145,7 +206,7 @@ export default function MarketplacePage() {
               </div>
             </div>
 
-            <label className="flex items-center gap-2 cursor-pointer">
+            <label className="flex items-center gap-2 cursor-pointer self-end pb-0.5">
               <div onClick={() => setShowFreeOnly(p => !p)} className={`relative w-9 h-5 rounded-full transition-colors cursor-pointer ${showFreeOnly ? "bg-green-500" : "bg-gray-200 dark:bg-[var(--ink-12)]"}`}>
                 <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-[var(--white)] shadow transition-all ${showFreeOnly ? "left-4" : "left-0.5"}`} />
               </div>
@@ -153,14 +214,62 @@ export default function MarketplacePage() {
             </label>
 
             {!showFreeOnly && (
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-gray-500 dark:text-gray-400">Max:</span>
-                <input type="range" min={1000} max={50000} step={500} value={maxPrice} onChange={e => setMaxPrice(Number(e.target.value))} className="w-28 accent-[#FA8112]" />
-                <span className="text-sm font-medium text-[var(--orange)] w-24">{maxPrice.toLocaleString()} DA</span>
+              <div className="flex flex-wrap items-end gap-2">
+                {/* Prix min */}
+                <div>
+                  <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Prix min</label>
+                  <div className="relative">
+                    <input
+                      type="number"
+                      value={minInput}
+                      onChange={e => handleMinInput(e.target.value)}
+                      placeholder="0"
+                      min={0}
+                      className={inputCls}
+                    />
+                    <span className="absolute right-2 inset-y-0 flex items-center text-xs text-gray-400 pointer-events-none">DA</span>
+                  </div>
+                </div>
+
+                {/* Prix max */}
+                <div>
+                  <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Prix max</label>
+                  <div className="relative">
+                    <input
+                      type="number"
+                      value={maxInput}
+                      onChange={e => handleMaxInput(e.target.value)}
+                      placeholder="Illimité"
+                      min={0}
+                      className={`${inputCls} w-28`}
+                    />
+                    <span className="absolute right-2 inset-y-0 flex items-center text-xs text-gray-400 pointer-events-none">DA</span>
+                  </div>
+                </div>
+
+                {/* Curseur (contrôle le max) */}
+                <div className="flex flex-col gap-0.5 self-end pb-0.5">
+                  <input
+                    type="range"
+                    min={1000}
+                    max={SLIDER_MAX}
+                    step={500}
+                    value={sliderValue}
+                    onChange={e => handleSlider(Number(e.target.value))}
+                    className="w-28 accent-[#FA8112]"
+                  />
+                  <span className="text-xs text-gray-400 text-right">
+                    {maxPrice === 0 ? "Illimité" : `${maxPrice.toLocaleString()} DA`}
+                  </span>
+                </div>
+
+                {priceRangeError && (
+                  <span className="self-end pb-1 text-xs text-red-500">Min &gt; Max</span>
+                )}
               </div>
             )}
 
-            <span className="ml-auto text-sm text-gray-500 dark:text-gray-400">
+            <span className="ml-auto text-sm text-gray-500 dark:text-gray-400 self-end pb-0.5">
               {loading ? "Chargement…" : <><strong className="text-[var(--ink)] dark:text-[var(--ink)]">{filtered.length}</strong> produits</>}
             </span>
           </div>

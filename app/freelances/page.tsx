@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useMemo } from "react"
+import { useState, useEffect, useMemo, useRef } from "react"
 import Link from "next/link"
 import { createClient } from "@/lib/supabase/client"
 import { rankItems } from "@/lib/ranking"
@@ -30,7 +30,7 @@ type Service = {
   } | null
 }
 
-type ServiceWithWilaya = Service & { wilaya?: string | null }; // used for distance sort
+type ServiceWithWilaya = Service & { wilaya?: string | null }
 
 const SORT_OPTIONS = [
   { id: "relevance",  label: "Pertinence"       },
@@ -39,6 +39,9 @@ const SORT_OPTIONS = [
   { id: "price_desc", label: "Prix décroissant"  },
   { id: "distance",   label: "Près de moi"       },
 ]
+
+// Position maximale du curseur = pas de limite haute
+const SLIDER_MAX = 500_000
 
 function Stars({ rating }: { rating: number }) {
   return (
@@ -59,12 +62,29 @@ export default function FreelancesPage() {
 
   const [category, setCategory]       = useState("all")
   const [minRating, setMinRating]     = useState(0)
-  const [maxPrice, setMaxPrice]       = useState(100000)
   const [sort, setSort]               = useState("relevance")
   const [nearMeEnabled, setNearMeEnabled] = useState(false)
   const [userWilaya, setUserWilaya]   = useState<Wilaya | null>(null)
   const [locLoading, setLocLoading]   = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(false)
+
+  // Prix min/max effectifs pour le filtre (0 = pas de limite)
+  const [minPrice, setMinPrice] = useState(0)
+  const [maxPrice, setMaxPrice] = useState(0)
+
+  // Valeurs affichées dans les champs texte (string pour autoriser le vide)
+  const [minInput, setMinInput] = useState("")
+  const [maxInput, setMaxInput] = useState("")
+
+  const minTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const maxTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  useEffect(() => {
+    return () => {
+      if (minTimerRef.current) clearTimeout(minTimerRef.current)
+      if (maxTimerRef.current) clearTimeout(maxTimerRef.current)
+    }
+  }, [])
 
   useEffect(() => {
     const cached = localStorage.getItem("userWilaya")
@@ -90,6 +110,37 @@ export default function FreelancesPage() {
       })
   }, [])
 
+  // Slider → immédiat (pas de debounce)
+  const handleSlider = (v: number) => {
+    if (maxTimerRef.current) clearTimeout(maxTimerRef.current)
+    const isAtMax = v >= SLIDER_MAX
+    const newMax = isAtMax ? 0 : v
+    setMaxPrice(newMax)
+    setMaxInput(isAtMax ? "" : String(v))
+  }
+
+  // Saisie min → debounce 400 ms
+  const handleMinInput = (raw: string) => {
+    setMinInput(raw)
+    if (minTimerRef.current) clearTimeout(minTimerRef.current)
+    minTimerRef.current = setTimeout(() => {
+      if (raw === "") { setMinPrice(0); return }
+      const v = parseInt(raw, 10)
+      if (!isNaN(v) && v >= 0) setMinPrice(v)
+    }, 400)
+  }
+
+  // Saisie max → debounce 400 ms; vide = illimité
+  const handleMaxInput = (raw: string) => {
+    setMaxInput(raw)
+    if (maxTimerRef.current) clearTimeout(maxTimerRef.current)
+    maxTimerRef.current = setTimeout(() => {
+      if (raw === "") { setMaxPrice(0); return }
+      const v = parseInt(raw, 10)
+      if (!isNaN(v) && v >= 0) setMaxPrice(v)
+    }, 400)
+  }
+
   const handleNearMe = async () => {
     if (nearMeEnabled) { setNearMeEnabled(false); setSort("relevance"); return }
     if (userWilaya) { setNearMeEnabled(true); setSort("distance"); return }
@@ -99,11 +150,28 @@ export default function FreelancesPage() {
     if (w) { setUserWilaya(w); setNearMeEnabled(true); setSort("distance") }
   }
 
+  const handleReset = () => {
+    setCategory("all")
+    setMinRating(0)
+    setMinPrice(0)
+    setMaxPrice(0)
+    setMinInput("")
+    setMaxInput("")
+    setSort("relevance")
+    setNearMeEnabled(false)
+  }
+
+  const priceRangeError = minPrice > 0 && maxPrice > 0 && minPrice > maxPrice
+
+  // Valeur du curseur : 0 (illimité) → position max du slider
+  const sliderValue = maxPrice === 0 ? SLIDER_MAX : Math.min(maxPrice, SLIDER_MAX)
+
   const filtered = useMemo(() => {
     let list: Service[] = allServices.filter(s => {
       if (category !== "all" && s.category !== category) return false
       if ((s.avg_rating ?? s.rating ?? 0) < minRating) return false
-      if (s.price > maxPrice) return false
+      if (minPrice > 0 && s.price < minPrice) return false
+      if (maxPrice > 0 && s.price > maxPrice) return false
       return true
     })
 
@@ -119,7 +187,9 @@ export default function FreelancesPage() {
     }
 
     return list
-  }, [allServices, category, minRating, maxPrice, sort, userWilaya])
+  }, [allServices, category, minRating, minPrice, maxPrice, sort, userWilaya])
+
+  const inputCls = "w-full pl-2 pr-7 py-1.5 text-xs rounded-lg border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] bg-[var(--cream)] dark:bg-[var(--color-bg)] text-[var(--ink)] dark:text-[var(--ink)] outline-none focus:border-[var(--orange)] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
 
   const FilterPanel = () => (
     <div className="space-y-6">
@@ -144,7 +214,6 @@ export default function FreelancesPage() {
         </div>
       </div>
 
-
       <div>
         <h3 className="text-sm font-semibold text-[var(--ink)] dark:text-[var(--ink)] mb-3">Note minimale</h3>
         <div className="space-y-1.5">
@@ -161,19 +230,62 @@ export default function FreelancesPage() {
       </div>
 
       <div>
-        <div className="flex items-center justify-between mb-3">
-          <h3 className="text-sm font-semibold text-[var(--ink)] dark:text-[var(--ink)]">Budget max</h3>
-          <span className="text-sm font-medium text-[var(--orange)]">{maxPrice.toLocaleString()} DA</span>
+        <h3 className="text-sm font-semibold text-[var(--ink)] dark:text-[var(--ink)] mb-3">Budget</h3>
+
+        {/* Champs min / max */}
+        <div className="flex gap-2 mb-3">
+          <div className="flex-1">
+            <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Min</label>
+            <div className="relative">
+              <input
+                type="number"
+                value={minInput}
+                onChange={e => handleMinInput(e.target.value)}
+                placeholder="0"
+                min={0}
+                className={inputCls}
+              />
+              <span className="absolute right-2 inset-y-0 flex items-center text-xs text-gray-400 pointer-events-none">DA</span>
+            </div>
+          </div>
+          <div className="flex-1">
+            <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Max</label>
+            <div className="relative">
+              <input
+                type="number"
+                value={maxInput}
+                onChange={e => handleMaxInput(e.target.value)}
+                placeholder="Illimité"
+                min={0}
+                className={inputCls}
+              />
+              <span className="absolute right-2 inset-y-0 flex items-center text-xs text-gray-400 pointer-events-none">DA</span>
+            </div>
+          </div>
         </div>
-        <input type="range" min={1000} max={100000} step={1000} value={maxPrice} onChange={e => setMaxPrice(Number(e.target.value))} className="w-full accent-[#FA8112]" />
+
+        {priceRangeError && (
+          <p className="text-xs text-red-500 mb-2">Le minimum ne peut pas dépasser le maximum.</p>
+        )}
+
+        {/* Curseur (contrôle le max) */}
+        <input
+          type="range"
+          min={1000}
+          max={SLIDER_MAX}
+          step={1000}
+          value={sliderValue}
+          onChange={e => handleSlider(Number(e.target.value))}
+          className="w-full accent-[#FA8112]"
+        />
         <div className="flex justify-between text-xs text-gray-400 mt-1">
           <span>1 000 DA</span>
-          <span>100 000 DA</span>
+          <span>{maxPrice === 0 ? "Illimité" : `${maxPrice.toLocaleString()} DA`}</span>
         </div>
       </div>
 
       <button
-        onClick={() => { setCategory("all"); setMinRating(0); setMaxPrice(100000); setSort("relevance"); setNearMeEnabled(false) }}
+        onClick={handleReset}
         className="w-full py-2.5 text-sm text-gray-500 dark:text-gray-400 hover:text-[var(--orange)] border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] rounded-xl transition-colors"
       >
         Réinitialiser les filtres
