@@ -41,13 +41,13 @@ export default function ProductCard({ product }: { product: ProductCardProduct }
       className="group flex flex-col bg-[var(--white)] dark:bg-[var(--white)] rounded-[14px] border border-[rgba(26,26,26,0.10)] dark:border-[var(--border-subtle)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.10)] hover:-translate-y-1 transition-all duration-200 overflow-hidden"
     >
       {/* Thumbnail – 150px fixed height */}
-      <div className="relative h-[150px] shrink-0 overflow-hidden">
+      <div className="relative h-[150px] shrink-0 overflow-hidden bg-[var(--cream)] dark:bg-[#2a2a2a]">
         {img ? (
           <img
             src={img}
             alt={product.title}
             loading="lazy"
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            className="w-full h-full object-contain"
           />
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-[#FFEAD5] to-[#FFF8F0] dark:from-[#2a2a2a] dark:to-[#3a3a3a] flex items-center justify-center">

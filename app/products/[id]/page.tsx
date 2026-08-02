@@ -217,8 +217,8 @@ export default function ProductDetailPage() {
                 {allImages.length > 0 ? (
                   <>
                     <div className="relative w-full" style={{ paddingBottom: "62.5%" }}>
-                      <div className="absolute inset-0">
-                        <img src={allImages[galleryIdx]} alt={product.title} className="w-full h-full object-cover" />
+                      <div className="absolute inset-0 bg-[var(--cream)] dark:bg-[#1a1a1a]">
+                        <img src={allImages[galleryIdx]} alt={product.title} className="w-full h-full object-contain" />
                         {allImages.length > 1 && (
                           <>
                             <button onClick={() => setGalleryIdx(i => (i - 1 + allImages.length) % allImages.length)} className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 bg-black/40 text-white rounded-full flex items-center justify-center hover:bg-black/60">‹</button>

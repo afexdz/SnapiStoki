@@ -215,8 +215,8 @@ export default function ServiceDetailPage() {
                 {allImages.length > 0 ? (
                   <>
                     <div className="relative w-full" style={{ paddingBottom: "60%" }}>
-                      <div className="absolute inset-0">
-                        <img src={allImages[galleryIdx]} alt={service.title} className="w-full h-full object-cover" />
+                      <div className="absolute inset-0 bg-[var(--cream)] dark:bg-[#1a1a1a]">
+                        <img src={allImages[galleryIdx]} alt={service.title} className="w-full h-full object-contain" />
                         {allImages.length > 1 && (
                           <>
                             <button
