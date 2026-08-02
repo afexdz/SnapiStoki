@@ -26,8 +26,34 @@ export async function GET(request: Request) {
         },
       }
     )
+
     const { error } = await supabase.auth.exchangeCodeForSession(code)
+
     if (!error) {
+      // For Google sign-in: enrich profile with provider metadata if fields are empty
+      const { data: { user } } = await supabase.auth.getUser()
+      if (user && user.app_metadata?.provider === 'google') {
+        const meta = user.user_metadata ?? {}
+        const googleName: string | null = meta.full_name ?? meta.name ?? null
+        const googleAvatar: string | null = meta.avatar_url ?? meta.picture ?? null
+
+        if (googleName || googleAvatar) {
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('full_name, avatar_url')
+            .eq('id', user.id)
+            .single()
+
+          const updates: Record<string, string> = {}
+          if (!profile?.full_name && googleName) updates.full_name = googleName
+          if (!profile?.avatar_url && googleAvatar) updates.avatar_url = googleAvatar
+
+          if (Object.keys(updates).length > 0) {
+            await supabase.from('profiles').update(updates).eq('id', user.id)
+          }
+        }
+      }
+
       return NextResponse.redirect(`${origin}${next}`)
     }
   }
