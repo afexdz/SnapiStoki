@@ -17,8 +17,37 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "PixRaise — La marketplace créative algérienne",
-  description: "Trouvez des freelances et achetez des produits digitaux en Algérie",
+  metadataBase: new URL("https://pixraise.com"),
+  title: {
+    template: "%s | PixRaise",
+    default: "PixRaise — La marketplace créative algérienne",
+  },
+  description:
+    "PixRaise est la marketplace créative algérienne : trouvez des freelances talentueux, commandez des services graphiques, vidéo, rédaction, et achetez des produits digitaux en toute confiance.",
+  openGraph: {
+    title: "PixRaise — La marketplace créative algérienne",
+    description:
+      "Trouvez des freelances talentueux et achetez des produits digitaux en Algérie.",
+    url: "https://pixraise.com",
+    siteName: "PixRaise",
+    locale: "fr_FR",
+    type: "website",
+    images: [{ url: "/opengraph-image.png", width: 1200, height: 630 }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "PixRaise — La marketplace créative algérienne",
+    description:
+      "Trouvez des freelances talentueux et achetez des produits digitaux en Algérie.",
+    images: ["/opengraph-image.png"],
+  },
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "16x16 32x32 48x48" },
+      { url: "/icon.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: { url: "/apple-icon.png", sizes: "180x180", type: "image/png" },
+  },
 };
 
 export default function RootLayout({
