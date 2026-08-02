@@ -8,8 +8,6 @@ type ConvRow = {
   id: string
   buyer_id: string
   seller_id: string
-  listing_type: string | null
-  listing_id: string | null
   last_message_at: string
 }
 
@@ -24,6 +22,7 @@ type MsgRow = {
   conversation_id: string
   content: string | null
   attachment_type: string | null
+  listing_type: string | null
   created_at: string
   sender_id: string
 }
@@ -31,7 +30,6 @@ type MsgRow = {
 type SidebarConv = {
   id: string
   interlocutor: ProfileRow
-  listingTitle: string | null
   lastMessage: MsgRow | null
   unread: number
   last_message_at: string
@@ -70,7 +68,7 @@ export default function ConversationsSidebar({ activeConvId }: { activeConvId: s
 
         const { data: rawConvs, error: convsErr } = await sb
           .from("conversations")
-          .select("id, buyer_id, seller_id, listing_type, listing_id, last_message_at")
+          .select("id, buyer_id, seller_id, last_message_at")
           .order("last_message_at", { ascending: false })
 
         if (convsErr) {
@@ -85,12 +83,10 @@ export default function ConversationsSidebar({ activeConvId }: { activeConvId: s
           ...rawConvs.map((c: ConvRow) => c.seller_id),
         ])]
         const convIds = rawConvs.map((c: ConvRow) => c.id)
-        const serviceIds = rawConvs.filter((c: ConvRow) => c.listing_type === "service" && c.listing_id).map((c: ConvRow) => c.listing_id as string)
-        const productIds = rawConvs.filter((c: ConvRow) => c.listing_type === "product" && c.listing_id).map((c: ConvRow) => c.listing_id as string)
 
         const [profilesRes, lastMsgsRes, unreadRes] = await Promise.all([
           sb.from("profiles").select("id, full_name, avatar_url").in("id", profileIds),
-          sb.from("messages").select("id, conversation_id, content, attachment_type, created_at, sender_id")
+          sb.from("messages").select("id, conversation_id, content, attachment_type, listing_type, created_at, sender_id")
             .in("conversation_id", convIds).order("created_at", { ascending: false }),
           sb.from("messages").select("conversation_id")
             .in("conversation_id", convIds).is("read_at", null).neq("sender_id", user.id),
@@ -99,13 +95,6 @@ export default function ConversationsSidebar({ activeConvId }: { activeConvId: s
         if (lastMsgsRes.error) console.error("[sidebar] lastMsgs error:", lastMsgsRes.error)
         if (unreadRes.error) console.error("[sidebar] unread error:", unreadRes.error)
         if (profilesRes.error) console.error("[sidebar] profiles error:", profilesRes.error)
-
-        const [servicesData, productsData] = await Promise.all([
-          serviceIds.length === 0 ? null : sb.from("services").select("id, title").in("id", serviceIds)
-            .then(r => { if (r.error) console.error("[sidebar] services error:", r.error); return r.data }),
-          productIds.length === 0 ? null : sb.from("digital_products").select("id, title").in("id", productIds)
-            .then(r => { if (r.error) console.error("[sidebar] products error:", r.error); return r.data }),
-        ])
 
         const profileMap: Record<string, ProfileRow> = {}
         for (const p of (profilesRes.data ?? []) as ProfileRow[]) profileMap[p.id] = p
@@ -120,16 +109,11 @@ export default function ConversationsSidebar({ activeConvId }: { activeConvId: s
           unreadByConv[m.conversation_id] = (unreadByConv[m.conversation_id] ?? 0) + 1
         }
 
-        const titleMap: Record<string, string> = {}
-        for (const s of (servicesData ?? []) as { id: string; title: string }[]) titleMap[s.id] = s.title
-        for (const p of (productsData ?? []) as { id: string; title: string }[]) titleMap[p.id] = p.title
-
         const display: SidebarConv[] = (rawConvs as ConvRow[]).map((c) => {
           const interlocutorId = c.buyer_id === user.id ? c.seller_id : c.buyer_id
           return {
             id: c.id,
             interlocutor: profileMap[interlocutorId] ?? { id: interlocutorId, full_name: null, avatar_url: null },
-            listingTitle: c.listing_id ? (titleMap[c.listing_id] ?? "Annonce supprimée") : null,
             lastMessage: lastMsgByConv[c.id] ?? null,
             unread: unreadByConv[c.id] ?? 0,
             last_message_at: c.last_message_at,
@@ -175,6 +159,7 @@ export default function ConversationsSidebar({ activeConvId }: { activeConvId: s
               const m = conv.lastMessage
               if (!m) return "Démarrez la conversation"
               const prefix = m.sender_id === userId ? "Vous : " : ""
+              if (m.listing_type && !m.content) return prefix + "📌 Annonce partagée"
               if (m.content) return prefix + m.content
               if (m.attachment_type?.startsWith("image/")) return prefix + "📎 Image"
               if (m.attachment_type === "application/pdf") return prefix + "📎 Document"
@@ -206,7 +191,6 @@ export default function ConversationsSidebar({ activeConvId }: { activeConvId: s
                     </span>
                     <span className="text-[10px] text-gray-400 shrink-0">{relativeTime(conv.last_message_at)}</span>
                   </div>
-                  {conv.listingTitle && <p className="text-[11px] text-[var(--orange)] font-medium truncate">{conv.listingTitle}</p>}
                   <p className={`text-[11px] truncate ${conv.unread > 0 ? "text-[var(--ink)] font-semibold" : "text-gray-400"}`}>
                     {preview}
                   </p>

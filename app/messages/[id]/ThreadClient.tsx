@@ -22,6 +22,8 @@ type Message = {
   attachment_size: number | null
   attachment_width: number | null
   attachment_height: number | null
+  listing_type: string | null
+  listing_id: string | null
 }
 
 type Profile = {
@@ -34,9 +36,7 @@ interface Props {
   convId: string
   currentUserId: string
   interlocutor: Profile
-  listingTitle: string | null
-  listingType: string | null
-  listingId: string | null
+  listingTitles: Record<string, string>
   initialMessages: Message[]
   initialSignedUrls: Record<string, string>
 }
@@ -64,9 +64,7 @@ export default function ThreadClient({
   convId,
   currentUserId,
   interlocutor,
-  listingTitle,
-  listingType,
-  listingId,
+  listingTitles,
   initialMessages,
   initialSignedUrls,
 }: Props) {
@@ -330,6 +328,8 @@ export default function ThreadClient({
           attachment_size: attachmentFields.attachment_size ?? null,
           attachment_width: attachmentFields.attachment_width ?? null,
           attachment_height: attachmentFields.attachment_height ?? null,
+          listing_type: null,
+          listing_id: null,
         }
         setMessages((prev) =>
           prev.some((m) => m.id === newMsg.id) ? prev : [...prev, newMsg]
@@ -363,9 +363,6 @@ export default function ThreadClient({
     .join("")
     .toUpperCase()
     .slice(0, 2)
-  const listingHref =
-    listingType === "service" ? `/services/${listingId}` :
-    listingType === "product" ? `/products/${listingId}` : null
 
   return (
     <>
@@ -425,11 +422,6 @@ export default function ThreadClient({
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-bold text-[var(--ink)] truncate">{otherName}</p>
-              {listingTitle && listingHref && (
-                <Link href={listingHref} className="text-xs text-[var(--orange)] hover:underline truncate block">
-                  {listingTitle}
-                </Link>
-              )}
             </div>
           </div>
 
@@ -447,6 +439,21 @@ export default function ThreadClient({
               </div>
             ) : (
               messages.map((msg) => {
+                // Context card — listing pinned as first message
+                if (msg.listing_type && msg.listing_id && !msg.content && !msg.attachment_path) {
+                  const href = msg.listing_type === "service" ? `/services/${msg.listing_id}` : `/products/${msg.listing_id}`
+                  const title = listingTitles[msg.listing_id] ?? "une annonce"
+                  return (
+                    <div key={msg.id} className="flex justify-center my-2">
+                      <div className="px-3 py-2 bg-[var(--white)] border border-[var(--orange)]/20 rounded-xl text-xs text-[var(--ink)] flex items-center gap-2 max-w-xs">
+                        <span className="text-[var(--orange)] shrink-0">📌</span>
+                        <span className="text-gray-500">À propos de :</span>
+                        <Link href={href} className="text-[var(--orange)] font-semibold hover:underline truncate">{title}</Link>
+                      </div>
+                    </div>
+                  )
+                }
+
                 const isMine = msg.sender_id === currentUserId
                 const isImage = !!msg.attachment_type?.startsWith("image/")
                 const isPdf = msg.attachment_type === "application/pdf"

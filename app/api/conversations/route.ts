@@ -21,7 +21,6 @@ export async function POST(request: NextRequest) {
   if (user.id === sellerId) {
     return NextResponse.json({ error: 'Impossible de vous contacter vous-même' }, { status: 400 })
   }
-  // Both must be provided together, or neither
   if ((listingType && !listingId) || (!listingType && listingId)) {
     return NextResponse.json({ error: 'listingType et listingId doivent être fournis ensemble' }, { status: 400 })
   }
@@ -29,35 +28,53 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Type invalide' }, { status: 400 })
   }
 
-  // Find existing conversation — NULL must be matched with IS NULL, not = NULL
-  let query = sb
+  // Find existing conversation for the pair — order-insensitive (A→B = B→A)
+  const { data: existing } = await sb
     .from('conversations')
     .select('id')
-    .eq('buyer_id', user.id)
-    .eq('seller_id', sellerId)
+    .or(
+      `and(buyer_id.eq.${user.id},seller_id.eq.${sellerId}),` +
+      `and(buyer_id.eq.${sellerId},seller_id.eq.${user.id})`
+    )
+    .maybeSingle()
 
-  if (listingType && listingId) {
-    query = query.eq('listing_type', listingType).eq('listing_id', listingId)
-  } else {
-    query = query.is('listing_type', null).is('listing_id', null)
-  }
-
-  const { data: existing } = await query.maybeSingle()
   if (existing) {
     return NextResponse.json({ conversationId: existing.id })
   }
 
+  // Create new conversation
   const { data: created, error } = await sb
     .from('conversations')
-    .insert({
-      buyer_id: user.id,
-      seller_id: sellerId,
-      listing_type: listingType ?? null,
-      listing_id: listingId ?? null,
-    })
+    .insert({ buyer_id: user.id, seller_id: sellerId })
     .select('id')
     .single()
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  if (error) {
+    // Race condition: another request created the conv between our SELECT and INSERT
+    if (error.code === '23505') {
+      const { data: raceConv } = await sb
+        .from('conversations')
+        .select('id')
+        .or(
+          `and(buyer_id.eq.${user.id},seller_id.eq.${sellerId}),` +
+          `and(buyer_id.eq.${sellerId},seller_id.eq.${user.id})`
+        )
+        .maybeSingle()
+      if (raceConv) return NextResponse.json({ conversationId: raceConv.id })
+    }
+    return NextResponse.json({ error: error.message }, { status: 500 })
+  }
+
+  // If a listing context was provided, insert a context marker as the first message
+  if (listingType && listingId) {
+    await sb.from('messages').insert({
+      conversation_id: created.id,
+      sender_id: user.id,
+      content: null,
+      listing_type: listingType,
+      listing_id: listingId,
+    })
+  }
+
   return NextResponse.json({ conversationId: created.id })
 }

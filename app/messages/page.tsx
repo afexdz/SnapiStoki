@@ -10,8 +10,6 @@ type ConvRow = {
   id: string
   buyer_id: string
   seller_id: string
-  listing_type: string | null
-  listing_id: string | null
   last_message_at: string
 }
 
@@ -26,6 +24,7 @@ type MsgRow = {
   conversation_id: string
   content: string | null
   attachment_type: string | null
+  listing_type: string | null
   created_at: string
   sender_id: string
 }
@@ -33,9 +32,6 @@ type MsgRow = {
 type ConvDisplay = {
   id: string
   interlocutor: ProfileRow
-  listingTitle: string | null
-  listingType: string | null
-  listingId: string | null
   lastMessage: MsgRow | null
   unread: number
   last_message_at: string
@@ -78,7 +74,7 @@ export default function MessagesPage() {
 
         const { data: rawConvs, error: convsErr } = await sb
           .from("conversations")
-          .select("id, buyer_id, seller_id, listing_type, listing_id, last_message_at")
+          .select("id, buyer_id, seller_id, last_message_at")
           .order("last_message_at", { ascending: false })
 
         if (convsErr) {
@@ -92,12 +88,10 @@ export default function MessagesPage() {
 
         const profileIds = [...new Set([...rawConvs.map((c: ConvRow) => c.buyer_id), ...rawConvs.map((c: ConvRow) => c.seller_id)])]
         const convIds = rawConvs.map((c: ConvRow) => c.id)
-        const serviceIds = rawConvs.filter((c: ConvRow) => c.listing_type === "service" && c.listing_id).map((c: ConvRow) => c.listing_id as string)
-        const productIds = rawConvs.filter((c: ConvRow) => c.listing_type === "product" && c.listing_id).map((c: ConvRow) => c.listing_id as string)
 
         const [profilesRes, lastMsgsRes, unreadRes] = await Promise.all([
           sb.from("profiles").select("id, full_name, avatar_url").in("id", profileIds),
-          sb.from("messages").select("id, conversation_id, content, attachment_type, created_at, sender_id")
+          sb.from("messages").select("id, conversation_id, content, attachment_type, listing_type, created_at, sender_id")
             .in("conversation_id", convIds).order("created_at", { ascending: false }),
           sb.from("messages").select("conversation_id")
             .in("conversation_id", convIds).is("read_at", null).neq("sender_id", user.id),
@@ -106,11 +100,6 @@ export default function MessagesPage() {
         if (lastMsgsRes.error) console.error("[messages] lastMsgs query error:", lastMsgsRes.error)
         if (unreadRes.error) console.error("[messages] unread query error:", unreadRes.error)
         if (profilesRes.error) console.error("[messages] profiles query error:", profilesRes.error)
-
-        const [servicesData, productsData] = await Promise.all([
-          serviceIds.length === 0 ? null : sb.from("services").select("id, title").in("id", serviceIds).then((r) => { if (r.error) console.error("[messages] services query error:", r.error); return r.data }),
-          productIds.length === 0 ? null : sb.from("digital_products").select("id, title").in("id", productIds).then((r) => { if (r.error) console.error("[messages] products query error:", r.error); return r.data }),
-        ])
 
         const profileMap: Record<string, ProfileRow> = {}
         for (const p of (profilesRes.data ?? []) as ProfileRow[]) profileMap[p.id] = p
@@ -125,18 +114,11 @@ export default function MessagesPage() {
           unreadByConv[m.conversation_id] = (unreadByConv[m.conversation_id] ?? 0) + 1
         }
 
-        const titleMap: Record<string, string> = {}
-        for (const s of (servicesData ?? []) as { id: string; title: string }[]) titleMap[s.id] = s.title
-        for (const p of (productsData ?? []) as { id: string; title: string }[]) titleMap[p.id] = p.title
-
         const display: ConvDisplay[] = (rawConvs as ConvRow[]).map((c) => {
           const interlocutorId = c.buyer_id === user.id ? c.seller_id : c.buyer_id
           return {
             id: c.id,
             interlocutor: profileMap[interlocutorId] ?? { id: interlocutorId, full_name: null, avatar_url: null },
-            listingTitle: c.listing_id ? (titleMap[c.listing_id] ?? "Annonce supprimée") : null,
-            listingType: c.listing_type,
-            listingId: c.listing_id,
             lastMessage: lastMsgByConv[c.id] ?? null,
             unread: unreadByConv[c.id] ?? 0,
             last_message_at: c.last_message_at,
@@ -184,7 +166,7 @@ export default function MessagesPage() {
                 </svg>
               </div>
               <p className="text-gray-500 font-medium">Aucun message pour le moment</p>
-              <p className="text-sm text-gray-400 mt-1">Contactez un vendeur depuis une annonce pour démarrer une conversation.</p>
+              <p className="text-sm text-gray-400 mt-1">Contactez un vendeur depuis son profil ou une annonce pour démarrer une conversation.</p>
               <div className="flex gap-3 justify-center mt-6">
                 <Link href="/freelances" className="px-4 py-2 bg-[var(--orange)] text-white text-sm font-semibold rounded-xl hover:bg-[var(--orange-dark)] transition-colors">
                   Voir les services
@@ -203,6 +185,7 @@ export default function MessagesPage() {
                   const m = conv.lastMessage
                   if (!m) return "Démarrez la conversation"
                   const prefix = m.sender_id === userId ? "Vous : " : ""
+                  if (m.listing_type && !m.content) return prefix + "📌 Annonce partagée"
                   if (m.content) return prefix + m.content
                   if (m.attachment_type?.startsWith("image/")) return prefix + "📎 Image"
                   if (m.attachment_type === "application/pdf") return prefix + "📎 Document"
@@ -227,7 +210,6 @@ export default function MessagesPage() {
                         <span className="text-sm font-bold text-[var(--ink)] truncate">{name}</span>
                         <span className="text-xs text-gray-400 shrink-0">{relativeTime(conv.last_message_at)}</span>
                       </div>
-                      {conv.listingTitle && <p className="text-xs text-[var(--orange)] font-medium truncate mb-0.5">{conv.listingTitle}</p>}
                       <p className={`text-xs truncate ${conv.unread > 0 ? "text-[var(--ink)] font-semibold" : "text-gray-400"}`}>
                         {preview}
                       </p>
