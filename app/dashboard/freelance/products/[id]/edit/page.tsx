@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, DragEvent, ChangeEvent } from "react"
 import { useParams, useRouter } from "next/navigation"
 import Link from "next/link"
 import Navbar from "@/components/Navbar"
+import CoverCropModal from "@/components/CoverCropModal"
 import { createClient } from "@/lib/supabase/client"
 
 const PRODUCT_TYPES = ["Illustration", "Template", "Icônes", "Police", "Photo", "Document", "Autre"]
@@ -44,6 +45,9 @@ export default function EditProductPage() {
   const [newProductFile, setNewProductFile] = useState<NewProductFile | null>(null)
   const [fileError, setFileError] = useState<string | null>(null)
   const [existingFileUrl, setExistingFileUrl] = useState<string | null>(null)
+
+  const [cropSrc, setCropSrc]         = useState<string | null>(null)
+  const [pendingFiles, setPendingFiles] = useState<File[]>([])
 
   useEffect(() => {
     async function load() {
@@ -94,9 +98,30 @@ export default function EditProductPage() {
     }
     const remaining = 3 - totalPreviews
     if (remaining <= 0) return
-    const toAdd = files.slice(0, remaining).map(f => ({ file: f, preview: URL.createObjectURL(f) }))
-    setNewPreviews(p => [...p, ...toAdd])
+    const toAdd = files.slice(0, remaining)
+    if (totalPreviews === 0) {
+      // Cover slot empty → show cropper for the first file
+      setCropSrc(URL.createObjectURL(toAdd[0]))
+      setPendingFiles(toAdd.slice(1))
+    } else {
+      setNewPreviews(p => [...p, ...toAdd.map(f => ({ file: f, preview: URL.createObjectURL(f) }))])
+    }
   }, [totalPreviews])
+
+  function handleCropConfirm(blob: Blob) {
+    const croppedFile = new File([blob], `cover_${Date.now()}.webp`, { type: "image/webp" })
+    const rest = pendingFiles.map(f => ({ file: f, preview: URL.createObjectURL(f) }))
+    setNewPreviews(p => [...p, { file: croppedFile, preview: URL.createObjectURL(blob) }, ...rest])
+    if (cropSrc) URL.revokeObjectURL(cropSrc)
+    setCropSrc(null)
+    setPendingFiles([])
+  }
+
+  function handleCropCancel() {
+    if (cropSrc) URL.revokeObjectURL(cropSrc)
+    setCropSrc(null)
+    setPendingFiles([])
+  }
 
   const onPreviewDrop = (e: DragEvent<HTMLDivElement>) => { e.preventDefault(); validateAndAddPreview(Array.from(e.dataTransfer.files)) }
   const onPreviewInput = (e: ChangeEvent<HTMLInputElement>) => { if (e.target.files) validateAndAddPreview(Array.from(e.target.files)) }
@@ -325,6 +350,17 @@ export default function EditProductPage() {
         <div className={`fixed bottom-6 right-6 text-white text-sm font-medium px-4 py-3 rounded-xl shadow-lg z-50 ${toast.type === "error" ? "bg-red-600" : "bg-green-600"}`}>
           {toast.msg}
         </div>
+      )}
+
+      {cropSrc && (
+        <CoverCropModal
+          src={cropSrc}
+          aspect={2}
+          outW={1200}
+          outH={600}
+          onConfirm={handleCropConfirm}
+          onCancel={handleCropCancel}
+        />
       )}
     </>
   )

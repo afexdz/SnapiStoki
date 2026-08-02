@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback, DragEvent, ChangeEvent } from "react"
 import { useRouter } from "next/navigation"
 import Navbar from "@/components/Navbar"
+import CoverCropModal from "@/components/CoverCropModal"
 import { createClient } from "@/lib/supabase/client"
 
 const CATEGORIES = [
@@ -143,6 +144,9 @@ export default function NewServicePage() {
   const [videoUrl, setVideoUrl] = useState("")
   const dropRef = useRef<HTMLDivElement>(null)
 
+  const [cropSrc, setCropSrc]       = useState<string | null>(null)
+  const [pendingFiles, setPendingFiles] = useState<File[]>([])
+
   useEffect(() => {
     createClient().auth.getUser().then(({ data }) => {
       if (!data.user) { router.push("/login"); return }
@@ -174,14 +178,31 @@ export default function NewServicePage() {
       if (f.size > 5 * 1024 * 1024) { setImgError("Fichier trop volumineux — max 5MB"); return }
     }
     const remaining = 3 - images.length
-    const toAdd = files.slice(0, remaining).map(f => ({
-      file: f,
-      preview: URL.createObjectURL(f),
-      uploading: false,
-      progress: 0,
-    }))
-    setImages(prev => [...prev, ...toAdd])
+    const toAdd = files.slice(0, remaining)
+    if (toAdd.length === 0) return
+    if (images.length === 0) {
+      // First slot = cover → show cropper
+      setCropSrc(URL.createObjectURL(toAdd[0]))
+      setPendingFiles(toAdd.slice(1))
+    } else {
+      setImages(prev => [...prev, ...toAdd.map(f => ({ file: f, preview: URL.createObjectURL(f), uploading: false, progress: 0 }))])
+    }
   }, [images.length])
+
+  function handleCropConfirm(blob: Blob) {
+    const croppedFile = new File([blob], `cover_${Date.now()}.webp`, { type: "image/webp" })
+    const rest = pendingFiles.map(f => ({ file: f, preview: URL.createObjectURL(f), uploading: false, progress: 0 }))
+    setImages(prev => [...prev, { file: croppedFile, preview: URL.createObjectURL(blob), uploading: false, progress: 0 }, ...rest])
+    if (cropSrc) URL.revokeObjectURL(cropSrc)
+    setCropSrc(null)
+    setPendingFiles([])
+  }
+
+  function handleCropCancel() {
+    if (cropSrc) URL.revokeObjectURL(cropSrc)
+    setCropSrc(null)
+    setPendingFiles([])
+  }
 
   const onDrop = (e: DragEvent<HTMLDivElement>) => {
     e.preventDefault()
@@ -528,6 +549,17 @@ export default function NewServicePage() {
         <div className="fixed bottom-6 right-6 bg-red-600 text-white text-sm font-medium px-4 py-3 rounded-xl shadow-lg z-50 animate-bounce-once">
           {toast}
         </div>
+      )}
+
+      {cropSrc && (
+        <CoverCropModal
+          src={cropSrc}
+          aspect={2}
+          outW={1200}
+          outH={600}
+          onConfirm={handleCropConfirm}
+          onCancel={handleCropCancel}
+        />
       )}
     </>
   )

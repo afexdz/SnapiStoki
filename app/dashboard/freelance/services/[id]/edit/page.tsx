@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback, DragEvent, ChangeEvent } from
 import { useParams, useRouter } from "next/navigation"
 import Link from "next/link"
 import Navbar from "@/components/Navbar"
+import CoverCropModal from "@/components/CoverCropModal"
 import { createClient } from "@/lib/supabase/client"
 
 const CATEGORIES = [
@@ -103,6 +104,9 @@ export default function EditServicePage() {
   const [imgError, setImgError] = useState<string | null>(null)
   const [videoUrl, setVideoUrl] = useState("")
 
+  const [cropSrc, setCropSrc]         = useState<string | null>(null)
+  const [pendingFiles, setPendingFiles] = useState<File[]>([])
+
   useEffect(() => {
     async function load() {
       const sb = createClient()
@@ -159,9 +163,30 @@ export default function EditServicePage() {
     }
     const remaining = 3 - totalImages
     if (remaining <= 0) return
-    const toAdd = files.slice(0, remaining).map(f => ({ file: f, preview: URL.createObjectURL(f), uploading: false }))
-    setNewImages(p => [...p, ...toAdd])
+    const toAdd = files.slice(0, remaining)
+    if (totalImages === 0) {
+      // Cover slot is empty → show cropper for the first file
+      setCropSrc(URL.createObjectURL(toAdd[0]))
+      setPendingFiles(toAdd.slice(1))
+    } else {
+      setNewImages(p => [...p, ...toAdd.map(f => ({ file: f, preview: URL.createObjectURL(f), uploading: false }))])
+    }
   }, [totalImages])
+
+  function handleCropConfirm(blob: Blob) {
+    const croppedFile = new File([blob], `cover_${Date.now()}.webp`, { type: "image/webp" })
+    const rest = pendingFiles.map(f => ({ file: f, preview: URL.createObjectURL(f), uploading: false }))
+    setNewImages(p => [...p, { file: croppedFile, preview: URL.createObjectURL(blob), uploading: false }, ...rest])
+    if (cropSrc) URL.revokeObjectURL(cropSrc)
+    setCropSrc(null)
+    setPendingFiles([])
+  }
+
+  function handleCropCancel() {
+    if (cropSrc) URL.revokeObjectURL(cropSrc)
+    setCropSrc(null)
+    setPendingFiles([])
+  }
 
   const onDrop = (e: DragEvent<HTMLDivElement>) => { e.preventDefault(); validateAndAdd(Array.from(e.dataTransfer.files)) }
   const onFileInput = (e: ChangeEvent<HTMLInputElement>) => { if (e.target.files) validateAndAdd(Array.from(e.target.files)) }
@@ -405,6 +430,17 @@ export default function EditServicePage() {
         <div className={`fixed bottom-6 right-6 text-white text-sm font-medium px-4 py-3 rounded-xl shadow-lg z-50 ${toast.type === "error" ? "bg-red-600" : "bg-green-600"}`}>
           {toast.msg}
         </div>
+      )}
+
+      {cropSrc && (
+        <CoverCropModal
+          src={cropSrc}
+          aspect={2}
+          outW={1200}
+          outH={600}
+          onConfirm={handleCropConfirm}
+          onCancel={handleCropCancel}
+        />
       )}
     </>
   )

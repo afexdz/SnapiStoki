@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, DragEvent, ChangeEvent } from "react"
 import { useRouter } from "next/navigation"
 import Navbar from "@/components/Navbar"
+import CoverCropModal from "@/components/CoverCropModal"
 import { createClient } from "@/lib/supabase/client"
 
 const PRODUCT_TYPES = ["Illustration", "Template", "Icônes", "Police", "Photo", "Document", "Autre"]
@@ -40,6 +41,9 @@ export default function NewProductPage() {
   const [fileError, setFileError]     = useState<string | null>(null)
   const [previews, setPreviews]       = useState<PreviewImage[]>([])
   const [previewError, setPreviewError] = useState<string | null>(null)
+
+  const [cropSrc, setCropSrc]         = useState<string | null>(null)
+  const [pendingFiles, setPendingFiles] = useState<File[]>([])
 
   useEffect(() => {
     createClient().auth.getUser().then(({ data }) => {
@@ -80,11 +84,31 @@ export default function NewProductPage() {
       if (f.size > 5 * 1024 * 1024)  { setPreviewError("Fichier trop volumineux — max 5MB"); return }
     }
     const remaining = 4 - previews.length
-    const toAdd = files.slice(0, remaining).map(f => ({
-      file: f, preview: URL.createObjectURL(f), uploading: false,
-    }))
-    setPreviews(p => [...p, ...toAdd])
+    const toAdd = files.slice(0, remaining)
+    if (toAdd.length === 0) return
+    if (previews.length === 0) {
+      // Cover slot empty → show cropper for the first file
+      setCropSrc(URL.createObjectURL(toAdd[0]))
+      setPendingFiles(toAdd.slice(1))
+    } else {
+      setPreviews(p => [...p, ...toAdd.map(f => ({ file: f, preview: URL.createObjectURL(f), uploading: false }))])
+    }
   }, [previews.length])
+
+  function handleCropConfirm(blob: Blob) {
+    const croppedFile = new File([blob], `cover_${Date.now()}.webp`, { type: "image/webp" })
+    const rest = pendingFiles.map(f => ({ file: f, preview: URL.createObjectURL(f), uploading: false }))
+    setPreviews(p => [...p, { file: croppedFile, preview: URL.createObjectURL(blob), uploading: false }, ...rest])
+    if (cropSrc) URL.revokeObjectURL(cropSrc)
+    setCropSrc(null)
+    setPendingFiles([])
+  }
+
+  function handleCropCancel() {
+    if (cropSrc) URL.revokeObjectURL(cropSrc)
+    setCropSrc(null)
+    setPendingFiles([])
+  }
 
   const onPreviewDrop = (e: DragEvent<HTMLDivElement>) => {
     e.preventDefault()
@@ -338,6 +362,17 @@ export default function NewProductPage() {
         <div className={`fixed bottom-6 right-6 text-white text-sm font-medium px-4 py-3 rounded-xl shadow-lg z-50 ${toast.type === "error" ? "bg-red-600" : "bg-green-600"}`}>
           {toast.msg}
         </div>
+      )}
+
+      {cropSrc && (
+        <CoverCropModal
+          src={cropSrc}
+          aspect={2}
+          outW={1200}
+          outH={600}
+          onConfirm={handleCropConfirm}
+          onCancel={handleCropCancel}
+        />
       )}
     </>
   )
