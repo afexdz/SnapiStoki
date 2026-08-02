@@ -43,6 +43,8 @@ const SORT_OPTIONS = [
 // Position maximale du curseur = pas de limite haute
 const SLIDER_MAX = 500_000
 
+const PRICE_INPUT_CLS = "w-full pl-2 pr-7 py-1.5 text-xs rounded-lg border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] bg-[var(--cream)] dark:bg-[var(--color-bg)] text-[var(--ink)] dark:text-[var(--ink)] outline-none focus:border-[var(--orange)] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+
 function Stars({ rating }: { rating: number }) {
   return (
     <div className="flex items-center gap-0.5">
@@ -51,6 +53,134 @@ function Stars({ rating }: { rating: number }) {
           <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
         </svg>
       ))}
+    </div>
+  )
+}
+
+type FilterPanelProps = {
+  categories: string[]
+  category: string
+  setCategory: (c: string) => void
+  minRating: number
+  setMinRating: (r: number) => void
+  minInput: string
+  handleMinInput: (v: string) => void
+  maxInput: string
+  handleMaxInput: (v: string) => void
+  priceRangeError: boolean
+  sliderValue: number
+  handleSlider: (v: number) => void
+  maxPrice: number
+  handleReset: () => void
+}
+
+function FilterPanel({
+  categories, category, setCategory,
+  minRating, setMinRating,
+  minInput, handleMinInput,
+  maxInput, handleMaxInput,
+  priceRangeError, sliderValue, handleSlider, maxPrice,
+  handleReset,
+}: FilterPanelProps) {
+  return (
+    <div className="space-y-6">
+      <div>
+        <h3 className="text-sm font-semibold text-[var(--ink)] dark:text-[var(--ink)] mb-3">Catégorie</h3>
+        <div className="space-y-1.5">
+          <button
+            onClick={() => setCategory("all")}
+            className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${category === "all" ? "bg-[var(--orange)] text-white font-medium" : "text-gray-600 dark:text-gray-400 hover:bg-[var(--cream)] dark:hover:bg-[#2a2a2a] hover:text-[var(--orange)]"}`}
+          >
+            Toutes
+          </button>
+          {categories.map(c => (
+            <button
+              key={c}
+              onClick={() => setCategory(c)}
+              className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${category === c ? "bg-[var(--orange)] text-white font-medium" : "text-gray-600 dark:text-gray-400 hover:bg-[var(--cream)] dark:hover:bg-[#2a2a2a] hover:text-[var(--orange)]"}`}
+            >
+              {c}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h3 className="text-sm font-semibold text-[var(--ink)] dark:text-[var(--ink)] mb-3">Note minimale</h3>
+        <div className="space-y-1.5">
+          {[0, 4, 4.5, 4.8].map(r => (
+            <button
+              key={r}
+              onClick={() => setMinRating(r)}
+              className={`flex items-center gap-2 w-full px-3 py-1.5 rounded-lg text-sm transition-colors ${minRating === r ? "bg-[var(--orange)] text-white" : "text-gray-600 dark:text-gray-400 hover:bg-[var(--cream)] dark:hover:bg-[#2a2a2a] hover:text-[var(--orange)]"}`}
+            >
+              {r === 0 ? "Toutes" : <><Stars rating={r} /><span>{r}+</span></>}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h3 className="text-sm font-semibold text-[var(--ink)] dark:text-[var(--ink)] mb-3">Budget</h3>
+
+        {/* Champs min / max */}
+        <div className="flex gap-2 mb-3">
+          <div className="flex-1">
+            <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Min</label>
+            <div className="relative">
+              <input
+                type="number"
+                value={minInput}
+                onChange={e => handleMinInput(e.target.value)}
+                placeholder="0"
+                min={0}
+                className={PRICE_INPUT_CLS}
+              />
+              <span className="absolute right-2 inset-y-0 flex items-center text-xs text-gray-400 pointer-events-none">DA</span>
+            </div>
+          </div>
+          <div className="flex-1">
+            <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Max</label>
+            <div className="relative">
+              <input
+                type="number"
+                value={maxInput}
+                onChange={e => handleMaxInput(e.target.value)}
+                placeholder="Illimité"
+                min={0}
+                className={PRICE_INPUT_CLS}
+              />
+              <span className="absolute right-2 inset-y-0 flex items-center text-xs text-gray-400 pointer-events-none">DA</span>
+            </div>
+          </div>
+        </div>
+
+        {priceRangeError && (
+          <p className="text-xs text-red-500 mb-2">Le minimum ne peut pas dépasser le maximum.</p>
+        )}
+
+        {/* Curseur (contrôle le max) */}
+        <input
+          type="range"
+          min={1000}
+          max={SLIDER_MAX}
+          step={1000}
+          value={sliderValue}
+          onChange={e => handleSlider(Number(e.target.value))}
+          className="w-full accent-[#FA8112]"
+        />
+        <div className="flex justify-between text-xs text-gray-400 mt-1">
+          <span>1 000 DA</span>
+          <span>{maxPrice === 0 ? "Illimité" : `${maxPrice.toLocaleString()} DA`}</span>
+        </div>
+      </div>
+
+      <button
+        onClick={handleReset}
+        className="w-full py-2.5 text-sm text-gray-500 dark:text-gray-400 hover:text-[var(--orange)] border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] rounded-xl transition-colors"
+      >
+        Réinitialiser les filtres
+      </button>
     </div>
   )
 }
@@ -189,109 +319,14 @@ export default function FreelancesPage() {
     return list
   }, [allServices, category, minRating, minPrice, maxPrice, sort, userWilaya])
 
-  const inputCls = "w-full pl-2 pr-7 py-1.5 text-xs rounded-lg border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] bg-[var(--cream)] dark:bg-[var(--color-bg)] text-[var(--ink)] dark:text-[var(--ink)] outline-none focus:border-[var(--orange)] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-
-  const FilterPanel = () => (
-    <div className="space-y-6">
-      <div>
-        <h3 className="text-sm font-semibold text-[var(--ink)] dark:text-[var(--ink)] mb-3">Catégorie</h3>
-        <div className="space-y-1.5">
-          <button
-            onClick={() => setCategory("all")}
-            className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${category === "all" ? "bg-[var(--orange)] text-white font-medium" : "text-gray-600 dark:text-gray-400 hover:bg-[var(--cream)] dark:hover:bg-[#2a2a2a] hover:text-[var(--orange)]"}`}
-          >
-            Toutes
-          </button>
-          {categories.map(c => (
-            <button
-              key={c}
-              onClick={() => setCategory(c)}
-              className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${category === c ? "bg-[var(--orange)] text-white font-medium" : "text-gray-600 dark:text-gray-400 hover:bg-[var(--cream)] dark:hover:bg-[#2a2a2a] hover:text-[var(--orange)]"}`}
-            >
-              {c}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div>
-        <h3 className="text-sm font-semibold text-[var(--ink)] dark:text-[var(--ink)] mb-3">Note minimale</h3>
-        <div className="space-y-1.5">
-          {[0, 4, 4.5, 4.8].map(r => (
-            <button
-              key={r}
-              onClick={() => setMinRating(r)}
-              className={`flex items-center gap-2 w-full px-3 py-1.5 rounded-lg text-sm transition-colors ${minRating === r ? "bg-[var(--orange)] text-white" : "text-gray-600 dark:text-gray-400 hover:bg-[var(--cream)] dark:hover:bg-[#2a2a2a] hover:text-[var(--orange)]"}`}
-            >
-              {r === 0 ? "Toutes" : <><Stars rating={r} /><span>{r}+</span></>}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div>
-        <h3 className="text-sm font-semibold text-[var(--ink)] dark:text-[var(--ink)] mb-3">Budget</h3>
-
-        {/* Champs min / max */}
-        <div className="flex gap-2 mb-3">
-          <div className="flex-1">
-            <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Min</label>
-            <div className="relative">
-              <input
-                type="number"
-                value={minInput}
-                onChange={e => handleMinInput(e.target.value)}
-                placeholder="0"
-                min={0}
-                className={inputCls}
-              />
-              <span className="absolute right-2 inset-y-0 flex items-center text-xs text-gray-400 pointer-events-none">DA</span>
-            </div>
-          </div>
-          <div className="flex-1">
-            <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Max</label>
-            <div className="relative">
-              <input
-                type="number"
-                value={maxInput}
-                onChange={e => handleMaxInput(e.target.value)}
-                placeholder="Illimité"
-                min={0}
-                className={inputCls}
-              />
-              <span className="absolute right-2 inset-y-0 flex items-center text-xs text-gray-400 pointer-events-none">DA</span>
-            </div>
-          </div>
-        </div>
-
-        {priceRangeError && (
-          <p className="text-xs text-red-500 mb-2">Le minimum ne peut pas dépasser le maximum.</p>
-        )}
-
-        {/* Curseur (contrôle le max) */}
-        <input
-          type="range"
-          min={1000}
-          max={SLIDER_MAX}
-          step={1000}
-          value={sliderValue}
-          onChange={e => handleSlider(Number(e.target.value))}
-          className="w-full accent-[#FA8112]"
-        />
-        <div className="flex justify-between text-xs text-gray-400 mt-1">
-          <span>1 000 DA</span>
-          <span>{maxPrice === 0 ? "Illimité" : `${maxPrice.toLocaleString()} DA`}</span>
-        </div>
-      </div>
-
-      <button
-        onClick={handleReset}
-        className="w-full py-2.5 text-sm text-gray-500 dark:text-gray-400 hover:text-[var(--orange)] border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] rounded-xl transition-colors"
-      >
-        Réinitialiser les filtres
-      </button>
-    </div>
-  )
+  const filterPanelProps: FilterPanelProps = {
+    categories, category, setCategory,
+    minRating, setMinRating,
+    minInput, handleMinInput,
+    maxInput, handleMaxInput,
+    priceRangeError, sliderValue, handleSlider, maxPrice,
+    handleReset,
+  }
 
   return (
     <div className="min-h-screen bg-[var(--white)] dark:bg-[var(--color-bg)]">
@@ -373,7 +408,7 @@ export default function FreelancesPage() {
           <aside className="hidden lg:block w-64 shrink-0">
             <div className="sticky top-6 bg-[var(--white)] dark:bg-[var(--surface-3)] rounded-2xl border border-[var(--border-subtle)] dark:border-[var(--border-strong)] p-5 shadow-sm dark:shadow-[var(--shadow-elevation)]">
               <h2 className="font-semibold text-[var(--ink)] dark:text-[var(--ink)] mb-5">Filtres</h2>
-              <FilterPanel />
+              <FilterPanel {...filterPanelProps} />
             </div>
           </aside>
 
@@ -390,7 +425,7 @@ export default function FreelancesPage() {
                     </svg>
                   </button>
                 </div>
-                <FilterPanel />
+                <FilterPanel {...filterPanelProps} />
               </div>
             </div>
           )}
