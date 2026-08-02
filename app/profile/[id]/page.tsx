@@ -11,11 +11,23 @@ type Props = { params: Promise<{ id: string }> }
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params
   const sb = await createClient()
-  const { data } = await sb.from("profiles").select("full_name, bio").eq("id", id).single()
-  const name = data?.full_name ?? "Freelance"
+  const { data } = await sb.from("profiles").select("full_name, bio, avatar_url").eq("id", id).single()
+  if (!data) return { title: "Profil introuvable" }
+  const name = data.full_name ?? "Freelance"
+  const description = data.bio
+    ? (data.bio as string).slice(0, 160).trim()
+    : `Découvrez les services et produits de ${name} sur PixRaise.`
   return {
-    title: `${name} — Profil vendeur | SnapiStoki`,
-    description: data?.bio ?? `Découvrez les services et produits de ${name} sur SnapiStoki.`,
+    title: name,
+    description,
+    openGraph: {
+      title: `${name} | PixRaise`,
+      description,
+      url: `https://pixraise.com/profile/${id}`,
+      images: data.avatar_url ? [{ url: data.avatar_url as string }] : [{ url: "/opengraph-image.png" }],
+    },
+    twitter: { card: "summary_large_image" },
+    alternates: { canonical: `/profile/${id}` },
   }
 }
 
