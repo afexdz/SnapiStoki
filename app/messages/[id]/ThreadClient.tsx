@@ -34,9 +34,9 @@ interface Props {
   convId: string
   currentUserId: string
   interlocutor: Profile
-  listingTitle: string
-  listingType: string
-  listingId: string
+  listingTitle: string | null
+  listingType: string | null
+  listingId: string | null
   initialMessages: Message[]
   initialSignedUrls: Record<string, string>
 }
@@ -364,7 +364,8 @@ export default function ThreadClient({
     .toUpperCase()
     .slice(0, 2)
   const listingHref =
-    listingType === "service" ? `/services/${listingId}` : `/products/${listingId}`
+    listingType === "service" ? `/services/${listingId}` :
+    listingType === "product" ? `/products/${listingId}` : null
 
   return (
     <>
@@ -424,9 +425,11 @@ export default function ThreadClient({
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-bold text-[var(--ink)] truncate">{otherName}</p>
-              <Link href={listingHref} className="text-xs text-[var(--orange)] hover:underline truncate block">
-                {listingTitle}
-              </Link>
+              {listingTitle && listingHref && (
+                <Link href={listingHref} className="text-xs text-[var(--orange)] hover:underline truncate block">
+                  {listingTitle}
+                </Link>
+              )}
             </div>
           </div>
 

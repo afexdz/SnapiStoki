@@ -63,11 +63,11 @@ export default async function ThreadPage({ params }: { params: Promise<{ id: str
 
   const interlocutorId = conv.buyer_id === user.id ? conv.seller_id : conv.buyer_id
 
-  let listingTitle = "Annonce"
-  if (conv.listing_type === "service") {
+  let listingTitle: string | null = null
+  if (conv.listing_type === "service" && conv.listing_id) {
     const { data: svc } = await sb.from("services").select("title").eq("id", conv.listing_id).single()
     if (svc) listingTitle = svc.title
-  } else {
+  } else if (conv.listing_type === "product" && conv.listing_id) {
     const { data: prod } = await sb.from("digital_products").select("title").eq("id", conv.listing_id).single()
     if (prod) listingTitle = prod.title
   }
@@ -78,8 +78,8 @@ export default async function ThreadPage({ params }: { params: Promise<{ id: str
       currentUserId={user.id}
       interlocutor={interlocutorResult.data ?? { id: interlocutorId, full_name: null, avatar_url: null }}
       listingTitle={listingTitle}
-      listingType={conv.listing_type}
-      listingId={conv.listing_id}
+      listingType={conv.listing_type ?? null}
+      listingId={conv.listing_id ?? null}
       initialMessages={(msgsResult.data ?? []) as Parameters<typeof ThreadClient>[0]["initialMessages"]}
       initialSignedUrls={initialSignedUrls}
     />

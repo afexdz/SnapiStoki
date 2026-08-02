@@ -3,6 +3,7 @@ import Link from "next/link"
 import { createClient } from "@/lib/supabase/server"
 import Navbar from "@/components/Navbar"
 import Footer from "@/components/Footer"
+import ContactButton from "@/components/ContactButton"
 import type { Metadata } from "next"
 
 type Props = { params: Promise<{ id: string }> }
@@ -114,14 +115,7 @@ export default async function PublicProfilePage({ params }: Props) {
             </div>
 
             <div className="shrink-0">
-              <div className="group relative inline-block">
-                <button disabled className="px-5 py-2.5 bg-[var(--orange)] text-white text-sm font-semibold rounded-xl opacity-60 cursor-not-allowed">
-                  Contacter
-                </button>
-                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 bg-[var(--ink)] text-white text-xs rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                  Messagerie bientôt disponible
-                </div>
-              </div>
+              <ContactButton sellerId={profile.id} currentUserId={user?.id ?? null} />
             </div>
           </div>
 

@@ -8,8 +8,8 @@ type ConvRow = {
   id: string
   buyer_id: string
   seller_id: string
-  listing_type: string
-  listing_id: string
+  listing_type: string | null
+  listing_id: string | null
   last_message_at: string
 }
 
@@ -31,7 +31,7 @@ type MsgRow = {
 type SidebarConv = {
   id: string
   interlocutor: ProfileRow
-  listingTitle: string
+  listingTitle: string | null
   lastMessage: MsgRow | null
   unread: number
   last_message_at: string
@@ -85,8 +85,8 @@ export default function ConversationsSidebar({ activeConvId }: { activeConvId: s
           ...rawConvs.map((c: ConvRow) => c.seller_id),
         ])]
         const convIds = rawConvs.map((c: ConvRow) => c.id)
-        const serviceIds = rawConvs.filter((c: ConvRow) => c.listing_type === "service").map((c: ConvRow) => c.listing_id)
-        const productIds = rawConvs.filter((c: ConvRow) => c.listing_type === "product").map((c: ConvRow) => c.listing_id)
+        const serviceIds = rawConvs.filter((c: ConvRow) => c.listing_type === "service" && c.listing_id).map((c: ConvRow) => c.listing_id as string)
+        const productIds = rawConvs.filter((c: ConvRow) => c.listing_type === "product" && c.listing_id).map((c: ConvRow) => c.listing_id as string)
 
         const [profilesRes, lastMsgsRes, unreadRes] = await Promise.all([
           sb.from("profiles").select("id, full_name, avatar_url").in("id", profileIds),
@@ -129,7 +129,7 @@ export default function ConversationsSidebar({ activeConvId }: { activeConvId: s
           return {
             id: c.id,
             interlocutor: profileMap[interlocutorId] ?? { id: interlocutorId, full_name: null, avatar_url: null },
-            listingTitle: titleMap[c.listing_id] ?? "Annonce supprimée",
+            listingTitle: c.listing_id ? (titleMap[c.listing_id] ?? "Annonce supprimée") : null,
             lastMessage: lastMsgByConv[c.id] ?? null,
             unread: unreadByConv[c.id] ?? 0,
             last_message_at: c.last_message_at,
@@ -206,7 +206,7 @@ export default function ConversationsSidebar({ activeConvId }: { activeConvId: s
                     </span>
                     <span className="text-[10px] text-gray-400 shrink-0">{relativeTime(conv.last_message_at)}</span>
                   </div>
-                  <p className="text-[11px] text-[var(--orange)] font-medium truncate">{conv.listingTitle}</p>
+                  {conv.listingTitle && <p className="text-[11px] text-[var(--orange)] font-medium truncate">{conv.listingTitle}</p>}
                   <p className={`text-[11px] truncate ${conv.unread > 0 ? "text-[var(--ink)] font-semibold" : "text-gray-400"}`}>
                     {preview}
                   </p>
