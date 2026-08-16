@@ -306,6 +306,16 @@
       "contacting": "In progress…"
     }
   },
+  "marketplace": {
+    "searchPlaceholder": "Search for a product...",
+    "loading": "Loading…",
+    "count": "{n, plural, one {# product} other {# products}}",
+    "noResults": "No products match your search",
+    "noResultsHint": "Try different keywords or adjust your filters",
+    "empty": "No products found",
+    "emptyHint": "Try adjusting your filters",
+    "sellFirst": "+ Sell your first product"
+  },
   "cards": {
     "bestSeller": "Best seller",
     "new": "New",

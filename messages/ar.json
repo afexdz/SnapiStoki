@@ -306,6 +306,16 @@
       "contacting": "جارٍ..."
     }
   },
+  "marketplace": {
+    "searchPlaceholder": "ابحث عن منتج...",
+    "loading": "جارٍ التحميل…",
+    "count": "{n, plural, zero {لا منتجات} one {# منتج} two {# منتجان} few {# منتجات} many {# منتج} other {# منتج}}",
+    "noResults": "لا توجد منتجات تطابق بحثك",
+    "noResultsHint": "جرّب كلمات مختلفة أو عدّل فلاتر البحث",
+    "empty": "لم يُعثر على منتجات",
+    "emptyHint": "جرّب تعديل الفلاتر",
+    "sellFirst": "+ بيع أول منتج لك"
+  },
   "cards": {
     "bestSeller": "الأكثر مبيعاً",
     "new": "جديد",

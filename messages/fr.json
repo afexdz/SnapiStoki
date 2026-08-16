@@ -306,6 +306,16 @@
       "contacting": "En cours…"
     }
   },
+  "marketplace": {
+    "searchPlaceholder": "Rechercher un produit...",
+    "loading": "Chargement…",
+    "count": "{n, plural, one {# produit} other {# produits}}",
+    "noResults": "Aucun produit ne correspond à votre recherche",
+    "noResultsHint": "Essayez avec d'autres mots ou modifiez vos filtres",
+    "empty": "Aucun produit trouvé",
+    "emptyHint": "Essayez de modifier vos filtres",
+    "sellFirst": "+ Vendre votre premier produit"
+  },
   "cards": {
     "bestSeller": "Meilleure vente",
     "new": "Nouveau",
