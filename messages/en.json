@@ -486,5 +486,36 @@
       "download": "Download",
       "buy": "Buy"
     }
+  },
+  "becomeSeller": {
+    "hero": {
+      "badge": "Free, no commitment",
+      "title": "Become a seller on PixRaise",
+      "subtitle": "Turn your talent into income. Join our community of creative freelancers and sell your digital products worldwide."
+    },
+    "benefitsTitle": "Everything you get, for free",
+    "benefits": {
+      "publish": {
+        "title": "Publish your services and products",
+        "desc": "Create freelance offers and sell your digital creations directly on PixRaise."
+      },
+      "visibility": {
+        "title": "International visibility",
+        "desc": "Reach a global audience — individuals and businesses wherever you are."
+      },
+      "messaging": {
+        "title": "Built-in messaging",
+        "desc": "Buyers contact you directly via PixRaise messaging — simple, fast, and centralized."
+      }
+    },
+    "cta": {
+      "title": "Ready to start?",
+      "desc": "Activate your seller account in one click. You keep your buying capabilities.",
+      "activate": "Activate my seller account →",
+      "activating": "Activating…",
+      "note": "You'll remain a buyer at the same time. No commitment.",
+      "back": "← Back to dashboard",
+      "error": "An error occurred"
+    }
   }
 }

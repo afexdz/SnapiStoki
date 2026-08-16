@@ -2,42 +2,30 @@
 
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
+import { useTranslations } from "next-intl"
 import Link from "next/link"
 import Navbar from "@/components/Navbar"
 import { createClient } from "@/lib/supabase/client"
 
-const benefits = [
-  {
-    icon: (
-      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-      </svg>
-    ),
-    title: "Publiez vos services et produits",
-    desc: "Créez des offres de freelance et vendez vos créations numériques directement sur PixRaise.",
-  },
-  {
-    icon: (
-      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-      </svg>
-    ),
-    title: "Visibilité internationale",
-    desc: "Accédez à une clientèle mondiale — particuliers et entreprises où que vous soyez.",
-  },
-  {
-    icon: (
-      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-      </svg>
-    ),
-    title: "Messagerie intégrée",
-    desc: "Les acheteurs vous contactent directement via la messagerie PixRaise — simple, rapide, centralisé.",
-  },
+/* Icons kept outside component — no text here, purely visual */
+const BENEFIT_ICONS = [
+  <svg key="publish" className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+  </svg>,
+  <svg key="visibility" className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+  </svg>,
+  <svg key="messaging" className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+  </svg>,
 ]
+
+const BENEFIT_KEYS = ["publish", "visibility", "messaging"] as const
 
 export default function DevenirVendeurPage() {
   const router = useRouter()
+  const t = useTranslations("becomeSeller")
+
   const [loading, setLoading]       = useState(true)
   const [activating, setActivating] = useState(false)
   const [error, setError]           = useState<string | null>(null)
@@ -80,7 +68,7 @@ export default function DevenirVendeurPage() {
       if (dbError) throw dbError
       router.push("/dashboard/freelance")
     } catch (err: unknown) {
-      setError((err as Error).message ?? "Une erreur est survenue")
+      setError((err as Error).message ?? t("cta.error"))
       setActivating(false)
     }
   }
@@ -99,18 +87,19 @@ export default function DevenirVendeurPage() {
       <main className="min-h-screen bg-[var(--cream)]">
         {/* Hero */}
         <div className="relative overflow-hidden bg-gradient-to-br from-[var(--orange)] to-[var(--orange-dark)] py-20 px-4">
-          <div className="absolute -top-32 -right-32 w-96 h-96 bg-[var(--white)]/10 rounded-full blur-3xl" />
-          <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-black/10 rounded-full blur-3xl" />
+          {/* Logical properties: end/start swap automatically in RTL */}
+          <div className="absolute -top-32 -end-32 w-96 h-96 bg-[var(--white)]/10 rounded-full blur-3xl" />
+          <div className="absolute -bottom-32 -start-32 w-96 h-96 bg-black/10 rounded-full blur-3xl" />
           <div className="relative max-w-3xl mx-auto text-center">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-[var(--white)]/20 backdrop-blur-sm rounded-full text-white text-sm font-semibold mb-6">
               <span className="w-2 h-2 bg-[var(--white)] rounded-full" />
-              Gratuit et sans engagement
+              {t("hero.badge")}
             </div>
             <h1 className="text-3xl sm:text-5xl font-extrabold text-white mb-4 leading-tight" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-              Devenez vendeur<br />sur PixRaise
+              {t("hero.title")}
             </h1>
             <p className="text-white/80 text-lg max-w-xl mx-auto">
-              Transformez votre talent en revenus. Rejoignez notre communauté de freelances créatifs et vendez vos produits digitaux partout dans le monde.
+              {t("hero.subtitle")}
             </p>
           </div>
         </div>
@@ -118,19 +107,19 @@ export default function DevenirVendeurPage() {
         {/* Benefits */}
         <div className="max-w-4xl mx-auto px-4 py-16">
           <h2 className="text-2xl font-extrabold text-[var(--ink)] text-center mb-10" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-            Tout ce que vous obtenez gratuitement
+            {t("benefitsTitle")}
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-12">
-            {benefits.map((b) => (
+            {BENEFIT_KEYS.map((key, i) => (
               <div
-                key={b.title}
+                key={key}
                 className="bg-[var(--white)] rounded-2xl border border-[var(--border-subtle)] p-6 shadow-sm hover:shadow-md hover:border-[var(--orange)]/30 transition-all"
               >
                 <div className="w-12 h-12 rounded-xl bg-[var(--orange)]/10 text-[var(--orange)] flex items-center justify-center mb-4">
-                  {b.icon}
+                  {BENEFIT_ICONS[i]}
                 </div>
-                <h3 className="font-bold text-[var(--ink)] mb-2">{b.title}</h3>
-                <p className="text-sm text-gray-500 leading-relaxed">{b.desc}</p>
+                <h3 className="font-bold text-[var(--ink)] mb-2">{t(`benefits.${key}.title`)}</h3>
+                <p className="text-sm text-gray-500 leading-relaxed">{t(`benefits.${key}.desc`)}</p>
               </div>
             ))}
           </div>
@@ -144,10 +133,10 @@ export default function DevenirVendeurPage() {
                 </svg>
               </div>
               <h3 className="text-xl font-extrabold text-[var(--ink)] mb-2" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-                Prêt à commencer ?
+                {t("cta.title")}
               </h3>
               <p className="text-sm text-gray-500 leading-relaxed">
-                Activez votre compte vendeur en un clic. Vous conservez vos capacités d'achat.
+                {t("cta.desc")}
               </p>
             </div>
 
@@ -165,15 +154,15 @@ export default function DevenirVendeurPage() {
               {activating ? (
                 <>
                   <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  Activation en cours…
+                  {t("cta.activating")}
                 </>
               ) : (
-                "Activer mon compte vendeur →"
+                t("cta.activate")
               )}
             </button>
 
             <p className="mt-4 text-xs text-gray-400 text-center">
-              Vous resterez acheteur en même temps. Aucun engagement.
+              {t("cta.note")}
             </p>
 
             <div className="mt-6 pt-6 border-t border-[var(--border-subtle)] text-center">
@@ -181,7 +170,7 @@ export default function DevenirVendeurPage() {
                 href="/dashboard"
                 className="text-sm text-gray-500 hover:text-[var(--orange)] transition-colors"
               >
-                ← Retour au tableau de bord
+                {t("cta.back")}
               </Link>
             </div>
           </div>

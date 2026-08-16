@@ -486,5 +486,36 @@
       "download": "Télécharger",
       "buy": "Acheter"
     }
+  },
+  "becomeSeller": {
+    "hero": {
+      "badge": "Gratuit et sans engagement",
+      "title": "Devenez vendeur sur PixRaise",
+      "subtitle": "Transformez votre talent en revenus. Rejoignez notre communauté de freelances créatifs et vendez vos produits digitaux partout dans le monde."
+    },
+    "benefitsTitle": "Tout ce que vous obtenez gratuitement",
+    "benefits": {
+      "publish": {
+        "title": "Publiez vos services et produits",
+        "desc": "Créez des offres de freelance et vendez vos créations numériques directement sur PixRaise."
+      },
+      "visibility": {
+        "title": "Visibilité internationale",
+        "desc": "Accédez à une clientèle mondiale — particuliers et entreprises où que vous soyez."
+      },
+      "messaging": {
+        "title": "Messagerie intégrée",
+        "desc": "Les acheteurs vous contactent directement via la messagerie PixRaise — simple, rapide, centralisé."
+      }
+    },
+    "cta": {
+      "title": "Prêt à commencer ?",
+      "desc": "Activez votre compte vendeur en un clic. Vous conservez vos capacités d'achat.",
+      "activate": "Activer mon compte vendeur →",
+      "activating": "Activation en cours…",
+      "note": "Vous resterez acheteur en même temps. Aucun engagement.",
+      "back": "← Retour au tableau de bord",
+      "error": "Une erreur est survenue"
+    }
   }
 }
