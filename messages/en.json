@@ -1,0 +1,307 @@
+{
+  "nav": {
+    "link": {
+      "services": "Services",
+      "digitalProducts": "Digital Products",
+      "howItWorks": "How it works",
+      "becomeSeller": "Become a Seller"
+    },
+    "aria": {
+      "toggleTheme": "Toggle theme",
+      "menu": "Menu"
+    },
+    "login": "Log in",
+    "register": "Sign up",
+    "registerFree": "Sign up for free",
+    "dropdown": {
+      "dashboard": "Dashboard",
+      "profile": "My profile",
+      "messages": "Messages",
+      "publishService": "Publish a service",
+      "sellProduct": "Sell a product",
+      "becomeSeller": "Become a Seller",
+      "signOut": "Sign out"
+    }
+  },
+  "footer": {
+    "tagline": "The freelance and digital products marketplace, for creatives worldwide. Designed and built in Algeria.",
+    "marketplace": {
+      "label": "Marketplace",
+      "services": "Services",
+      "digitalProducts": "Digital Products",
+      "categories": "Categories",
+      "becomeSeller": "Become a Seller"
+    },
+    "support": {
+      "label": "Support",
+      "helpCenter": "Help Center",
+      "howToOrder": "How to order",
+      "payments": "Payments & refunds",
+      "contact": "Contact us"
+    },
+    "legal": {
+      "label": "Legal",
+      "terms": "Terms of use",
+      "privacy": "Privacy policy",
+      "sellerRules": "Seller rules"
+    },
+    "copyright": "© 2026 PixRaise — All rights reserved",
+    "madeIn": "Designed and built in Algeria"
+  },
+  "home": {
+    "hero": {
+      "headline": "Creative talent,\nat your fingertips",
+      "headlineHighlight": "fingertips",
+      "subtitle": "Find qualified freelancers and ready-to-use digital products. Verified sellers, secure payment, wherever you are.",
+      "searchPlaceholder": "Try \"logo\", \"website\", \"video editing\"…",
+      "searchButton": "Search",
+      "popular": "Popular:",
+      "chip1": "Logo design",
+      "chip2": "Website design",
+      "chip3": "Reels editing",
+      "chip4": "Meta Ads management",
+      "statsServices": "active services",
+      "statsFreelances": "verified sellers",
+      "deliveryBadge": "Order delivered 2 min ago",
+      "card1Title": "I create your complete visual identity",
+      "card2Title": "I build your e-commerce website",
+      "card3Title": "Pro video editing for your Reels"
+    },
+    "hiw": {
+      "sectionLabel": "How it works",
+      "title": "Simple, fast, reliable",
+      "subtitle": "From search to delivery, PixRaise simplifies every step of your collaboration.",
+      "step1": {
+        "title": "Find your service",
+        "desc": "Browse thousands of verified Algerian services and freelancers. Filter by category, budget and location."
+      },
+      "step2": {
+        "title": "Order with confidence",
+        "desc": "Place your order in a few clicks. Secure payment in dinars, clear deadlines and direct communication."
+      },
+      "step3": {
+        "title": "Receive and validate",
+        "desc": "Receive your deliverable on time. Revisions included until fully satisfied. Money-back guarantee."
+      },
+      "cta": "Get started now"
+    },
+    "getStarted": {
+      "label": "For sellers",
+      "headline": "Got a talent?\nTurn it into income.",
+      "subtitle": "Create your store for free, publish your services or digital products, and sell across Algeria without middlemen.",
+      "cta": "Open my store for free",
+      "point1": {
+        "title": "Free registration",
+        "desc": "No fees to create and publish your store"
+      },
+      "point2": {
+        "title": "Payment in dinars",
+        "desc": "Receive your earnings directly, no foreign account needed"
+      },
+      "point3": {
+        "title": "Customers from around the world",
+        "desc": "International audience from day one"
+      }
+    }
+  },
+  "auth": {
+    "login": {
+      "headerLink": "Create an account →",
+      "title": "Welcome back!",
+      "subtitle": "Log in to your PixRaise account",
+      "googleButton": "Continue with Google",
+      "orEmail": "or by email",
+      "emailLabel": "Email address",
+      "emailPlaceholder": "you@example.com",
+      "passwordLabel": "Password",
+      "forgotPassword": "Forgot password?",
+      "showPassword": "Show password",
+      "hidePassword": "Hide password",
+      "submit": "Log in",
+      "submitting": "Logging in...",
+      "noAccount": "No account yet?",
+      "registerLink": "Sign up for free",
+      "error": {
+        "google": "Google sign-in failed or was cancelled. Please try again.",
+        "invalidCredentials": "Invalid email or password.",
+        "emailNotConfirmed": "Please confirm your email address before logging in.",
+        "tooManyRequests": "Too many attempts. Please try again in a few minutes.",
+        "userNotFound": "No account found with this email.",
+        "generic": "An error occurred. Please try again."
+      }
+    },
+    "register": {
+      "headerLink": "Already a member? Log in",
+      "title": "Create an account",
+      "subtitle": "Join the PixRaise community",
+      "googleButton": "Continue with Google",
+      "orEmail": "or by email",
+      "fullNameLabel": "Full name",
+      "fullNamePlaceholder": "Karim Bensalem",
+      "emailLabel": "Email address",
+      "emailPlaceholder": "you@example.com",
+      "passwordLabel": "Password",
+      "passwordStrength": "Password strength",
+      "confirmPasswordLabel": "Confirm password",
+      "passwordMismatch": "Passwords do not match.",
+      "strength": {
+        "weak": "Weak",
+        "medium": "Medium",
+        "good": "Good",
+        "excellent": "Excellent"
+      },
+      "rule": {
+        "minChars": "8 characters min.",
+        "uppercase": "1 uppercase",
+        "number": "1 number",
+        "special": "1 special character"
+      },
+      "accountTypeLabel": "Account type",
+      "buyer": {
+        "title": "Buyer",
+        "desc": "I'm looking for services and products"
+      },
+      "seller": {
+        "title": "Seller",
+        "desc": "I sell my creations and services"
+      },
+      "roleHint": "You can activate the other role at any time from your account.",
+      "termsText": "I accept the",
+      "termsLink": "terms of use",
+      "privacyLink": "privacy policy",
+      "submit": "Create my account",
+      "submitting": "Creating account...",
+      "alreadyMember": "Already a member?",
+      "loginLink": "Log in",
+      "error": {
+        "google": "Google sign-in failed. Please try again.",
+        "duplicate": "An account already exists with this email.",
+        "duplicateLogin": "Log in →"
+      },
+      "success": {
+        "title": "Check your email!",
+        "desc": "A confirmation link has been sent to {email}. Click on it to activate your account.",
+        "goToLogin": "Go to login →"
+      }
+    }
+  },
+  "product": {
+    "breadcrumb": {
+      "home": "Home",
+      "marketplace": "Marketplace"
+    },
+    "section": {
+      "description": "Description",
+      "reviews": "Reviews",
+      "sellerAbout": "About the creator",
+      "related": "Similar products"
+    },
+    "reviews": {
+      "empty": "No reviews yet",
+      "count": "({count} reviews)"
+    },
+    "seller": {
+      "memberSince": "Member since {date}"
+    },
+    "buybox": {
+      "owner": {
+        "label": "Your product",
+        "sales": "sales",
+        "avgRating": "avg. rating",
+        "reviews": "reviews",
+        "free": "Free",
+        "edit": "Edit this product",
+        "manage": "Manage my products"
+      },
+      "price": { "label": "Price" },
+      "meta": {
+        "format": "Format",
+        "size": "Size",
+        "license": "License",
+        "downloads": "Downloads"
+      },
+      "free": "Free",
+      "download": "Download for free",
+      "downloading": "Downloading...",
+      "contact": "Contact the seller",
+      "contacting": "In progress…",
+      "error": {
+        "download": "Download error"
+      }
+    }
+  },
+  "service": {
+    "breadcrumb": {
+      "home": "Home",
+      "services": "Services"
+    },
+    "section": {
+      "description": "Description",
+      "faq": "FAQ",
+      "reviews": "Customer reviews",
+      "sellerAbout": "About the seller",
+      "related": "Similar services"
+    },
+    "reviews": {
+      "empty": "No reviews yet",
+      "emptyHint": "Be the first to order this service",
+      "count": "({count} reviews)"
+    },
+    "seller": {
+      "memberSince": "Member since {date}"
+    },
+    "buybox": {
+      "owner": {
+        "label": "Your service",
+        "avgRating": "avg. rating",
+        "orders": "orders",
+        "startingAt": "DA from",
+        "edit": "Edit this service",
+        "manage": "Manage my services"
+      },
+      "tab": {
+        "basique": "Basic",
+        "standard": "Standard",
+        "premium": "Premium"
+      },
+      "revisions": {
+        "unlimited": "Unlimited revisions",
+        "count": "{n} revision(s)"
+      },
+      "delivery": "{n} day(s)",
+      "price": { "label": "Price" },
+      "contact": "Contact the seller",
+      "contacting": "In progress…"
+    }
+  },
+  "messages": {
+    "empty": {
+      "title": "Start the conversation",
+      "hint": "Send a message to {name}"
+    },
+    "context": { "about": "About:" },
+    "relativeTime": {
+      "now": "Just now",
+      "min": "{n} min"
+    },
+    "compressing": "Compressing…",
+    "readReceipt": "Read",
+    "placeholder": "Write a message…",
+    "hint": "Enter to send · Shift+Enter for a new line",
+    "aria": {
+      "close": "Close",
+      "attach": "Attach a file",
+      "removeFile": "Remove file",
+      "download": "Download"
+    },
+    "lightbox": { "alt": "Full-screen preview" },
+    "preview": { "alt": "Preview" },
+    "error": {
+      "storageQuota": "Storage limit reached (50 MB). Used: {n} MB.",
+      "upload": "Upload failed: {msg}",
+      "send": "Send failed: {msg}",
+      "unexpected": "Unexpected error",
+      "unknown": "Unknown error"
+    }
+  }
+}

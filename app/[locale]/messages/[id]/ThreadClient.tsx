@@ -1,10 +1,11 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
-import Link from "next/link"
+import { useTranslations, useLocale } from "next-intl"
+import { Link } from "@/i18n/navigation"
 import Navbar from "@/components/Navbar"
 import { createClient } from "@/lib/supabase/client"
-import ConversationsSidebar from "@/app/messages/ConversationsSidebar"
+import ConversationsSidebar from "@/app/[locale]/messages/ConversationsSidebar"
 import { prepareAttachment } from "@/lib/compress-attachment"
 import type { CompressResult } from "@/lib/compress-attachment"
 import type { RealtimeChannel } from "@supabase/supabase-js"
@@ -43,16 +44,6 @@ interface Props {
 
 const QUOTA_BYTES = 50 * 1024 * 1024
 
-function relativeTime(d: string) {
-  const diff = Date.now() - new Date(d).getTime()
-  const m = Math.floor(diff / 60000)
-  if (m < 1) return "À l'instant"
-  if (m < 60) return `${m} min`
-  const h = Math.floor(m / 60)
-  if (h < 24) return `${h}h`
-  return new Date(d).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })
-}
-
 function formatBytes(n: number | null): string {
   if (!n) return ""
   if (n < 1024) return `${n} o`
@@ -68,24 +59,22 @@ export default function ThreadClient({
   initialMessages,
   initialSignedUrls,
 }: Props) {
+  const t = useTranslations("messages")
+  const locale = useLocale()
   const sbRef = useRef(createClient())
   const [messages, setMessages] = useState<Message[]>(initialMessages)
   const [content, setContent] = useState("")
   const [sending, setSending] = useState(false)
 
-  // Attachment compose state
   const [pendingAttachment, setPendingAttachment] = useState<CompressResult | null>(null)
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
   const [compressing, setCompressing] = useState(false)
   const [attachError, setAttachError] = useState<string | null>(null)
   const [sendError, setSendError] = useState<string | null>(null)
 
-  // Signed URLs — seeded server-side on initial load (see page.tsx → createSignedUrls)
   const [signedUrls, setSignedUrls] = useState<Record<string, string>>(initialSignedUrls)
-  // Pre-populate so the useEffect doesn't re-fetch what the server already resolved
   const fetchedPathsRef = useRef<Set<string>>(new Set(Object.keys(initialSignedUrls)))
 
-  // Lightbox
   const [lightboxSrc, setLightboxSrc] = useState<string | null>(null)
 
   const bottomRef = useRef<HTMLDivElement>(null)
@@ -93,84 +82,59 @@ export default function ThreadClient({
   const inputRef = useRef<HTMLTextAreaElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  // ── auto-scroll ───────────────────────────────────────────────────────────
+  const relativeTime = (d: string) => {
+    const diff = Date.now() - new Date(d).getTime()
+    const m = Math.floor(diff / 60000)
+    if (m < 1) return t("relativeTime.now")
+    if (m < 60) return t("relativeTime.min", { n: m })
+    const h = Math.floor(m / 60)
+    if (h < 24) return `${h}h`
+    const dateLocale = locale === "ar" ? "ar-DZ" : locale === "en" ? "en-US" : "fr-FR"
+    return new Date(d).toLocaleDateString(dateLocale, { day: "numeric", month: "short" })
+  }
+
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" })
   }, [messages])
 
-  // ── mark received messages as read (fire-and-forget) ──────────────────────
   useEffect(() => {
-    const unread = initialMessages.filter(
-      (m) => m.sender_id !== currentUserId && !m.read_at
-    )
+    const unread = initialMessages.filter((m) => m.sender_id !== currentUserId && !m.read_at)
     if (unread.length === 0) return
     const ids = unread.map((m) => m.id)
     const now = new Date().toISOString()
-    setMessages((prev) =>
-      prev.map((m) => (ids.includes(m.id) ? { ...m, read_at: now } : m))
-    )
-    sbRef.current
-      .from("messages")
-      .update({ read_at: now })
-      .in("id", ids)
-      .then(({ error }) => {
-        if (error) console.error("[thread] markRead error:", error)
-      })
+    setMessages((prev) => prev.map((m) => (ids.includes(m.id) ? { ...m, read_at: now } : m)))
+    sbRef.current.from("messages").update({ read_at: now }).in("id", ids).then(({ error }) => {
+      if (error) console.error("[thread] markRead error:", error)
+    })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // ── Realtime subscription ─────────────────────────────────────────────────
   useEffect(() => {
     const sb = sbRef.current
     channelRef.current = sb
       .channel(`conv-${convId}`)
-      .on(
-        "postgres_changes",
-        {
-          event: "INSERT",
-          schema: "public",
-          table: "messages",
-          filter: `conversation_id=eq.${convId}`,
-        },
-        (payload) => {
-          const msg = payload.new as Message
-          setMessages((prev) =>
-            prev.some((m) => m.id === msg.id) ? prev : [...prev, msg]
-          )
-          if (msg.sender_id !== currentUserId) {
-            const now = new Date().toISOString()
-            setMessages((prev) =>
-              prev.map((m) => (m.id === msg.id ? { ...m, read_at: now } : m))
-            )
-            sb.from("messages")
-              .update({ read_at: now })
-              .eq("id", msg.id)
-              .then(({ error }) => {
-                if (error) console.error("[thread] realtime markRead error:", error)
-              })
-          }
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "messages", filter: `conversation_id=eq.${convId}` }, (payload) => {
+        const msg = payload.new as Message
+        setMessages((prev) => prev.some((m) => m.id === msg.id) ? prev : [...prev, msg])
+        if (msg.sender_id !== currentUserId) {
+          const now = new Date().toISOString()
+          setMessages((prev) => prev.map((m) => (m.id === msg.id ? { ...m, read_at: now } : m)))
+          sb.from("messages").update({ read_at: now }).eq("id", msg.id).then(({ error }) => {
+            if (error) console.error("[thread] realtime markRead error:", error)
+          })
         }
-      )
-      .subscribe((_, err) => {
-        if (err) console.error("[thread] realtime error:", err)
       })
-    return () => {
-      if (channelRef.current) sb.removeChannel(channelRef.current)
-    }
+      .subscribe((_, err) => { if (err) console.error("[thread] realtime error:", err) })
+    return () => { if (channelRef.current) sb.removeChannel(channelRef.current) }
   }, [convId, currentUserId])
 
-  // ── fetch signed URLs for attachment messages ─────────────────────────────
   useEffect(() => {
-    const toFetch = messages.filter(
-      (m) => m.attachment_path && !fetchedPathsRef.current.has(m.attachment_path)
-    )
+    const toFetch = messages.filter((m) => m.attachment_path && !fetchedPathsRef.current.has(m.attachment_path))
     if (toFetch.length === 0) return
     for (const m of toFetch) fetchedPathsRef.current.add(m.attachment_path!)
     Promise.all(
       toFetch.map((m) =>
-        sbRef.current.storage
-          .from("message-attachments")
-          .createSignedUrl(m.attachment_path!, 3600)
+        sbRef.current.storage.from("message-attachments").createSignedUrl(m.attachment_path!, 3600)
           .then(({ data, error }) => {
             if (error) console.error("[thread] signed URL error:", error)
             return data ? { path: m.attachment_path!, url: data.signedUrl } : null
@@ -178,37 +142,25 @@ export default function ThreadClient({
       )
     ).then((results) => {
       const newUrls: Record<string, string> = {}
-      for (const r of results) {
-        if (r) newUrls[r.path] = r.url
-      }
-      if (Object.keys(newUrls).length > 0) {
-        setSignedUrls((prev) => ({ ...prev, ...newUrls }))
-      }
+      for (const r of results) { if (r) newUrls[r.path] = r.url }
+      if (Object.keys(newUrls).length > 0) setSignedUrls((prev) => ({ ...prev, ...newUrls }))
     })
   }, [messages])
 
-  // ── manage preview URL lifecycle ──────────────────────────────────────────
   useEffect(() => {
-    if (!pendingAttachment) {
-      setPreviewUrl(null)
-      return
-    }
+    if (!pendingAttachment) { setPreviewUrl(null); return }
     const url = URL.createObjectURL(pendingAttachment.blob)
     setPreviewUrl(url)
     return () => URL.revokeObjectURL(url)
   }, [pendingAttachment])
 
-  // ── close lightbox on Escape ──────────────────────────────────────────────
   useEffect(() => {
     if (!lightboxSrc) return
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setLightboxSrc(null)
-    }
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setLightboxSrc(null) }
     window.addEventListener("keydown", onKey)
     return () => window.removeEventListener("keydown", onKey)
   }, [lightboxSrc])
 
-  // ── file selection + compression ──────────────────────────────────────────
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     e.target.value = ""
@@ -221,18 +173,14 @@ export default function ThreadClient({
       const result = await prepareAttachment(file)
       setPendingAttachment(result)
     } catch (err) {
-      setAttachError(err instanceof Error ? err.message : "Erreur inconnue")
+      setAttachError(err instanceof Error ? err.message : t("error.unknown"))
     } finally {
       setCompressing(false)
     }
   }
 
-  const removeAttachment = () => {
-    setPendingAttachment(null)
-    setAttachError(null)
-  }
+  const removeAttachment = () => { setPendingAttachment(null); setAttachError(null) }
 
-  // ── send ──────────────────────────────────────────────────────────────────
   const sendMessage = async () => {
     const text = content.trim()
     if ((!text && !pendingAttachment) || sending || compressing) return
@@ -244,36 +192,28 @@ export default function ThreadClient({
       const attachmentFields: Partial<Message> = {}
 
       if (pendingAttachment) {
-        // Quota check
         const { data: usageData } = await sbRef.current
           .from("messages")
           .select("attachment_size")
           .eq("sender_id", currentUserId)
           .not("attachment_size", "is", null)
 
-        const usedBytes = (
-          usageData as { attachment_size: number | null }[] | null ?? []
-        ).reduce((sum, m) => sum + (m.attachment_size ?? 0), 0)
+        const usedBytes = (usageData as { attachment_size: number | null }[] | null ?? [])
+          .reduce((sum, m) => sum + (m.attachment_size ?? 0), 0)
 
         if (usedBytes + pendingAttachment.size > QUOTA_BYTES) {
-          throw new Error(
-            `Limite de stockage atteinte (50 Mo). Utilisé : ${(usedBytes / 1024 / 1024).toFixed(1)} Mo.`
-          )
+          throw new Error(t("error.storageQuota", { n: (usedBytes / 1024 / 1024).toFixed(1) }))
         }
 
-        // Upload
         const pathId = crypto.randomUUID()
         const path = `${convId}/${pathId}/${pendingAttachment.name}`
 
         const { error: upErr } = await sbRef.current.storage
           .from("message-attachments")
-          .upload(path, pendingAttachment.blob, {
-            contentType: pendingAttachment.mimeType,
-          })
-        if (upErr) throw new Error(`Upload échoué : ${upErr.message}`)
+          .upload(path, pendingAttachment.blob, { contentType: pendingAttachment.mimeType })
+        if (upErr) throw new Error(t("error.upload", { msg: upErr.message }))
         uploadedPath = path
 
-        // Preload blob URL so sender sees the image immediately
         const blobUrl = URL.createObjectURL(pendingAttachment.blob)
         fetchedPathsRef.current.add(path)
         setSignedUrls((prev) => ({ ...prev, [path]: blobUrl }))
@@ -290,37 +230,22 @@ export default function ThreadClient({
 
       const { data, error } = await sbRef.current
         .from("messages")
-        .insert({
-          conversation_id: convId,
-          sender_id: currentUserId,
-          content: text || null,
-          ...attachmentFields,
-        })
+        .insert({ conversation_id: convId, sender_id: currentUserId, content: text || null, ...attachmentFields })
         .select("id, conversation_id, sender_id, content, read_at, created_at")
         .single()
 
       if (error) {
-        // Rollback: remove uploaded file to avoid orphans
         if (uploadedPath) {
-          sbRef.current.storage
-            .from("message-attachments")
-            .remove([uploadedPath])
-            .then(({ error: rmErr }) => {
-              if (rmErr) console.error("[thread] rollback remove error:", rmErr)
-            })
+          sbRef.current.storage.from("message-attachments").remove([uploadedPath])
+            .then(({ error: rmErr }) => { if (rmErr) console.error("[thread] rollback remove error:", rmErr) })
         }
-        throw new Error(`Envoi échoué : ${error.message}`)
+        throw new Error(t("error.send", { msg: error.message }))
       }
 
       if (data) {
-        // Attachment fields are not re-selected from DB (columns may not exist
-        // before fix-lot3.sql is applied). They are merged from local state.
         const newMsg: Message = {
-          id: data.id,
-          conversation_id: data.conversation_id,
-          sender_id: data.sender_id,
-          content: (data.content as string | null) ?? null,
-          read_at: (data.read_at as string | null) ?? null,
+          id: data.id, conversation_id: data.conversation_id, sender_id: data.sender_id,
+          content: (data.content as string | null) ?? null, read_at: (data.read_at as string | null) ?? null,
           created_at: data.created_at,
           attachment_path: attachmentFields.attachment_path ?? null,
           attachment_type: attachmentFields.attachment_type ?? null,
@@ -328,17 +253,14 @@ export default function ThreadClient({
           attachment_size: attachmentFields.attachment_size ?? null,
           attachment_width: attachmentFields.attachment_width ?? null,
           attachment_height: attachmentFields.attachment_height ?? null,
-          listing_type: null,
-          listing_id: null,
+          listing_type: null, listing_id: null,
         }
-        setMessages((prev) =>
-          prev.some((m) => m.id === newMsg.id) ? prev : [...prev, newMsg]
-        )
+        setMessages((prev) => prev.some((m) => m.id === newMsg.id) ? prev : [...prev, newMsg])
         setContent("")
         setPendingAttachment(null)
       }
     } catch (err) {
-      setSendError(err instanceof Error ? err.message : "Erreur inattendue")
+      setSendError(err instanceof Error ? err.message : t("error.unexpected"))
     } finally {
       setSending(false)
       inputRef.current?.focus()
@@ -346,29 +268,17 @@ export default function ThreadClient({
   }
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault()
-      sendMessage()
-    }
+    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage() }
   }
 
-  const canSend =
-    (content.trim().length > 0 || !!pendingAttachment) && !sending && !compressing
-
-  const otherName = interlocutor.full_name ?? "Interlocuteur"
-  const otherInitials = otherName
-    .trim()
-    .split(/\s+/)
-    .map((n) => n[0])
-    .join("")
-    .toUpperCase()
-    .slice(0, 2)
+  const canSend = (content.trim().length > 0 || !!pendingAttachment) && !sending && !compressing
+  const otherName = interlocutor.full_name ?? "…"
+  const otherInitials = otherName.trim().split(/\s+/).map((n) => n[0]).join("").toUpperCase().slice(0, 2)
 
   return (
     <>
       <Navbar />
 
-      {/* ── Lightbox ──────────────────────────────────────────────────────── */}
       {lightboxSrc && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center p-4"
@@ -376,17 +286,12 @@ export default function ThreadClient({
           onClick={() => setLightboxSrc(null)}
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={lightboxSrc}
-            alt="Aperçu en plein écran"
-            className="max-w-full max-h-full object-contain rounded-xl"
-            onClick={(e) => e.stopPropagation()}
-          />
+          <img src={lightboxSrc} alt={t("lightbox.alt")} className="max-w-full max-h-full object-contain rounded-xl" onClick={(e) => e.stopPropagation()} />
           <button
-            className="absolute top-4 right-4 w-10 h-10 rounded-full flex items-center justify-center transition-colors"
+            className="absolute top-4 end-4 w-10 h-10 rounded-full flex items-center justify-center transition-colors"
             style={{ background: "rgba(0,0,0,0.55)" }}
             onClick={() => setLightboxSrc(null)}
-            aria-label="Fermer"
+            aria-label={t("aria.close")}
           >
             <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -396,19 +301,14 @@ export default function ThreadClient({
       )}
 
       <div className="flex" style={{ height: "calc(100vh - 70px)" }}>
-
-        {/* ── Sidebar (desktop) ──────────────────────────────────────────── */}
-        <div className="hidden lg:flex lg:w-80 xl:w-[360px] flex-col border-r border-[var(--border-subtle)] bg-[var(--white)] shrink-0 overflow-hidden">
+        <div className="hidden lg:flex lg:w-80 xl:w-[360px] flex-col border-e border-[var(--border-subtle)] bg-[var(--white)] shrink-0 overflow-hidden">
           <ConversationsSidebar activeConvId={convId} />
         </div>
 
-        {/* ── Thread ────────────────────────────────────────────────────── */}
         <div className="flex-1 flex flex-col overflow-hidden">
-
-          {/* Header */}
           <div className="bg-[var(--white)] border-b border-[var(--border-subtle)] px-4 py-3 flex items-center gap-3 shrink-0">
             <Link href="/messages" className="lg:hidden text-gray-400 hover:text-[var(--ink)] transition-colors p-1">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
               </svg>
             </Link>
@@ -425,7 +325,6 @@ export default function ThreadClient({
             </div>
           </div>
 
-          {/* Messages list */}
           <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3 bg-[var(--cream)]">
             {messages.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-full text-center">
@@ -434,20 +333,19 @@ export default function ThreadClient({
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                   </svg>
                 </div>
-                <p className="text-sm text-gray-500">Démarrez la conversation</p>
-                <p className="text-xs text-gray-400 mt-1">Envoyez un message à {otherName}</p>
+                <p className="text-sm text-gray-500">{t("empty.title")}</p>
+                <p className="text-xs text-gray-400 mt-1">{t("empty.hint", { name: otherName })}</p>
               </div>
             ) : (
               messages.map((msg) => {
-                // Context card — listing pinned as first message
                 if (msg.listing_type && msg.listing_id && !msg.content && !msg.attachment_path) {
                   const href = msg.listing_type === "service" ? `/services/${msg.listing_id}` : `/products/${msg.listing_id}`
-                  const title = listingTitles[msg.listing_id] ?? "une annonce"
+                  const title = listingTitles[msg.listing_id] ?? "…"
                   return (
                     <div key={msg.id} className="flex justify-center my-2">
                       <div className="px-3 py-2 bg-[var(--white)] border border-[var(--orange)]/20 rounded-xl text-xs text-[var(--ink)] flex items-center gap-2 max-w-xs">
                         <span className="text-[var(--orange)] shrink-0">📌</span>
-                        <span className="text-gray-500">À propos de :</span>
+                        <span className="text-gray-500">{t("context.about")}</span>
                         <Link href={href} className="text-[var(--orange)] font-semibold hover:underline truncate">{title}</Link>
                       </div>
                     </div>
@@ -459,14 +357,12 @@ export default function ThreadClient({
                 const isPdf = msg.attachment_type === "application/pdf"
                 const hasAttachment = !!msg.attachment_path
                 const hasText = !!msg.content
-                const signedUrl = msg.attachment_path
-                  ? (signedUrls[msg.attachment_path] ?? null)
-                  : null
+                const signedUrl = msg.attachment_path ? (signedUrls[msg.attachment_path] ?? null) : null
 
                 return (
                   <div key={msg.id} className={`flex ${isMine ? "justify-end" : "justify-start"}`}>
                     {!isMine && (
-                      <div className="w-7 h-7 rounded-full overflow-hidden bg-[var(--orange)] flex items-center justify-center mr-2 mt-0.5 shrink-0">
+                      <div className="w-7 h-7 rounded-full overflow-hidden bg-[var(--orange)] flex items-center justify-center me-2 mt-0.5 shrink-0">
                         {interlocutor.avatar_url ? (
                           // eslint-disable-next-line @next/next/no-img-element
                           <img src={interlocutor.avatar_url} alt={otherName} className="w-full h-full object-cover" />
@@ -477,33 +373,20 @@ export default function ThreadClient({
                     )}
 
                     <div className="max-w-[75%] sm:max-w-[65%]">
-                      <div className={`rounded-2xl overflow-hidden text-sm ${
-                        isMine
-                          ? "bg-[var(--orange)] text-white rounded-br-sm"
-                          : "bg-[var(--white)] text-[var(--ink)] border border-[var(--border-subtle)] rounded-bl-sm"
-                      }`}>
+                      <div className={`rounded-2xl overflow-hidden text-sm ${isMine ? "bg-[var(--orange)] text-white rounded-br-sm" : "bg-[var(--white)] text-[var(--ink)] border border-[var(--border-subtle)] rounded-bl-sm"}`}>
 
-                        {/* Image */}
                         {hasAttachment && isImage && (
                           <div
                             className={`relative overflow-hidden ${signedUrl ? "cursor-zoom-in" : ""}`}
                             style={{
                               width: "min(300px, 65vw)",
-                              aspectRatio:
-                                msg.attachment_width && msg.attachment_height
-                                  ? `${msg.attachment_width} / ${msg.attachment_height}`
-                                  : "4 / 3",
+                              aspectRatio: msg.attachment_width && msg.attachment_height ? `${msg.attachment_width} / ${msg.attachment_height}` : "4 / 3",
                             }}
                             onClick={() => signedUrl && setLightboxSrc(signedUrl)}
                           >
                             {signedUrl ? (
                               // eslint-disable-next-line @next/next/no-img-element
-                              <img
-                                src={signedUrl}
-                                alt={msg.attachment_name ?? "Image"}
-                                loading="lazy"
-                                className="w-full h-full object-cover"
-                              />
+                              <img src={signedUrl} alt={msg.attachment_name ?? "Image"} loading="lazy" className="w-full h-full object-cover" />
                             ) : (
                               <div className="w-full h-full flex items-center justify-center bg-[var(--surface-3)]">
                                 <div className="w-5 h-5 border-2 border-[var(--ink-60)] border-t-transparent rounded-full animate-spin" />
@@ -512,7 +395,6 @@ export default function ThreadClient({
                           </div>
                         )}
 
-                        {/* PDF card */}
                         {hasAttachment && isPdf && (
                           <div className="px-3 py-2.5 flex items-center gap-2.5 min-w-[220px]">
                             <div className="w-10 h-10 shrink-0 rounded-lg flex items-center justify-center"
@@ -537,7 +419,7 @@ export default function ThreadClient({
                                 onMouseEnter={(e) => (e.currentTarget.style.opacity = "1")}
                                 onMouseLeave={(e) => (e.currentTarget.style.opacity = "0.75")}
                                 onClick={(e) => e.stopPropagation()}
-                                aria-label="Télécharger"
+                                aria-label={t("aria.download")}
                               >
                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -552,23 +434,16 @@ export default function ThreadClient({
                           </div>
                         )}
 
-                        {/* Text */}
                         {hasText && (
-                          <div className={`px-4 py-2.5 leading-relaxed whitespace-pre-wrap ${
-                            hasAttachment
-                              ? isMine
-                                ? "border-t border-white/20"
-                                : "border-t border-[var(--border-subtle)]"
-                              : ""
-                          }`}>
+                          <div className={`px-4 py-2.5 leading-relaxed whitespace-pre-wrap ${hasAttachment ? isMine ? "border-t border-white/20" : "border-t border-[var(--border-subtle)]" : ""}`}>
                             {msg.content}
                           </div>
                         )}
                       </div>
 
-                      <p className={`text-[10px] text-gray-400 mt-1 ${isMine ? "text-right" : "text-left"}`}>
+                      <p className={`text-[10px] text-gray-400 mt-1 ${isMine ? "text-end" : "text-start"}`}>
                         {relativeTime(msg.created_at)}
-                        {isMine && msg.read_at && " · Lu"}
+                        {isMine && msg.read_at && ` · ${t("readReceipt")}`}
                       </p>
                     </div>
                   </div>
@@ -578,16 +453,14 @@ export default function ThreadClient({
             <div ref={bottomRef} />
           </div>
 
-          {/* ── Input area ──────────────────────────────────────────────── */}
           <div className="bg-[var(--white)] border-t border-[var(--border-subtle)] px-4 py-3 shrink-0">
 
-            {/* Attachment preview / compressing indicator */}
             {(compressing || pendingAttachment || attachError) && (
               <div className="mb-2.5">
                 {compressing && (
                   <div className="flex items-center gap-2 px-3 py-2.5 rounded-xl border border-[var(--border-subtle)] bg-[var(--cream)]">
                     <div className="w-4 h-4 border-2 border-[var(--orange)] border-t-transparent rounded-full animate-spin shrink-0" />
-                    <span className="text-xs text-[var(--ink-60)]">Compression en cours…</span>
+                    <span className="text-xs text-[var(--ink-60)]">{t("compressing")}</span>
                   </div>
                 )}
 
@@ -597,7 +470,7 @@ export default function ThreadClient({
                       <div className="w-12 h-12 rounded-lg overflow-hidden shrink-0 bg-[var(--surface-3)]">
                         {previewUrl && (
                           // eslint-disable-next-line @next/next/no-img-element
-                          <img src={previewUrl} alt="Aperçu" className="w-full h-full object-cover" />
+                          <img src={previewUrl} alt={t("preview.alt")} className="w-full h-full object-cover" />
                         )}
                       </div>
                     ) : (
@@ -608,18 +481,14 @@ export default function ThreadClient({
                       </div>
                     )}
                     <div className="flex-1 min-w-0">
-                      <p className="text-xs font-medium text-[var(--ink)] truncate">
-                        {pendingAttachment.name}
-                      </p>
-                      <p className="text-[10px] text-[var(--ink-60)]">
-                        {formatBytes(pendingAttachment.size)}
-                      </p>
+                      <p className="text-xs font-medium text-[var(--ink)] truncate">{pendingAttachment.name}</p>
+                      <p className="text-[10px] text-[var(--ink-60)]">{formatBytes(pendingAttachment.size)}</p>
                     </div>
                     <button
                       onClick={removeAttachment}
                       className="shrink-0 w-7 h-7 rounded-full flex items-center justify-center transition-colors hover:bg-[var(--border-subtle)]"
                       style={{ background: "var(--border-strong)" }}
-                      aria-label="Retirer le fichier"
+                      aria-label={t("aria.removeFile")}
                     >
                       <svg className="w-3.5 h-3.5 text-[var(--ink)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
@@ -628,13 +497,10 @@ export default function ThreadClient({
                   </div>
                 )}
 
-                {attachError && (
-                  <p className="text-xs text-red-500 mt-1.5 px-1">{attachError}</p>
-                )}
+                {attachError && <p className="text-xs text-red-500 mt-1.5 px-1">{attachError}</p>}
               </div>
             )}
 
-            {/* Send error */}
             {sendError && (
               <div className="mb-2.5 px-3 py-2 rounded-xl border border-red-200 bg-[var(--cream)]">
                 <p className="text-xs text-red-500">{sendError}</p>
@@ -642,31 +508,24 @@ export default function ThreadClient({
             )}
 
             <div className="flex items-end gap-2">
-              {/* Paperclip */}
               <button
                 onClick={() => fileInputRef.current?.click()}
                 disabled={sending || compressing}
                 className="w-10 h-10 shrink-0 flex items-center justify-center rounded-xl border border-[var(--border-subtle)] bg-[var(--cream)] text-[var(--ink-60)] hover:text-[var(--orange)] hover:border-[var(--orange)]/40 transition-colors disabled:opacity-40"
-                aria-label="Joindre un fichier"
+                aria-label={t("aria.attach")}
               >
                 <svg className="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
                 </svg>
               </button>
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/jpeg,image/png,image/webp,image/gif,application/pdf"
-                className="hidden"
-                onChange={handleFileSelect}
-              />
+              <input ref={fileInputRef} type="file" accept="image/jpeg,image/png,image/webp,image/gif,application/pdf" className="hidden" onChange={handleFileSelect} />
 
               <textarea
                 ref={inputRef}
                 value={content}
                 onChange={(e) => { setContent(e.target.value); setSendError(null) }}
                 onKeyDown={handleKeyDown}
-                placeholder="Écrivez un message…"
+                placeholder={t("placeholder")}
                 rows={1}
                 className="flex-1 resize-none px-4 py-2.5 rounded-xl border border-[var(--border-subtle)] bg-[var(--cream)] text-[var(--ink)] text-sm outline-none focus:border-[var(--orange)] focus:ring-2 focus:ring-[var(--orange)]/20 transition-all placeholder-gray-400 overflow-y-auto"
                 style={{ minHeight: "42px", maxHeight: "128px" }}
@@ -680,18 +539,15 @@ export default function ThreadClient({
                 {sending ? (
                   <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                 ) : (
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-4 h-4 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
                   </svg>
                 )}
               </button>
             </div>
 
-            <p className="text-[10px] text-gray-400 mt-1.5">
-              Entrée pour envoyer · Maj+Entrée pour une nouvelle ligne
-            </p>
+            <p className="text-[10px] text-gray-400 mt-1.5">{t("hint")}</p>
           </div>
-
         </div>
       </div>
     </>

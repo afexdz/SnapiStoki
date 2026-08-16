@@ -1,109 +1,99 @@
-"use client";
+"use client"
 
-import { useState, Suspense } from "react";
-import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
+import { useState, Suspense } from "react"
+import { useTranslations } from "next-intl"
+import { Link, useRouter } from "@/i18n/navigation"
+import { useSearchParams } from "next/navigation"
+import { createClient } from "@/lib/supabase/client"
 
-const FR_ERRORS: Record<string, string> = {
-  "Invalid login credentials": "Email ou mot de passe incorrect.",
-  "Email not confirmed": "Veuillez confirmer votre adresse email avant de vous connecter.",
-  "Too many requests": "Trop de tentatives. Veuillez réessayer dans quelques minutes.",
-  "User not found": "Aucun compte trouvé avec cet email.",
-};
-
-function translateError(msg: string): string {
-  for (const [key, val] of Object.entries(FR_ERRORS)) {
-    if (msg.includes(key)) return val;
-  }
-  return "Une erreur est survenue. Veuillez réessayer.";
-}
+const ERROR_KEYS: [string, string][] = [
+  ["Invalid login credentials", "invalidCredentials"],
+  ["Email not confirmed", "emailNotConfirmed"],
+  ["Too many requests", "tooManyRequests"],
+  ["User not found", "userNotFound"],
+]
 
 function LoginForm() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const rawNext = searchParams.get("next") || "/dashboard";
-  const next = rawNext.startsWith("/") && !rawNext.startsWith("//") ? rawNext : "/dashboard";
-  const [email, setEmail] = useState(searchParams.get("email") ?? "");
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [googleLoading, setGoogleLoading] = useState(false);
-  const urlError = searchParams.get("error");
-  const [error, setError] = useState(
-    urlError === "auth" ? "La connexion avec Google a échoué ou a été annulée. Veuillez réessayer." : ""
-  );
+  const t = useTranslations("auth.login")
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const rawNext = searchParams.get("next") || "/dashboard"
+  const next = rawNext.startsWith("/") && !rawNext.startsWith("//") ? rawNext : "/dashboard"
+  const [email, setEmail] = useState(searchParams.get("email") ?? "")
+  const [password, setPassword] = useState("")
+  const [showPassword, setShowPassword] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [googleLoading, setGoogleLoading] = useState(false)
+  const urlError = searchParams.get("error")
+  const [error, setError] = useState(urlError === "auth" ? t("error.google") : "")
+
+  const translateError = (msg: string): string => {
+    for (const [key, tKey] of ERROR_KEYS) {
+      if (msg.includes(key)) return t(`error.${tKey}` as Parameters<typeof t>[0])
+    }
+    return t("error.generic")
+  }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
-
-    const supabase = createClient();
-    const { error: authError } = await supabase.auth.signInWithPassword({ email, password });
-
+    e.preventDefault()
+    setLoading(true)
+    setError("")
+    const supabase = createClient()
+    const { error: authError } = await supabase.auth.signInWithPassword({ email, password })
     if (authError) {
-      setError(translateError(authError.message));
-      setLoading(false);
-      return;
+      setError(translateError(authError.message))
+      setLoading(false)
+      return
     }
-
-    router.push(next);
-    router.refresh();
-  };
+    router.push(next as "/")
+    router.refresh()
+  }
 
   const handleGoogle = async () => {
-    setGoogleLoading(true);
-    setError("");
-    const supabase = createClient();
+    setGoogleLoading(true)
+    setError("")
+    const supabase = createClient()
     const { error: authError } = await supabase.auth.signInWithOAuth({
       provider: "google",
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`,
-      },
-    });
+      options: { redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}` },
+    })
     if (authError) {
-      setError(translateError(authError.message));
-      setGoogleLoading(false);
+      setError(translateError(authError.message))
+      setGoogleLoading(false)
     }
-  };
+  }
 
   return (
-    <div className="min-h-screen bg-[var(--white)] dark:from-[#1a1a1a] dark:via-[#2a2a2a] dark:to-[#1a1a1a] flex flex-col">
-      {/* Header */}
+    <div className="min-h-screen bg-[var(--white)] flex flex-col">
       <header className="px-6 py-4 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-0.5">
           <span className="text-xl font-extrabold text-[var(--orange)]">Pix</span>
-          <span className="text-xl font-extrabold text-[var(--ink)] dark:text-[var(--ink)]">Raise</span>
+          <span className="text-xl font-extrabold text-[var(--ink)]">Raise</span>
         </Link>
         <Link href="/register" className="text-sm text-gray-600 dark:text-gray-400 hover:text-[var(--orange)] transition-colors">
-          Créer un compte →
+          {t("headerLink")}
         </Link>
       </header>
 
-      {/* Background blobs */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-96 h-96 bg-[var(--orange)]/15 dark:bg-[var(--orange)]/10 rounded-full blur-3xl" />
-        <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-[var(--orange-dark)]/15 dark:bg-[var(--orange)]/10 rounded-full blur-3xl" />
+        <div className="absolute -top-40 -right-40 w-96 h-96 bg-[var(--orange)]/15 rounded-full blur-3xl" />
+        <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-[var(--orange-dark)]/15 rounded-full blur-3xl" />
       </div>
 
-      {/* Card */}
       <div className="flex-1 flex items-center justify-center px-4 py-8">
         <div className="relative w-full max-w-md">
-          <div className="bg-[var(--white)] dark:bg-[var(--white)] rounded-3xl shadow-2xl shadow-[var(--orange)]/10 dark:shadow-[var(--orange)]/5 border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] p-8 sm:p-10">
+          <div className="bg-[var(--white)] rounded-3xl shadow-2xl shadow-[var(--orange)]/10 border border-[var(--border-subtle)] p-8 sm:p-10">
 
-            {/* Header */}
             <div className="text-center mb-8">
               <div className="w-14 h-14 bg-gradient-to-br from-[var(--orange)] to-[var(--orange-dark)] rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-[var(--orange)]/30">
                 <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>
               </div>
-              <h1 className="text-2xl font-extrabold text-[var(--ink)] dark:text-[var(--ink)]">Bon retour !</h1>
-              <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">Connectez-vous à votre compte PixRaise</p>
+              <h1 className="text-2xl font-extrabold text-[var(--ink)]">{t("title")}</h1>
+              <p className="text-gray-500 text-sm mt-1">{t("subtitle")}</p>
             </div>
 
-            {/* Error banner */}
             {error && (
               <div className="mb-5 flex items-start gap-3 p-3.5 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl">
                 <svg className="w-4 h-4 text-red-500 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -113,11 +103,10 @@ function LoginForm() {
               </div>
             )}
 
-            {/* Google */}
             <button
               onClick={handleGoogle}
               disabled={googleLoading}
-              className="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-xl border-2 border-[var(--border-subtle)] dark:border-[var(--border-subtle)] bg-[var(--white)] dark:bg-[var(--white)] text-gray-700 dark:text-gray-200 text-sm font-semibold hover:border-[var(--orange)]/30 dark:hover:border-[var(--orange)]/30 hover:bg-[var(--cream)] dark:hover:bg-[var(--surface-3)] transition-all mb-6 disabled:opacity-60 disabled:cursor-not-allowed"
+              className="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-xl border-2 border-[var(--border-subtle)] bg-[var(--white)] text-gray-700 text-sm font-semibold hover:border-[var(--orange)]/30 hover:bg-[var(--cream)] transition-all mb-6 disabled:opacity-60 disabled:cursor-not-allowed"
             >
               {googleLoading ? (
                 <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
@@ -132,23 +121,20 @@ function LoginForm() {
                   <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
                 </svg>
               )}
-              Continuer avec Google
+              {t("googleButton")}
             </button>
 
             <div className="flex items-center gap-3 mb-6">
-              <div className="flex-1 h-px bg-[var(--cream)] dark:bg-[var(--cream)]" />
-              <span className="text-xs text-gray-400 dark:text-gray-500 font-medium">ou par email</span>
-              <div className="flex-1 h-px bg-[var(--cream)] dark:bg-[var(--cream)]" />
+              <div className="flex-1 h-px bg-[var(--cream)]" />
+              <span className="text-xs text-gray-400 font-medium">{t("orEmail")}</span>
+              <div className="flex-1 h-px bg-[var(--cream)]" />
             </div>
 
-            {/* Form */}
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-[var(--ink)] dark:text-[var(--ink)] mb-1.5">
-                  Adresse email
-                </label>
+                <label className="block text-sm font-medium text-[var(--ink)] mb-1.5">{t("emailLabel")}</label>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-3.5 flex items-center pointer-events-none text-gray-400">
+                  <div className="absolute inset-y-0 start-3.5 flex items-center pointer-events-none text-gray-400">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                     </svg>
@@ -157,24 +143,22 @@ function LoginForm() {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="vous@exemple.com"
+                    placeholder={t("emailPlaceholder")}
                     required
-                    className="w-full pl-10 pr-4 py-3 rounded-xl border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] bg-[var(--cream)] dark:bg-[var(--color-bg)] text-[var(--ink)] dark:text-[var(--ink)] placeholder-gray-400 dark:placeholder-gray-500 outline-none focus:border-[var(--orange)] focus:ring-2 focus:ring-[var(--orange)]/20 transition-all text-sm"
+                    className="w-full ps-10 pe-4 py-3 rounded-xl border border-[var(--border-subtle)] bg-[var(--cream)] text-[var(--ink)] placeholder-gray-400 outline-none focus:border-[var(--orange)] focus:ring-2 focus:ring-[var(--orange)]/20 transition-all text-sm"
                   />
                 </div>
               </div>
 
               <div>
                 <div className="flex items-center justify-between mb-1.5">
-                  <label className="block text-sm font-medium text-[var(--ink)] dark:text-[var(--ink)]">
-                    Mot de passe
-                  </label>
+                  <label className="block text-sm font-medium text-[var(--ink)]">{t("passwordLabel")}</label>
                   <a href="#" className="text-xs text-[var(--orange)] hover:text-[var(--orange-dark)] transition-colors">
-                    Mot de passe oublié ?
+                    {t("forgotPassword")}
                   </a>
                 </div>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-3.5 flex items-center pointer-events-none text-gray-400">
+                  <div className="absolute inset-y-0 start-3.5 flex items-center pointer-events-none text-gray-400">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                     </svg>
@@ -185,13 +169,13 @@ function LoginForm() {
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
                     required
-                    className="w-full pl-10 pr-12 py-3 rounded-xl border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] bg-[var(--cream)] dark:bg-[var(--color-bg)] text-[var(--ink)] dark:text-[var(--ink)] placeholder-gray-400 dark:placeholder-gray-500 outline-none focus:border-[var(--orange)] focus:ring-2 focus:ring-[var(--orange)]/20 transition-all text-sm"
+                    className="w-full ps-10 pe-12 py-3 rounded-xl border border-[var(--border-subtle)] bg-[var(--cream)] text-[var(--ink)] placeholder-gray-400 outline-none focus:border-[var(--orange)] focus:ring-2 focus:ring-[var(--orange)]/20 transition-all text-sm"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute inset-y-0 right-3.5 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
-                    aria-label={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+                    className="absolute inset-y-0 end-3.5 flex items-center text-gray-400 hover:text-gray-600 transition-colors"
+                    aria-label={showPassword ? t("hidePassword") : t("showPassword")}
                   >
                     {showPassword ? (
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -210,7 +194,7 @@ function LoginForm() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-3.5 bg-[var(--orange)] hover:bg-[var(--orange-dark)] active:bg-[var(--orange-dark)] text-white font-bold rounded-xl shadow-lg shadow-[var(--orange)]/30 transition-all hover:scale-[1.02] active:scale-100 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-2"
+                className="w-full py-3.5 bg-[var(--orange)] hover:bg-[var(--orange-dark)] text-white font-bold rounded-xl shadow-lg shadow-[var(--orange)]/30 transition-all hover:scale-[1.02] disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-2"
               >
                 {loading ? (
                   <>
@@ -218,23 +202,23 @@ function LoginForm() {
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                     </svg>
-                    Connexion...
+                    {t("submitting")}
                   </>
-                ) : "Se connecter"}
+                ) : t("submit")}
               </button>
             </form>
 
-            <p className="mt-6 text-center text-sm text-gray-500 dark:text-gray-400">
-              Pas encore de compte ?{" "}
+            <p className="mt-6 text-center text-sm text-gray-500">
+              {t("noAccount")}{" "}
               <Link href="/register" className="text-[var(--orange)] font-semibold hover:text-[var(--orange-dark)] transition-colors">
-                S'inscrire gratuitement
+                {t("registerLink")}
               </Link>
             </p>
           </div>
         </div>
       </div>
     </div>
-  );
+  )
 }
 
 export default function LoginPage() {
@@ -242,5 +226,5 @@ export default function LoginPage() {
     <Suspense>
       <LoginForm />
     </Suspense>
-  );
+  )
 }

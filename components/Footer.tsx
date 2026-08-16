@@ -1,24 +1,31 @@
-const footerLinks = {
-  Marketplace: [
-    { label: "Services", href: "/freelances" },
-    { label: "Produits digitaux", href: "/marketplace" },
-    { label: "Catégories", href: "/search" },
-    { label: "Devenir vendeur", href: "/register" },
-  ],
-  Support: [
-    { label: "Centre d'aide", href: "#" },
-    { label: "Comment commander", href: "#" },
-    { label: "Paiements & remboursements", href: "#" },
-    { label: "Nous contacter", href: "#" },
-  ],
-  Légal: [
-    { label: "Conditions d'utilisation", href: "#" },
-    { label: "Politique de confidentialité", href: "#" },
-    { label: "Règles vendeurs", href: "#" },
-  ],
-};
+"use client"
+
+import { useTranslations } from "next-intl"
+import { Link } from "@/i18n/navigation"
 
 export default function Footer() {
+  const t = useTranslations("footer")
+
+  const footerLinks = {
+    [t("marketplace.label")]: [
+      { label: t("marketplace.services"), href: "/freelances" },
+      { label: t("marketplace.digitalProducts"), href: "/marketplace" },
+      { label: t("marketplace.categories"), href: "/search" },
+      { label: t("marketplace.becomeSeller"), href: "/register" },
+    ],
+    [t("support.label")]: [
+      { label: t("support.helpCenter"), href: "#" },
+      { label: t("support.howToOrder"), href: "#" },
+      { label: t("support.payments"), href: "#" },
+      { label: t("support.contact"), href: "#" },
+    ],
+    [t("legal.label")]: [
+      { label: t("legal.terms"), href: "#" },
+      { label: t("legal.privacy"), href: "#" },
+      { label: t("legal.sellerRules"), href: "#" },
+    ],
+  }
+
   return (
     <footer
       className="border-t"
@@ -30,17 +37,15 @@ export default function Footer() {
       }}
     >
       <div className="max-w-[1180px] mx-auto px-6">
-
-        {/* Top grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-9 mb-11">
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
-            <a href="/" className="inline-flex items-center gap-0 mb-3 font-jakarta">
+            <Link href="/" className="inline-flex items-center gap-0 mb-3 font-jakarta">
               <span className="text-2xl font-extrabold" style={{ color: "var(--orange)" }}>Pix</span>
               <span className="text-2xl font-extrabold" style={{ color: "var(--ink)" }}>Raise</span>
-            </a>
+            </Link>
             <p className="text-[14px] leading-relaxed max-w-[280px] mt-3" style={{ color: "var(--ink-60)" }}>
-              La marketplace des freelances et des produits digitaux, pour les créatifs du monde entier. Conçu et développé en Algérie.
+              {t("tagline")}
             </p>
           </div>
 
@@ -56,13 +61,13 @@ export default function Footer() {
               <ul className="flex flex-col gap-2.5 text-[14.5px]">
                 {items.map((item) => (
                   <li key={item.label}>
-                    <a
+                    <Link
                       href={item.href}
                       className="transition-colors hover:text-[var(--orange)]"
                       style={{ color: "var(--ink-60)" }}
                     >
                       {item.label}
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -79,13 +84,13 @@ export default function Footer() {
             color: "var(--ink-60)",
           }}
         >
-          <span>© 2026 PixRaise — Tous droits réservés</span>
+          <span>{t("copyright")}</span>
           <span className="flex items-center gap-1.5">
             <span>🇩🇿</span>
-            Conçu et développé en Algérie
+            {t("madeIn")}
           </span>
         </div>
       </div>
     </footer>
-  );
+  )
 }

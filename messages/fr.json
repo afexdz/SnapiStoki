@@ -1,0 +1,307 @@
+{
+  "nav": {
+    "link": {
+      "services": "Services",
+      "digitalProducts": "Produits digitaux",
+      "howItWorks": "Comment ça marche",
+      "becomeSeller": "Devenir vendeur"
+    },
+    "aria": {
+      "toggleTheme": "Basculer le thème",
+      "menu": "Menu"
+    },
+    "login": "Connexion",
+    "register": "S'inscrire",
+    "registerFree": "S'inscrire gratuitement",
+    "dropdown": {
+      "dashboard": "Tableau de bord",
+      "profile": "Mon profil",
+      "messages": "Messages",
+      "publishService": "Publier un service",
+      "sellProduct": "Vendre un produit",
+      "becomeSeller": "Devenir vendeur",
+      "signOut": "Se déconnecter"
+    }
+  },
+  "footer": {
+    "tagline": "La marketplace des freelances et des produits digitaux, pour les créatifs du monde entier. Conçu et développé en Algérie.",
+    "marketplace": {
+      "label": "Marketplace",
+      "services": "Services",
+      "digitalProducts": "Produits digitaux",
+      "categories": "Catégories",
+      "becomeSeller": "Devenir vendeur"
+    },
+    "support": {
+      "label": "Support",
+      "helpCenter": "Centre d'aide",
+      "howToOrder": "Comment commander",
+      "payments": "Paiements & remboursements",
+      "contact": "Nous contacter"
+    },
+    "legal": {
+      "label": "Légal",
+      "terms": "Conditions d'utilisation",
+      "privacy": "Politique de confidentialité",
+      "sellerRules": "Règles vendeurs"
+    },
+    "copyright": "© 2026 PixRaise — Tous droits réservés",
+    "madeIn": "Conçu et développé en Algérie"
+  },
+  "home": {
+    "hero": {
+      "headline": "Le talent créatif,\nà portée de clic",
+      "headlineHighlight": "clic",
+      "subtitle": "Trouvez des freelances qualifiés et des produits digitaux prêts à l'emploi. Vendeurs vérifiés, paiement sécurisé, où que vous soyez.",
+      "searchPlaceholder": "Essayez « logo », « site web », « montage vidéo »…",
+      "searchButton": "Rechercher",
+      "popular": "Populaire :",
+      "chip1": "Design de logo",
+      "chip2": "Site vitrine",
+      "chip3": "Montage Reels",
+      "chip4": "Gestion Meta Ads",
+      "statsServices": "services actifs",
+      "statsFreelances": "vendeurs vérifiés",
+      "deliveryBadge": "Commande livrée il y a 2 min",
+      "card1Title": "Je crée votre identité visuelle complète",
+      "card2Title": "Je développe votre site e-commerce",
+      "card3Title": "Montage vidéo pro pour vos Reels"
+    },
+    "hiw": {
+      "sectionLabel": "Comment ça marche",
+      "title": "Simple, rapide, fiable",
+      "subtitle": "De la recherche à la livraison, PixRaise simplifie chaque étape de votre collaboration.",
+      "step1": {
+        "title": "Trouvez votre service",
+        "desc": "Parcourez des milliers de services et freelances algériens vérifiés. Filtrez par catégorie, budget et localisation."
+      },
+      "step2": {
+        "title": "Commandez en toute confiance",
+        "desc": "Passez commande en quelques clics. Paiement sécurisé en dinars, délais clairs et communication directe."
+      },
+      "step3": {
+        "title": "Recevez et validez",
+        "desc": "Recevez votre livrable dans les délais. Révisions incluses jusqu'à satisfaction totale. Garantie satisfait ou remboursé."
+      },
+      "cta": "Commencer maintenant"
+    },
+    "getStarted": {
+      "label": "Pour les vendeurs",
+      "headline": "Vous avez un talent ?\nTransformez-le en revenus.",
+      "subtitle": "Créez votre boutique gratuitement, publiez vos services ou produits digitaux, et vendez partout en Algérie sans intermédiaire.",
+      "cta": "Ouvrir ma boutique gratuitement",
+      "point1": {
+        "title": "Inscription gratuite",
+        "desc": "Aucun frais pour créer et publier votre boutique"
+      },
+      "point2": {
+        "title": "Paiement en dinars",
+        "desc": "Recevez vos gains directement, sans compte étranger"
+      },
+      "point3": {
+        "title": "Des clients partout dans le monde",
+        "desc": "Une audience internationale dès le premier jour"
+      }
+    }
+  },
+  "auth": {
+    "login": {
+      "headerLink": "Créer un compte →",
+      "title": "Bon retour !",
+      "subtitle": "Connectez-vous à votre compte PixRaise",
+      "googleButton": "Continuer avec Google",
+      "orEmail": "ou par email",
+      "emailLabel": "Adresse email",
+      "emailPlaceholder": "vous@exemple.com",
+      "passwordLabel": "Mot de passe",
+      "forgotPassword": "Mot de passe oublié ?",
+      "showPassword": "Afficher le mot de passe",
+      "hidePassword": "Masquer le mot de passe",
+      "submit": "Se connecter",
+      "submitting": "Connexion...",
+      "noAccount": "Pas encore de compte ?",
+      "registerLink": "S'inscrire gratuitement",
+      "error": {
+        "google": "La connexion avec Google a échoué ou a été annulée. Veuillez réessayer.",
+        "invalidCredentials": "Email ou mot de passe incorrect.",
+        "emailNotConfirmed": "Veuillez confirmer votre adresse email avant de vous connecter.",
+        "tooManyRequests": "Trop de tentatives. Veuillez réessayer dans quelques minutes.",
+        "userNotFound": "Aucun compte trouvé avec cet email.",
+        "generic": "Une erreur est survenue. Veuillez réessayer."
+      }
+    },
+    "register": {
+      "headerLink": "Déjà membre ? Se connecter",
+      "title": "Créer un compte",
+      "subtitle": "Rejoignez la communauté PixRaise",
+      "googleButton": "Continuer avec Google",
+      "orEmail": "ou par email",
+      "fullNameLabel": "Nom complet",
+      "fullNamePlaceholder": "Karim Bensalem",
+      "emailLabel": "Adresse email",
+      "emailPlaceholder": "vous@exemple.com",
+      "passwordLabel": "Mot de passe",
+      "passwordStrength": "Force du mot de passe",
+      "confirmPasswordLabel": "Confirmer le mot de passe",
+      "passwordMismatch": "Les mots de passe ne correspondent pas.",
+      "strength": {
+        "weak": "Faible",
+        "medium": "Moyen",
+        "good": "Bon",
+        "excellent": "Excellent"
+      },
+      "rule": {
+        "minChars": "8 caractères min.",
+        "uppercase": "1 majuscule",
+        "number": "1 chiffre",
+        "special": "1 caractère spécial"
+      },
+      "accountTypeLabel": "Type de compte",
+      "buyer": {
+        "title": "Acheteur",
+        "desc": "Je cherche des services et produits"
+      },
+      "seller": {
+        "title": "Vendeur",
+        "desc": "Je vends mes créations et services"
+      },
+      "roleHint": "Vous pourrez activer l'autre rôle à tout moment depuis votre compte.",
+      "termsText": "J'accepte les",
+      "termsLink": "conditions d'utilisation",
+      "privacyLink": "politique de confidentialité",
+      "submit": "Créer mon compte",
+      "submitting": "Création du compte...",
+      "alreadyMember": "Déjà membre ?",
+      "loginLink": "Se connecter",
+      "error": {
+        "google": "La connexion avec Google a échoué. Veuillez réessayer.",
+        "duplicate": "Un compte existe déjà avec cet email.",
+        "duplicateLogin": "Se connecter →"
+      },
+      "success": {
+        "title": "Vérifiez votre email !",
+        "desc": "Un lien de confirmation a été envoyé à {email}. Cliquez dessus pour activer votre compte.",
+        "goToLogin": "Aller à la connexion →"
+      }
+    }
+  },
+  "product": {
+    "breadcrumb": {
+      "home": "Accueil",
+      "marketplace": "Marketplace"
+    },
+    "section": {
+      "description": "Description",
+      "reviews": "Avis",
+      "sellerAbout": "À propos du créateur",
+      "related": "Produits similaires"
+    },
+    "reviews": {
+      "empty": "Aucun avis pour le moment",
+      "count": "({count} avis)"
+    },
+    "seller": {
+      "memberSince": "Membre depuis {date}"
+    },
+    "buybox": {
+      "owner": {
+        "label": "Votre produit",
+        "sales": "ventes",
+        "avgRating": "note moy.",
+        "reviews": "avis",
+        "free": "Gratuit",
+        "edit": "Modifier ce produit",
+        "manage": "Gérer mes produits"
+      },
+      "price": { "label": "Prix" },
+      "meta": {
+        "format": "Format",
+        "size": "Taille",
+        "license": "Licence",
+        "downloads": "Téléchargements"
+      },
+      "free": "Gratuit",
+      "download": "Télécharger gratuitement",
+      "downloading": "Téléchargement...",
+      "contact": "Contacter le vendeur",
+      "contacting": "En cours…",
+      "error": {
+        "download": "Erreur lors du téléchargement"
+      }
+    }
+  },
+  "service": {
+    "breadcrumb": {
+      "home": "Accueil",
+      "services": "Services"
+    },
+    "section": {
+      "description": "Description",
+      "faq": "Questions fréquentes",
+      "reviews": "Avis clients",
+      "sellerAbout": "À propos du vendeur",
+      "related": "Services similaires"
+    },
+    "reviews": {
+      "empty": "Aucun avis pour le moment",
+      "emptyHint": "Soyez le premier à commander ce service",
+      "count": "({count} avis)"
+    },
+    "seller": {
+      "memberSince": "Membre depuis {date}"
+    },
+    "buybox": {
+      "owner": {
+        "label": "Votre service",
+        "avgRating": "note moy.",
+        "orders": "commandes",
+        "startingAt": "DA dès",
+        "edit": "Modifier ce service",
+        "manage": "Gérer mes services"
+      },
+      "tab": {
+        "basique": "Basique",
+        "standard": "Standard",
+        "premium": "Premium"
+      },
+      "revisions": {
+        "unlimited": "Révisions illimitées",
+        "count": "{n} révision(s)"
+      },
+      "delivery": "{n} jour(s)",
+      "price": { "label": "Prix" },
+      "contact": "Contacter le vendeur",
+      "contacting": "En cours…"
+    }
+  },
+  "messages": {
+    "empty": {
+      "title": "Démarrez la conversation",
+      "hint": "Envoyez un message à {name}"
+    },
+    "context": { "about": "À propos de :" },
+    "relativeTime": {
+      "now": "À l'instant",
+      "min": "{n} min"
+    },
+    "compressing": "Compression en cours…",
+    "readReceipt": "Lu",
+    "placeholder": "Écrivez un message…",
+    "hint": "Entrée pour envoyer · Maj+Entrée pour une nouvelle ligne",
+    "aria": {
+      "close": "Fermer",
+      "attach": "Joindre un fichier",
+      "removeFile": "Retirer le fichier",
+      "download": "Télécharger"
+    },
+    "lightbox": { "alt": "Aperçu en plein écran" },
+    "preview": { "alt": "Aperçu" },
+    "error": {
+      "storageQuota": "Limite de stockage atteinte (50 Mo). Utilisé : {n} Mo.",
+      "upload": "Upload échoué : {msg}",
+      "send": "Envoi échoué : {msg}",
+      "unexpected": "Erreur inattendue",
+      "unknown": "Erreur inconnue"
+    }
+  }
+}

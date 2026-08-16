@@ -1,8 +1,8 @@
 "use client"
 
 import { useState } from "react"
-import { useRouter } from "next/navigation"
-import Link from "next/link"
+import { useTranslations } from "next-intl"
+import { useRouter, Link } from "@/i18n/navigation"
 import { createClient } from "@/lib/supabase/client"
 
 type Props = {
@@ -17,6 +17,7 @@ type Props = {
 }
 
 export default function ProductMobileBar({ productId, sellerId, title, price, isFree, fileUrl, isOwner, currentUserId }: Props) {
+  const t = useTranslations("product.buybox")
   const router = useRouter()
   const [downloading, setDownloading] = useState(false)
   const [contacting, setContacting] = useState(false)
@@ -58,7 +59,7 @@ export default function ProductMobileBar({ productId, sellerId, title, price, is
       a.click()
       URL.revokeObjectURL(url)
     } catch {
-      alert("Erreur lors du téléchargement")
+      alert(t("error.download"))
     } finally {
       setDownloading(false)
     }
@@ -68,20 +69,20 @@ export default function ProductMobileBar({ productId, sellerId, title, price, is
     <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-[var(--surface-3)] border-t border-[var(--border-strong)] px-4 py-3 flex items-center justify-between gap-4 shadow-[var(--shadow-elevation)]">
       {isOwner ? (
         <>
-          <span className="px-2.5 py-1 bg-[var(--orange)]/10 text-[var(--orange)] text-xs font-bold rounded-lg">Votre produit</span>
+          <span className="px-2.5 py-1 bg-[var(--orange)]/10 text-[var(--orange)] text-xs font-bold rounded-lg">{t("owner.label")}</span>
           <Link href={`/dashboard/freelance/products/${productId}/edit`} className="flex-1 max-w-[220px] py-3 bg-[var(--orange)] text-white font-bold text-sm rounded-xl hover:bg-[var(--orange-dark)] transition-colors text-center">
-            Modifier
+            {t("owner.edit")}
           </Link>
         </>
       ) : (
         <>
           <div>
             {isFree ? (
-              <p className="text-xl font-bold text-green-600">Gratuit</p>
+              <p className="text-xl font-bold text-green-600">{t("free")}</p>
             ) : (
               <>
-                <p className="text-xs text-gray-400">Prix</p>
-                <p className="text-xl font-bold text-[var(--ink)]">{price.toLocaleString("fr-DZ")} <span className="text-sm text-[var(--orange)]">DA</span></p>
+                <p className="text-xs text-gray-400">{t("price.label")}</p>
+                <p className="text-xl font-bold text-[var(--ink)]">{price.toLocaleString()} <span className="text-sm text-[var(--orange)]">DA</span></p>
               </>
             )}
           </div>
@@ -91,7 +92,7 @@ export default function ProductMobileBar({ productId, sellerId, title, price, is
               disabled={downloading}
               className="flex-1 max-w-[220px] py-3 bg-green-600 text-white font-bold text-sm rounded-xl hover:bg-green-700 transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
             >
-              {downloading ? "Téléchargement..." : "Télécharger gratuitement"}
+              {downloading ? t("downloading") : t("download")}
             </button>
           ) : (
             <button
@@ -106,7 +107,7 @@ export default function ProductMobileBar({ productId, sellerId, title, price, is
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                   </svg>
-                  Contacter
+                  {t("contact")}
                 </>
               )}
             </button>

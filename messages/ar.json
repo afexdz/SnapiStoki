@@ -1,0 +1,307 @@
+{
+  "nav": {
+    "link": {
+      "services": "الخدمات",
+      "digitalProducts": "المنتجات الرقمية",
+      "howItWorks": "كيف يعمل",
+      "becomeSeller": "كن بائعاً"
+    },
+    "aria": {
+      "toggleTheme": "تغيير المظهر",
+      "menu": "القائمة"
+    },
+    "login": "تسجيل الدخول",
+    "register": "إنشاء حساب",
+    "registerFree": "التسجيل مجاناً",
+    "dropdown": {
+      "dashboard": "لوحة التحكم",
+      "profile": "ملفي الشخصي",
+      "messages": "الرسائل",
+      "publishService": "نشر خدمة",
+      "sellProduct": "بيع منتج",
+      "becomeSeller": "كن بائعاً",
+      "signOut": "تسجيل الخروج"
+    }
+  },
+  "footer": {
+    "tagline": "سوق للمستقلين والمنتجات الرقمية، للمبدعين في جميع أنحاء العالم. مُصمَّم ومُطوَّر في الجزائر.",
+    "marketplace": {
+      "label": "السوق",
+      "services": "الخدمات",
+      "digitalProducts": "المنتجات الرقمية",
+      "categories": "الفئات",
+      "becomeSeller": "كن بائعاً"
+    },
+    "support": {
+      "label": "الدعم",
+      "helpCenter": "مركز المساعدة",
+      "howToOrder": "كيفية الطلب",
+      "payments": "المدفوعات والاسترداد",
+      "contact": "تواصل معنا"
+    },
+    "legal": {
+      "label": "قانوني",
+      "terms": "شروط الاستخدام",
+      "privacy": "سياسة الخصوصية",
+      "sellerRules": "قواعد البائعين"
+    },
+    "copyright": "© 2026 PixRaise — جميع الحقوق محفوظة",
+    "madeIn": "مُصمَّم ومُطوَّر في الجزائر"
+  },
+  "home": {
+    "hero": {
+      "headline": "المواهب الإبداعية،\nفي متناول يدك",
+      "headlineHighlight": "يدك",
+      "subtitle": "اعثر على مستقلين مؤهلين ومنتجات رقمية جاهزة للاستخدام. بائعون موثوقون، دفع آمن، أينما كنت.",
+      "searchPlaceholder": "جرّب «شعار»، «موقع ويب»، «مونتاج فيديو»…",
+      "searchButton": "بحث",
+      "popular": "شائع:",
+      "chip1": "تصميم شعار",
+      "chip2": "موقع عرض",
+      "chip3": "مونتاج ريلز",
+      "chip4": "إدارة Meta Ads",
+      "statsServices": "خدمة نشطة",
+      "statsFreelances": "بائع موثوق",
+      "deliveryBadge": "تم تسليم الطلب منذ دقيقتين",
+      "card1Title": "أصمم هويتك البصرية الكاملة",
+      "card2Title": "أطوّر موقعك للتجارة الإلكترونية",
+      "card3Title": "مونتاج فيديو احترافي لـ Reels"
+    },
+    "hiw": {
+      "sectionLabel": "كيف يعمل",
+      "title": "بسيط، سريع، موثوق",
+      "subtitle": "من البحث إلى التسليم، يُبسّط PixRaise كل خطوة في تعاونك.",
+      "step1": {
+        "title": "اعثر على خدمتك",
+        "desc": "تصفح آلاف الخدمات والمستقلين الجزائريين الموثوقين. فلتر حسب الفئة والميزانية والموقع."
+      },
+      "step2": {
+        "title": "اطلب بثقة",
+        "desc": "اطلب بنقرات قليلة. دفع آمن بالدينار، مواعيد تسليم واضحة، وتواصل مباشر."
+      },
+      "step3": {
+        "title": "استلم وراجع",
+        "desc": "استلم مشروعك في الوقت المحدد. مراجعات مشمولة حتى رضاك التام. ضمان الاسترداد."
+      },
+      "cta": "ابدأ الآن"
+    },
+    "getStarted": {
+      "label": "للبائعين",
+      "headline": "لديك موهبة؟\nحوّلها إلى دخل.",
+      "subtitle": "أنشئ متجرك مجاناً، انشر خدماتك أو منتجاتك الرقمية، وبِع في جميع أنحاء الجزائر بدون وسيط.",
+      "cta": "افتح متجري مجاناً",
+      "point1": {
+        "title": "تسجيل مجاني",
+        "desc": "لا رسوم لإنشاء ونشر متجرك"
+      },
+      "point2": {
+        "title": "الدفع بالدينار",
+        "desc": "استلم أرباحك مباشرة، بدون حساب أجنبي"
+      },
+      "point3": {
+        "title": "عملاء من جميع أنحاء العالم",
+        "desc": "جمهور دولي من اليوم الأول"
+      }
+    }
+  },
+  "auth": {
+    "login": {
+      "headerLink": "إنشاء حساب ←",
+      "title": "مرحباً بعودتك!",
+      "subtitle": "سجّل الدخول إلى حسابك في PixRaise",
+      "googleButton": "المتابعة مع Google",
+      "orEmail": "أو بالبريد الإلكتروني",
+      "emailLabel": "البريد الإلكتروني",
+      "emailPlaceholder": "أنت@مثال.com",
+      "passwordLabel": "كلمة المرور",
+      "forgotPassword": "نسيت كلمة المرور؟",
+      "showPassword": "إظهار كلمة المرور",
+      "hidePassword": "إخفاء كلمة المرور",
+      "submit": "تسجيل الدخول",
+      "submitting": "جارٍ تسجيل الدخول...",
+      "noAccount": "ليس لديك حساب؟",
+      "registerLink": "سجّل مجاناً",
+      "error": {
+        "google": "فشل تسجيل الدخول بـ Google أو تم إلغاؤه. يرجى المحاولة مجدداً.",
+        "invalidCredentials": "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
+        "emailNotConfirmed": "يرجى تأكيد بريدك الإلكتروني قبل تسجيل الدخول.",
+        "tooManyRequests": "محاولات كثيرة. يرجى الانتظار بضع دقائق.",
+        "userNotFound": "لا يوجد حساب بهذا البريد الإلكتروني.",
+        "generic": "حدث خطأ. يرجى المحاولة مجدداً."
+      }
+    },
+    "register": {
+      "headerLink": "عضو بالفعل؟ سجّل الدخول",
+      "title": "إنشاء حساب",
+      "subtitle": "انضم إلى مجتمع PixRaise",
+      "googleButton": "المتابعة مع Google",
+      "orEmail": "أو بالبريد الإلكتروني",
+      "fullNameLabel": "الاسم الكامل",
+      "fullNamePlaceholder": "كريم بن سالم",
+      "emailLabel": "البريد الإلكتروني",
+      "emailPlaceholder": "أنت@مثال.com",
+      "passwordLabel": "كلمة المرور",
+      "passwordStrength": "قوة كلمة المرور",
+      "confirmPasswordLabel": "تأكيد كلمة المرور",
+      "passwordMismatch": "كلمتا المرور غير متطابقتين.",
+      "strength": {
+        "weak": "ضعيفة",
+        "medium": "متوسطة",
+        "good": "جيدة",
+        "excellent": "ممتازة"
+      },
+      "rule": {
+        "minChars": "8 أحرف على الأقل",
+        "uppercase": "حرف كبير واحد",
+        "number": "رقم واحد",
+        "special": "رمز خاص واحد"
+      },
+      "accountTypeLabel": "نوع الحساب",
+      "buyer": {
+        "title": "مشترٍ",
+        "desc": "أبحث عن خدمات ومنتجات"
+      },
+      "seller": {
+        "title": "بائع",
+        "desc": "أبيع إبداعاتي وخدماتي"
+      },
+      "roleHint": "يمكنك تفعيل الدور الآخر في أي وقت من حسابك.",
+      "termsText": "أوافق على",
+      "termsLink": "شروط الاستخدام",
+      "privacyLink": "سياسة الخصوصية",
+      "submit": "إنشاء حسابي",
+      "submitting": "جارٍ إنشاء الحساب...",
+      "alreadyMember": "عضو بالفعل؟",
+      "loginLink": "تسجيل الدخول",
+      "error": {
+        "google": "فشل تسجيل الدخول بـ Google. يرجى المحاولة مجدداً.",
+        "duplicate": "يوجد حساب بهذا البريد الإلكتروني.",
+        "duplicateLogin": "سجّل الدخول ←"
+      },
+      "success": {
+        "title": "تحقق من بريدك الإلكتروني!",
+        "desc": "تم إرسال رابط التأكيد إلى {email}. انقر عليه لتفعيل حسابك.",
+        "goToLogin": "الذهاب إلى تسجيل الدخول ←"
+      }
+    }
+  },
+  "product": {
+    "breadcrumb": {
+      "home": "الرئيسية",
+      "marketplace": "السوق"
+    },
+    "section": {
+      "description": "الوصف",
+      "reviews": "التقييمات",
+      "sellerAbout": "حول المبدع",
+      "related": "منتجات مشابهة"
+    },
+    "reviews": {
+      "empty": "لا توجد تقييمات بعد",
+      "count": "({count} تقييم)"
+    },
+    "seller": {
+      "memberSince": "عضو منذ {date}"
+    },
+    "buybox": {
+      "owner": {
+        "label": "منتجك",
+        "sales": "مبيعات",
+        "avgRating": "متوسط التقييم",
+        "reviews": "تقييم",
+        "free": "مجاني",
+        "edit": "تعديل هذا المنتج",
+        "manage": "إدارة منتجاتي"
+      },
+      "price": { "label": "السعر" },
+      "meta": {
+        "format": "الصيغة",
+        "size": "الحجم",
+        "license": "الترخيص",
+        "downloads": "التنزيلات"
+      },
+      "free": "مجاني",
+      "download": "تنزيل مجاناً",
+      "downloading": "جارٍ التنزيل...",
+      "contact": "تواصل مع البائع",
+      "contacting": "جارٍ...",
+      "error": {
+        "download": "خطأ أثناء التنزيل"
+      }
+    }
+  },
+  "service": {
+    "breadcrumb": {
+      "home": "الرئيسية",
+      "services": "الخدمات"
+    },
+    "section": {
+      "description": "الوصف",
+      "faq": "الأسئلة الشائعة",
+      "reviews": "تقييمات العملاء",
+      "sellerAbout": "حول البائع",
+      "related": "خدمات مشابهة"
+    },
+    "reviews": {
+      "empty": "لا توجد تقييمات بعد",
+      "emptyHint": "كن أول من يطلب هذه الخدمة",
+      "count": "({count} تقييم)"
+    },
+    "seller": {
+      "memberSince": "عضو منذ {date}"
+    },
+    "buybox": {
+      "owner": {
+        "label": "خدمتك",
+        "avgRating": "متوسط التقييم",
+        "orders": "طلب",
+        "startingAt": "دج يبدأ من",
+        "edit": "تعديل هذه الخدمة",
+        "manage": "إدارة خدماتي"
+      },
+      "tab": {
+        "basique": "أساسي",
+        "standard": "معياري",
+        "premium": "مميز"
+      },
+      "revisions": {
+        "unlimited": "مراجعات غير محدودة",
+        "count": "{n} مراجعة"
+      },
+      "delivery": "{n} يوم",
+      "price": { "label": "السعر" },
+      "contact": "تواصل مع البائع",
+      "contacting": "جارٍ..."
+    }
+  },
+  "messages": {
+    "empty": {
+      "title": "ابدأ المحادثة",
+      "hint": "أرسل رسالة إلى {name}"
+    },
+    "context": { "about": "بخصوص:" },
+    "relativeTime": {
+      "now": "الآن",
+      "min": "قبل {n} دقيقة"
+    },
+    "compressing": "جارٍ الضغط…",
+    "readReceipt": "مقروءة",
+    "placeholder": "اكتب رسالة…",
+    "hint": "Enter للإرسال · Shift+Enter لسطر جديد",
+    "aria": {
+      "close": "إغلاق",
+      "attach": "إرفاق ملف",
+      "removeFile": "إزالة الملف",
+      "download": "تنزيل"
+    },
+    "lightbox": { "alt": "معاينة بالحجم الكامل" },
+    "preview": { "alt": "معاينة" },
+    "error": {
+      "storageQuota": "تم الوصول إلى حد التخزين (50 ميجابايت). المستخدم: {n} ميجابايت.",
+      "upload": "فشل الرفع: {msg}",
+      "send": "فشل الإرسال: {msg}",
+      "unexpected": "خطأ غير متوقع",
+      "unknown": "خطأ غير معروف"
+    }
+  }
+}
