@@ -30,13 +30,8 @@ type Product = {
   seller?: { full_name: string | null; avatar_url: string | null } | null
 }
 
-const SORT_OPTIONS = [
-  { id: "relevance",  label: "Pertinence"      },
-  { id: "price_asc",  label: "Prix croissant"  },
-  { id: "price_desc", label: "Prix décroissant" },
-  { id: "rating",     label: "Mieux notés"     },
-  { id: "popular",    label: "Populaires"      },
-]
+const SORT_IDS = ["relevance", "price_asc", "price_desc", "rating", "popular"] as const
+type SortId = typeof SORT_IDS[number]
 
 const SLIDER_MAX = 200_000
 
@@ -53,8 +48,8 @@ export default function MarketplacePage() {
   const [debouncedQuery, setDebouncedQuery] = useState("")
 
   // Filters
-  const [activeCategory, setActiveCategory] = useState("Tout")
-  const [sort, setSort]                     = useState("relevance")
+  const [activeCategory, setActiveCategory] = useState("all")
+  const [sort, setSort]                     = useState<SortId>("relevance")
   const [showFreeOnly, setShowFreeOnly]     = useState(false)
   const [minPrice, setMinPrice]             = useState(0)
   const [maxPrice, setMaxPrice]             = useState(0)
@@ -107,7 +102,7 @@ export default function MarketplacePage() {
     }
 
     // Category
-    if (activeCategory !== "Tout") {
+    if (activeCategory !== "all") {
       q = q.eq("category", activeCategory)
     }
 
@@ -184,7 +179,7 @@ export default function MarketplacePage() {
       <Navbar />
       <main className="min-h-screen bg-[var(--background)] dark:bg-[var(--color-bg)]">
 
-        {/* Hero */}
+        {/* ── Hero ─────────────────────────────────────────────────── */}
         <div className="relative overflow-hidden bg-[var(--orange)] py-14 px-4 text-center">
           <div className="absolute inset-0 pointer-events-none overflow-hidden">
             <div className="absolute -top-20 end-20 w-72 h-72 bg-[var(--white)]/10 rounded-full blur-3xl" />
@@ -192,18 +187,16 @@ export default function MarketplacePage() {
           </div>
           <div className="relative">
             <span className="inline-flex items-center gap-2 px-4 py-1.5 bg-[var(--white)]/15 backdrop-blur-sm rounded-full text-white/90 text-sm font-medium mb-4 border border-white/20">
-              Ressources numériques prêtes à télécharger
+              {t("hero.badge")}
             </span>
-            <h1 className="text-3xl sm:text-4xl font-extrabold text-white mb-3">Marketplace Numérique</h1>
-            <p className="text-white/80 text-lg max-w-lg mx-auto">
-              Templates, icônes, polices, mockups et bien plus — créés par des designers algériens.
-            </p>
+            <h1 className="text-3xl sm:text-4xl font-extrabold text-white mb-3">{t("hero.title")}</h1>
+            <p className="text-white/80 text-lg max-w-lg mx-auto">{t("hero.subtitle")}</p>
             <div className="mt-5 flex items-center justify-center">
               <Link
                 href="/products/new"
                 className="px-5 py-2.5 bg-[var(--white)] text-[var(--orange)] text-sm font-bold rounded-xl hover:bg-[var(--cream)] transition-colors shadow-md"
               >
-                + Vendre un produit
+                {t("hero.sellCta")}
               </Link>
             </div>
           </div>
@@ -241,10 +234,10 @@ export default function MarketplacePage() {
           {/* ── Category tabs ─────────────────────────────────────────── */}
           <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1 mb-6">
             <button
-              onClick={() => setActiveCategory("Tout")}
-              className={`shrink-0 px-4 py-2 rounded-xl text-sm font-medium transition-all ${activeCategory === "Tout" ? "bg-[var(--orange)] text-white shadow-md shadow-[var(--orange)]/30" : "bg-[var(--white)] dark:bg-[var(--white)] text-gray-600 dark:text-gray-300 border border-[var(--border-subtle)] hover:border-[var(--orange)]/40 hover:text-[var(--orange)]"}`}
+              onClick={() => setActiveCategory("all")}
+              className={`shrink-0 px-4 py-2 rounded-xl text-sm font-medium transition-all ${activeCategory === "all" ? "bg-[var(--orange)] text-white shadow-md shadow-[var(--orange)]/30" : "bg-[var(--white)] dark:bg-[var(--white)] text-gray-600 dark:text-gray-300 border border-[var(--border-subtle)] hover:border-[var(--orange)]/40 hover:text-[var(--orange)]"}`}
             >
-              Tout
+              {t("all")}
             </button>
             {categories.map(cat => (
               <button
@@ -263,10 +256,10 @@ export default function MarketplacePage() {
             <div className="relative">
               <select
                 value={sort}
-                onChange={e => setSort(e.target.value)}
+                onChange={e => setSort(e.target.value as SortId)}
                 className="ps-3 pe-8 py-2 rounded-xl border border-[var(--border-subtle)] bg-[var(--white)] dark:bg-[var(--white)] text-[var(--ink)] dark:text-[var(--ink)] text-sm outline-none focus:border-[var(--orange)] appearance-none cursor-pointer"
               >
-                {SORT_OPTIONS.map(o => <option key={o.id} value={o.id}>{o.label}</option>)}
+                {SORT_IDS.map(id => <option key={id} value={id}>{t(`sort.${id}`)}</option>)}
               </select>
               <div className="absolute inset-y-0 end-2 flex items-center pointer-events-none text-gray-400">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -283,14 +276,14 @@ export default function MarketplacePage() {
               >
                 <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-[var(--white)] shadow transition-all ${showFreeOnly ? "start-4" : "start-0.5"}`} />
               </div>
-              <span className="text-sm text-gray-600 dark:text-gray-400">Gratuits uniquement</span>
+              <span className="text-sm text-gray-600 dark:text-gray-400">{t("freeOnly")}</span>
             </label>
 
             {/* Price range */}
             {!showFreeOnly && (
               <div className="flex flex-wrap items-end gap-2">
                 <div>
-                  <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Prix min</label>
+                  <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">{t("priceMin")}</label>
                   <div className="relative">
                     <input
                       type="number"
@@ -305,13 +298,13 @@ export default function MarketplacePage() {
                 </div>
 
                 <div>
-                  <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Prix max</label>
+                  <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">{t("priceMax")}</label>
                   <div className="relative">
                     <input
                       type="number"
                       value={maxInput}
                       onChange={e => handleMaxInput(e.target.value)}
-                      placeholder="Illimité"
+                      placeholder={t("unlimited")}
                       min={0}
                       className={`${inputCls} w-28`}
                     />
@@ -330,7 +323,7 @@ export default function MarketplacePage() {
                     className="w-28 accent-[#FA8112]"
                   />
                   <span className="text-xs text-gray-400 text-end">
-                    {maxPrice === 0 ? "Illimité" : `${maxPrice.toLocaleString()} DA`}
+                    {maxPrice === 0 ? t("unlimited") : `${maxPrice.toLocaleString()} DA`}
                   </span>
                 </div>
 

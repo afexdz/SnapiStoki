@@ -306,6 +306,43 @@
       "contacting": "In progress…"
     }
   },
+  "freelances": {
+    "breadcrumb": { "home": "Home", "services": "Services" },
+    "hero": {
+      "title": "Services",
+      "subtitle": "Find the perfect talent for your project",
+      "publishCta": "+ Publish a service"
+    },
+    "loading": "Loading…",
+    "count": "{n, plural, one {# service found} other {# services found}}",
+    "filtersBtn": "Filters",
+    "nearMe": "Near me",
+    "nearCity": "Near {city}",
+    "sort": {
+      "relevance": "Relevance",
+      "rating": "Top rated",
+      "price_asc": "Price: low to high",
+      "price_desc": "Price: high to low",
+      "distance": "Near me"
+    },
+    "panel": {
+      "title": "Filters",
+      "category": "Category",
+      "allCategories": "All",
+      "minRating": "Minimum rating",
+      "allRatings": "All",
+      "budget": "Budget",
+      "min": "Min",
+      "max": "Max",
+      "unlimited": "Unlimited",
+      "priceError": "Minimum cannot exceed maximum.",
+      "reset": "Reset filters"
+    },
+    "empty": {
+      "title": "No services found",
+      "hint": "Try adjusting your filters."
+    }
+  },
   "marketplace": {
     "searchPlaceholder": "Search for a product...",
     "loading": "Loading…",
@@ -314,7 +351,25 @@
     "noResultsHint": "Try different keywords or adjust your filters",
     "empty": "No products found",
     "emptyHint": "Try adjusting your filters",
-    "sellFirst": "+ Sell your first product"
+    "sellFirst": "+ Sell your first product",
+    "hero": {
+      "badge": "Digital resources ready to download",
+      "title": "Digital Marketplace",
+      "subtitle": "Templates, icons, fonts, mockups and more — made by Algerian designers.",
+      "sellCta": "+ Sell a product"
+    },
+    "all": "All",
+    "sort": {
+      "relevance": "Relevance",
+      "price_asc": "Price: low to high",
+      "price_desc": "Price: high to low",
+      "rating": "Top rated",
+      "popular": "Popular"
+    },
+    "freeOnly": "Free only",
+    "priceMin": "Min price",
+    "priceMax": "Max price",
+    "unlimited": "Unlimited"
   },
   "cards": {
     "bestSeller": "Best seller",

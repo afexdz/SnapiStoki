@@ -306,6 +306,43 @@
       "contacting": "En cours…"
     }
   },
+  "freelances": {
+    "breadcrumb": { "home": "Accueil", "services": "Services" },
+    "hero": {
+      "title": "Services",
+      "subtitle": "Trouvez le talent parfait pour votre projet",
+      "publishCta": "+ Publier un service"
+    },
+    "loading": "Chargement…",
+    "count": "{n, plural, one {# service trouvé} other {# services trouvés}}",
+    "filtersBtn": "Filtres",
+    "nearMe": "Près de moi",
+    "nearCity": "Près de {city}",
+    "sort": {
+      "relevance": "Pertinence",
+      "rating": "Mieux notés",
+      "price_asc": "Prix croissant",
+      "price_desc": "Prix décroissant",
+      "distance": "Près de moi"
+    },
+    "panel": {
+      "title": "Filtres",
+      "category": "Catégorie",
+      "allCategories": "Toutes",
+      "minRating": "Note minimale",
+      "allRatings": "Toutes",
+      "budget": "Budget",
+      "min": "Min",
+      "max": "Max",
+      "unlimited": "Illimité",
+      "priceError": "Le minimum ne peut pas dépasser le maximum.",
+      "reset": "Réinitialiser les filtres"
+    },
+    "empty": {
+      "title": "Aucun service trouvé",
+      "hint": "Essayez de modifier vos filtres."
+    }
+  },
   "marketplace": {
     "searchPlaceholder": "Rechercher un produit...",
     "loading": "Chargement…",
@@ -314,7 +351,25 @@
     "noResultsHint": "Essayez avec d'autres mots ou modifiez vos filtres",
     "empty": "Aucun produit trouvé",
     "emptyHint": "Essayez de modifier vos filtres",
-    "sellFirst": "+ Vendre votre premier produit"
+    "sellFirst": "+ Vendre votre premier produit",
+    "hero": {
+      "badge": "Ressources numériques prêtes à télécharger",
+      "title": "Marketplace Numérique",
+      "subtitle": "Templates, icônes, polices, mockups et bien plus — créés par des designers algériens.",
+      "sellCta": "+ Vendre un produit"
+    },
+    "all": "Tout",
+    "sort": {
+      "relevance": "Pertinence",
+      "price_asc": "Prix croissant",
+      "price_desc": "Prix décroissant",
+      "rating": "Mieux notés",
+      "popular": "Populaires"
+    },
+    "freeOnly": "Gratuits uniquement",
+    "priceMin": "Prix min",
+    "priceMax": "Prix max",
+    "unlimited": "Illimité"
   },
   "cards": {
     "bestSeller": "Meilleure vente",
