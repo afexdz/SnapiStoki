@@ -471,7 +471,7 @@ CREATE POLICY "service_images_delete_own"
   ON storage.objects FOR DELETE
   USING (bucket_id = 'service-images' AND auth.uid()::text = (storage.foldername(name))[1]);
 
--- digital-products (private — only seller + paying buyers)
+-- digital-products (private — seller + authenticated users for free products + paying buyers)
 CREATE POLICY "digital_products_select"
   ON storage.objects FOR SELECT
   USING (
@@ -480,14 +480,26 @@ CREATE POLICY "digital_products_select"
       -- Seller always has access to their own files
       auth.uid()::text = (storage.foldername(name))[1]
       OR
+      -- Any authenticated user can download a free active product
+      (
+        auth.uid() IS NOT NULL
+        AND EXISTS (
+          SELECT 1
+          FROM public.digital_products dp
+          WHERE dp.is_free   = true
+            AND dp.is_active = true
+            AND dp.file_url  LIKE '%' || (storage.filename(name)) || '%'
+        )
+      )
+      OR
       -- Buyers who paid can download
       EXISTS (
         SELECT 1
         FROM public.orders o
         JOIN public.digital_products dp ON dp.id = o.product_id
-        WHERE o.buyer_id   = auth.uid()
-          AND o.payment_status = 'paid'
-          AND dp.file_url  LIKE '%' || (storage.filename(name)) || '%'
+        WHERE o.buyer_id        = auth.uid()
+          AND o.payment_status  = 'paid'
+          AND dp.file_url       LIKE '%' || (storage.filename(name)) || '%'
       )
     )
   );

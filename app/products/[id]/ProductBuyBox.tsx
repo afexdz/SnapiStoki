@@ -63,6 +63,10 @@ export default function ProductBuyBox({
 
   async function handleDownload() {
     if (!fileUrl) return
+    if (!currentUserId) {
+      router.push(`/login?next=/products/${productId}`)
+      return
+    }
     setDownloading(true)
     try {
       const sb = createClient()
