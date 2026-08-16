@@ -139,6 +139,16 @@ export default async function ProductDetailPage({ params, searchParams }: Props)
   const fmt = (product.format ?? product.file_format ?? null) as string | null
   const isOwner = currentUserId !== null && currentUserId === product.seller_id
 
+  const VIDEO_EXTS = new Set(["mp4", "mov", "avi"])
+  const isVideoProduct = fmt ? VIDEO_EXTS.has(fmt.toLowerCase()) : false
+  let videoSignedUrl: string | null = null
+  if (isVideoProduct && product.file_url) {
+    const { data: signed } = await sb.storage
+      .from("digital-products")
+      .createSignedUrl(product.file_url as string, 3600)
+    videoSignedUrl = signed?.signedUrl ?? null
+  }
+
   return (
     <>
       <Navbar />
@@ -160,6 +170,7 @@ export default async function ProductDetailPage({ params, searchParams }: Props)
                 title={product.title as string}
                 isFree={!!(product.is_free)}
                 format={fmt}
+                videoUrl={videoSignedUrl}
               />
 
               {/* Title + seller */}

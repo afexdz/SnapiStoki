@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, DragEvent, ChangeEvent } from "react"
 import { useParams, useRouter } from "next/navigation"
+import { useTranslations } from "next-intl"
 import Link from "next/link"
 import Navbar from "@/components/Navbar"
 import CoverCropModal from "@/components/CoverCropModal"
@@ -9,7 +10,8 @@ import { createClient } from "@/lib/supabase/client"
 
 const PRODUCT_TYPES = ["Illustration", "Template", "Icônes", "Police", "Photo", "Document", "Autre"]
 const LICENSES = ["Usage personnel", "Usage commercial", "Licence étendue"]
-const ALLOWED_PRODUCT_EXTS = ["zip", "pdf", "psd", "ai", "svg", "png", "jpg", "jpeg", "sketch", "xd", "fig"]
+const ALLOWED_PRODUCT_EXTS = ["zip", "pdf", "psd", "ai", "svg", "png", "jpg", "jpeg", "sketch", "xd", "fig", "mp4", "mov", "avi"]
+const VIDEO_EXTS = new Set(["mp4", "mov", "avi"])
 
 const inputCls = "w-full px-4 py-2.5 border border-[var(--ink-12)] rounded-xl text-sm text-[var(--ink)] bg-[var(--white)] outline-none focus:border-[var(--orange)] focus:ring-2 focus:ring-[var(--orange)]/10 transition-all"
 const labelCls = "block text-sm font-semibold text-[var(--ink)] mb-1.5"
@@ -27,6 +29,7 @@ function formatFileSize(bytes: number) {
 export default function EditProductPage() {
   const { id } = useParams<{ id: string }>()
   const router = useRouter()
+  const tu = useTranslations("product.upload")
   const [loading, setLoading] = useState(true)
   const [submitting, setSubmitting] = useState(false)
   const [toast, setToast] = useState<{ msg: string; type: "success" | "error" } | null>(null)
@@ -132,8 +135,11 @@ export default function EditProductPage() {
   function handleProductFile(f: File) {
     setFileError(null)
     const ext = f.name.split(".").pop()?.toLowerCase() ?? ""
-    if (!ALLOWED_PRODUCT_EXTS.includes(ext)) { setFileError(`Format non supporté. Acceptés: ${ALLOWED_PRODUCT_EXTS.join(", ")}`); return }
-    if (f.size > 50 * 1024 * 1024) { setFileError("Fichier trop volumineux — max 50MB"); return }
+    if (!ALLOWED_PRODUCT_EXTS.includes(ext)) { setFileError(tu("fileTypeError")); return }
+    if (f.size > 50 * 1024 * 1024) {
+      setFileError(VIDEO_EXTS.has(ext) ? tu("videoSizeError") : tu("fileSizeError"))
+      return
+    }
     setNewProductFile({ file: f })
   }
 
@@ -328,7 +334,7 @@ export default function EditProductPage() {
               ) : (
                 <div onDrop={onProductFileDrop} onDragOver={e => e.preventDefault()} className="border-2 border-dashed border-[var(--ink-12)] rounded-xl p-6 text-center cursor-pointer hover:border-[var(--orange)]/40 transition-colors" onClick={() => document.getElementById("edit-product-file")?.click()}>
                   <p className="text-sm text-gray-500">Glissez ou <span className="text-[var(--orange)] font-semibold">cliquez</span></p>
-                  <p className="text-xs text-gray-400 mt-1">{ALLOWED_PRODUCT_EXTS.join(", ")} — max 50MB</p>
+                  <p className="text-xs text-gray-400 mt-1">{tu("hint")}</p>
                   <input id="edit-product-file" type="file" className="hidden" onChange={onProductFileInput} />
                 </div>
               )}

@@ -2,13 +2,15 @@
 
 import { useState, useEffect, useCallback, DragEvent, ChangeEvent } from "react"
 import { useRouter } from "next/navigation"
+import { useTranslations } from "next-intl"
 import Navbar from "@/components/Navbar"
 import CoverCropModal from "@/components/CoverCropModal"
 import { createClient } from "@/lib/supabase/client"
 
 const PRODUCT_TYPES = ["Illustration", "Template", "Icônes", "Police", "Photo", "Document", "Autre"]
 const LICENSES = ["Usage personnel", "Usage commercial", "Licence étendue"]
-const ALLOWED_PRODUCT_EXTS = ["zip", "pdf", "psd", "ai", "svg", "png", "jpg", "jpeg", "sketch", "xd", "fig"]
+const ALLOWED_PRODUCT_EXTS = ["zip", "pdf", "psd", "ai", "svg", "png", "jpg", "jpeg", "sketch", "xd", "fig", "mp4", "mov", "avi"]
+const VIDEO_EXTS = new Set(["mp4", "mov", "avi"])
 
 const inputCls = "w-full px-4 py-2.5 border border-[var(--ink-12)] rounded-xl text-sm text-[var(--ink)] outline-none focus:border-[var(--orange)] focus:ring-2 focus:ring-[var(--orange)]/10 transition-all"
 const labelCls = "block text-sm font-semibold text-[var(--ink)] mb-1.5"
@@ -24,6 +26,7 @@ function formatFileSize(bytes: number): string {
 
 export default function NewProductPage() {
   const router = useRouter()
+  const tu = useTranslations("product.upload")
   const [authChecked, setAuthChecked] = useState(false)
   const [userId, setUserId]           = useState<string | null>(null)
   const [submitting, setSubmitting]   = useState(false)
@@ -71,8 +74,11 @@ export default function NewProductPage() {
   function handleProductFile(f: File) {
     setFileError(null)
     const ext = f.name.split(".").pop()?.toLowerCase() ?? ""
-    if (!ALLOWED_PRODUCT_EXTS.includes(ext)) { setFileError(`Format non supporté. Acceptés: ${ALLOWED_PRODUCT_EXTS.join(", ")}`); return }
-    if (f.size > 50 * 1024 * 1024) { setFileError("Fichier trop volumineux — max 50MB"); return }
+    if (!ALLOWED_PRODUCT_EXTS.includes(ext)) { setFileError(tu("fileTypeError")); return }
+    if (f.size > 50 * 1024 * 1024) {
+      setFileError(VIDEO_EXTS.has(ext) ? tu("videoSizeError") : tu("fileSizeError"))
+      return
+    }
     setProductFile({ file: f, uploading: false })
   }
 
@@ -285,7 +291,7 @@ export default function NewProductPage() {
             {/* Product file */}
             <div className="bg-[var(--white)] rounded-2xl border border-[var(--ink-12)] p-6">
               <label className={labelCls}>Fichier principal <span className="text-red-500">*</span></label>
-              <p className="text-xs text-gray-400 mb-3">ZIP, PDF, PSD, AI, SVG, PNG, JPG... — max 50MB</p>
+              <p className="text-xs text-gray-400 mb-3">{tu("hint")}</p>
 
               {!productFile ? (
                 <div

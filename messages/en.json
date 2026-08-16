@@ -262,6 +262,12 @@
       "error": {
         "download": "Download error"
       }
+    },
+    "upload": {
+      "hint": "ZIP, PDF, PSD, AI, SVG, PNG, JPG, MP4, MOV, AVI — max 50 MB",
+      "videoSizeError": "Video exceeds the 50 MB limit (storage capped at 1 GB)",
+      "fileSizeError": "File too large — max 50 MB",
+      "fileTypeError": "Unsupported format"
     }
   },
   "service": {
