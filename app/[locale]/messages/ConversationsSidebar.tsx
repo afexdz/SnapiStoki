@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
+import { useTranslations } from "next-intl"
 import Link from "next/link"
 import { createClient } from "@/lib/supabase/client"
 
@@ -39,24 +40,25 @@ function getInitials(name: string | null) {
   return (name || "?").trim().split(/\s+/).map((n) => n[0]).join("").toUpperCase().slice(0, 2)
 }
 
-function relativeTime(d: string) {
-  const diff = Date.now() - new Date(d).getTime()
-  const m = Math.floor(diff / 60000)
-  if (m < 1) return "À l'instant"
-  if (m < 60) return `${m} min`
-  const h = Math.floor(m / 60)
-  if (h < 24) return `${h}h`
-  const days = Math.floor(h / 24)
-  if (days === 1) return "Hier"
-  if (days < 7) return `Il y a ${days} j`
-  return new Date(d).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })
-}
-
 export default function ConversationsSidebar({ activeConvId }: { activeConvId: string }) {
+  const t = useTranslations("messages")
   const sbRef = useRef(createClient())
   const [convs, setConvs] = useState<SidebarConv[]>([])
   const [loading, setLoading] = useState(true)
   const [userId, setUserId] = useState<string | null>(null)
+
+  const relativeTime = (d: string) => {
+    const diff = Date.now() - new Date(d).getTime()
+    const m = Math.floor(diff / 60000)
+    if (m < 1) return t("relativeTime.now")
+    if (m < 60) return t("relativeTime.min", { n: m })
+    const h = Math.floor(m / 60)
+    if (h < 24) return t("relativeTime.hours", { n: h })
+    const days = Math.floor(h / 24)
+    if (days === 1) return t("relativeTime.yesterday")
+    if (days < 7) return t("relativeTime.daysAgo", { n: days })
+    return new Date(d).toLocaleDateString(undefined, { day: "numeric", month: "short" })
+  }
 
   useEffect(() => {
     const sb = sbRef.current
@@ -128,9 +130,19 @@ export default function ConversationsSidebar({ activeConvId }: { activeConvId: s
       }
     }
     load()
-  // sbRef is a ref, it's stable
+  // sbRef is stable
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  const getPreview = (m: MsgRow | null, isMe: boolean) => {
+    if (!m) return t("conv.start")
+    const prefix = isMe ? t("conv.youPrefix") : ""
+    if (m.listing_type && !m.content) return prefix + t("conv.listing")
+    if (m.content) return prefix + m.content
+    if (m.attachment_type?.startsWith("image/")) return prefix + t("conv.image")
+    if (m.attachment_type === "application/pdf") return prefix + t("conv.document")
+    return prefix + t("conv.file")
+  }
 
   if (loading) {
     return (
@@ -143,28 +155,20 @@ export default function ConversationsSidebar({ activeConvId }: { activeConvId: s
   return (
     <div className="flex flex-col h-full">
       <div className="px-4 py-3 border-b border-[var(--border-subtle)] shrink-0">
-        <h2 className="text-sm font-bold text-[var(--ink)]">Messages</h2>
+        <h2 className="text-sm font-bold text-[var(--ink)]">{t("sidebar.title")}</h2>
       </div>
       <div className="flex-1 overflow-y-auto">
         {convs.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-center px-4 py-8">
-            <p className="text-sm text-gray-400">Aucune conversation</p>
+            <p className="text-sm text-gray-400">{t("sidebar.noConversations")}</p>
           </div>
         ) : (
           convs.map((conv) => {
             const isActive = conv.id === activeConvId
-            const name = conv.interlocutor.full_name ?? "Utilisateur"
+            const name = conv.interlocutor.full_name ?? t("sidebar.userFallback")
             const initials = getInitials(conv.interlocutor.full_name)
-            const preview = (() => {
-              const m = conv.lastMessage
-              if (!m) return "Démarrez la conversation"
-              const prefix = m.sender_id === userId ? "Vous : " : ""
-              if (m.listing_type && !m.content) return prefix + "📌 Annonce partagée"
-              if (m.content) return prefix + m.content
-              if (m.attachment_type?.startsWith("image/")) return prefix + "📎 Image"
-              if (m.attachment_type === "application/pdf") return prefix + "📎 Document"
-              return prefix + "📎 Fichier"
-            })()
+            const isMe = conv.lastMessage?.sender_id === userId
+            const preview = getPreview(conv.lastMessage, isMe ?? false)
 
             return (
               <Link

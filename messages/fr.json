@@ -230,11 +230,13 @@
     },
     "reviews": {
       "empty": "Aucun avis pour le moment",
-      "count": "({count} avis)"
+      "count": "({count} avis)",
+      "reviewerFallback": "Acheteur"
     },
     "seller": {
       "memberSince": "Membre depuis {date}"
     },
+    "created": "Produit publié avec succès !",
     "buybox": {
       "owner": {
         "label": "Votre produit",
@@ -277,11 +279,13 @@
     "reviews": {
       "empty": "Aucun avis pour le moment",
       "emptyHint": "Soyez le premier à commander ce service",
-      "count": "({count} avis)"
+      "count": "({count} avis)",
+      "reviewerFallback": "Client"
     },
     "seller": {
       "memberSince": "Membre depuis {date}"
     },
+    "created": "Service publié avec succès !",
     "buybox": {
       "owner": {
         "label": "Votre service",
@@ -399,7 +403,33 @@
     "context": { "about": "À propos de :" },
     "relativeTime": {
       "now": "À l'instant",
-      "min": "{n} min"
+      "min": "{n} min",
+      "hours": "{n}h",
+      "yesterday": "Hier",
+      "daysAgo": "Il y a {n} j"
+    },
+    "page": {
+      "title": "Messages",
+      "loadError": "Impossible de charger les conversations.",
+      "retry": "Réessayer",
+      "noMessages": "Aucun message pour le moment",
+      "noMessagesHint": "Contactez un vendeur depuis son profil ou une annonce pour démarrer une conversation.",
+      "viewServices": "Voir les services",
+      "marketplace": "Marketplace",
+      "userFallback": "Utilisateur"
+    },
+    "sidebar": {
+      "title": "Messages",
+      "noConversations": "Aucune conversation",
+      "userFallback": "Utilisateur"
+    },
+    "conv": {
+      "start": "Démarrez la conversation",
+      "youPrefix": "Vous : ",
+      "listing": "📌 Annonce partagée",
+      "image": "📎 Image",
+      "document": "📎 Document",
+      "file": "📎 Fichier"
     },
     "compressing": "Compression en cours…",
     "readReceipt": "Lu",
@@ -419,6 +449,42 @@
       "send": "Envoi échoué : {msg}",
       "unexpected": "Erreur inattendue",
       "unknown": "Erreur inconnue"
+    }
+  },
+  "search": {
+    "placeholder": "Rechercher un service ou un produit…",
+    "button": "Rechercher",
+    "countLabel": "{n, plural, one {# résultat pour} other {# résultats pour}}",
+    "noResultsLabel": "Aucun résultat pour",
+    "filters": "Filtres",
+    "allCategories": "Toutes les catégories",
+    "reset": "Réinitialiser",
+    "noQuery": {
+      "title": "Que recherchez-vous ?",
+      "hint": "Tapez un service, une compétence ou un produit digital…"
+    },
+    "sort": {
+      "relevance": "Pertinence",
+      "price_asc": "Prix croissant",
+      "price_desc": "Prix décroissant",
+      "rating": "Mieux notés"
+    },
+    "services": {
+      "title": "Freelances disponibles",
+      "viewAll": "Voir tous →",
+      "empty": "Aucun freelance trouvé pour cette recherche",
+      "freelancerFallback": "Freelance",
+      "viewProfile": "Voir le profil →"
+    },
+    "products": {
+      "title": "Produits digitaux",
+      "viewAll": "Voir tout →",
+      "empty": "Aucun produit trouvé pour cette recherche",
+      "sellerFallback": "Vendeur",
+      "by": "par {name}",
+      "sales": "{n, plural, one {# vente} other {# ventes}}",
+      "download": "Télécharger",
+      "buy": "Acheter"
     }
   }
 }

@@ -230,11 +230,13 @@
     },
     "reviews": {
       "empty": "لا توجد تقييمات بعد",
-      "count": "({count} تقييم)"
+      "count": "({count} تقييم)",
+      "reviewerFallback": "مشترٍ"
     },
     "seller": {
       "memberSince": "عضو منذ {date}"
     },
+    "created": "تم نشر المنتج بنجاح!",
     "buybox": {
       "owner": {
         "label": "منتجك",
@@ -277,11 +279,13 @@
     "reviews": {
       "empty": "لا توجد تقييمات بعد",
       "emptyHint": "كن أول من يطلب هذه الخدمة",
-      "count": "({count} تقييم)"
+      "count": "({count} تقييم)",
+      "reviewerFallback": "عميل"
     },
     "seller": {
       "memberSince": "عضو منذ {date}"
     },
+    "created": "تم نشر الخدمة بنجاح!",
     "buybox": {
       "owner": {
         "label": "خدمتك",
@@ -399,7 +403,33 @@
     "context": { "about": "بخصوص:" },
     "relativeTime": {
       "now": "الآن",
-      "min": "قبل {n} دقيقة"
+      "min": "قبل {n} دقيقة",
+      "hours": "قبل {n}س",
+      "yesterday": "أمس",
+      "daysAgo": "قبل {n} أيام"
+    },
+    "page": {
+      "title": "الرسائل",
+      "loadError": "تعذّر تحميل المحادثات.",
+      "retry": "إعادة المحاولة",
+      "noMessages": "لا توجد رسائل بعد",
+      "noMessagesHint": "تواصل مع بائع من ملفه الشخصي أو إعلانه لبدء محادثة.",
+      "viewServices": "تصفح الخدمات",
+      "marketplace": "السوق",
+      "userFallback": "مستخدم"
+    },
+    "sidebar": {
+      "title": "الرسائل",
+      "noConversations": "لا توجد محادثات",
+      "userFallback": "مستخدم"
+    },
+    "conv": {
+      "start": "ابدأ المحادثة",
+      "youPrefix": "أنت: ",
+      "listing": "📌 إعلان مشارَك",
+      "image": "📎 صورة",
+      "document": "📎 مستند",
+      "file": "📎 ملف"
     },
     "compressing": "جارٍ الضغط…",
     "readReceipt": "مقروءة",
@@ -419,6 +449,42 @@
       "send": "فشل الإرسال: {msg}",
       "unexpected": "خطأ غير متوقع",
       "unknown": "خطأ غير معروف"
+    }
+  },
+  "search": {
+    "placeholder": "ابحث عن خدمة أو منتج…",
+    "button": "بحث",
+    "countLabel": "{n, plural, zero {لا نتائج لـ} one {# نتيجة لـ} two {# نتيجتان لـ} few {# نتائج لـ} many {# نتيجة لـ} other {# نتيجة لـ}}",
+    "noResultsLabel": "لا نتائج لـ",
+    "filters": "الفلاتر",
+    "allCategories": "جميع الفئات",
+    "reset": "إعادة تعيين",
+    "noQuery": {
+      "title": "عمَّ تبحث؟",
+      "hint": "اكتب خدمة أو مهارة أو منتجاً رقمياً…"
+    },
+    "sort": {
+      "relevance": "الأكثر صلة",
+      "price_asc": "السعر: تصاعدي",
+      "price_desc": "السعر: تنازلي",
+      "rating": "الأعلى تقييماً"
+    },
+    "services": {
+      "title": "المستقلون المتاحون",
+      "viewAll": "عرض الكل ←",
+      "empty": "لم يُعثر على مستقلين لهذا البحث",
+      "freelancerFallback": "مستقل",
+      "viewProfile": "عرض الملف ←"
+    },
+    "products": {
+      "title": "المنتجات الرقمية",
+      "viewAll": "عرض الكل ←",
+      "empty": "لم يُعثر على منتجات لهذا البحث",
+      "sellerFallback": "بائع",
+      "by": "بواسطة {name}",
+      "sales": "{n, plural, zero {لا مبيعات} one {# مبيعة} two {# مبيعتان} few {# مبيعات} many {# مبيعة} other {# مبيعة}}",
+      "download": "تنزيل",
+      "buy": "شراء"
     }
   }
 }

@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation"
 import Link from "next/link"
 import type { Metadata } from "next"
+import { getTranslations, getLocale } from "next-intl/server"
 import { createClient } from "@/lib/supabase/server"
 import Navbar from "@/components/Navbar"
 import ProductCard from "@/components/ProductCard"
@@ -70,7 +71,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function ProductDetailPage({ params, searchParams }: Props) {
   const { id } = await params
   const { created } = await searchParams
-  const sb = await createClient()
+
+  const [t, locale, sb] = await Promise.all([
+    getTranslations("product"),
+    getLocale(),
+    createClient(),
+  ])
+
+  const localeMap: Record<string, string> = { fr: "fr-DZ", en: "en-US", ar: "ar-DZ" }
+  const dateLocale = localeMap[locale] ?? "fr-DZ"
+  const formatDate = (s: string) =>
+    new Intl.DateTimeFormat(dateLocale, { year: "numeric", month: "long" }).format(new Date(s))
 
   const { data: product } = await sb
     .from("digital_products")
@@ -135,9 +146,9 @@ export default async function ProductDetailPage({ params, searchParams }: Props)
         <div className="max-w-6xl mx-auto px-4 py-8">
           {/* Breadcrumb */}
           <nav className="text-xs text-gray-400 flex items-center gap-1.5 mb-6">
-            <Link href="/" className="hover:text-[var(--orange)]">Accueil</Link>
+            <Link href="/" className="hover:text-[var(--orange)]">{t("breadcrumb.home")}</Link>
             <span>›</span>
-            <Link href="/marketplace" className="hover:text-[var(--orange)]">Marketplace</Link>
+            <Link href="/marketplace" className="hover:text-[var(--orange)]">{t("breadcrumb.marketplace")}</Link>
             {product.category && <><span>›</span><span className="text-[var(--ink)]">{product.category as string}</span></>}
           </nav>
 
@@ -172,28 +183,28 @@ export default async function ProductDetailPage({ params, searchParams }: Props)
                     <div className="flex items-center gap-1.5 ml-auto">
                       <StarBar rating={avgRating} />
                       <span className="text-sm font-bold text-[var(--ink)]">{avgRating.toFixed(1)}</span>
-                      <span className="text-sm text-gray-400">({reviewCount} avis)</span>
+                      <span className="text-sm text-gray-400">{t("reviews.count", { count: reviewCount })}</span>
                     </div>
                   )}
                 </div>
 
                 {(product.tags as string[] | null) && (product.tags as string[]).length > 0 && (
                   <div className="flex flex-wrap gap-2 mt-4">
-                    {(product.tags as string[]).map(t => <span key={t} className="px-2.5 py-1 bg-[var(--cream)] text-[var(--ink)] text-xs rounded-full">{t}</span>)}
+                    {(product.tags as string[]).map(tag => <span key={tag} className="px-2.5 py-1 bg-[var(--cream)] text-[var(--ink)] text-xs rounded-full">{tag}</span>)}
                   </div>
                 )}
               </div>
 
               {/* Description */}
               <div className="bg-[var(--white)] rounded-2xl border border-[var(--border-subtle)] p-6">
-                <h2 className="text-base font-bold text-[var(--ink)] mb-3">Description</h2>
+                <h2 className="text-base font-bold text-[var(--ink)] mb-3">{t("section.description")}</h2>
                 <p className="text-sm text-gray-700 whitespace-pre-wrap leading-relaxed">{product.description as string}</p>
               </div>
 
               {/* Reviews */}
               <div className="bg-[var(--white)] rounded-2xl border border-[var(--border-subtle)] p-6">
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-base font-bold text-[var(--ink)]">Avis</h2>
+                  <h2 className="text-base font-bold text-[var(--ink)]">{t("section.reviews")}</h2>
                   {reviewCount > 0 && (
                     <div className="flex items-center gap-2">
                       <StarBar rating={avgRating} />
@@ -202,11 +213,11 @@ export default async function ProductDetailPage({ params, searchParams }: Props)
                   )}
                 </div>
                 {reviews.length === 0 ? (
-                  <p className="text-sm text-gray-400 text-center py-6">Aucun avis pour le moment</p>
+                  <p className="text-sm text-gray-400 text-center py-6">{t("reviews.empty")}</p>
                 ) : (
                   <div className="space-y-5">
                     {reviews.map(r => {
-                      const rName = r.reviewer?.full_name ?? "Acheteur"
+                      const rName = r.reviewer?.full_name ?? t("reviews.reviewerFallback")
                       const rInitials = rName.trim().split(/\s+/).map(n => n[0]).join("").toUpperCase().slice(0, 2) || "?"
                       return (
                         <div key={r.id} className="border-b border-[var(--border-subtle)] pb-5 last:border-0 last:pb-0">
@@ -218,7 +229,7 @@ export default async function ProductDetailPage({ params, searchParams }: Props)
                               <p className="text-sm font-semibold text-[var(--ink)]">{rName}</p>
                               <div className="flex items-center gap-1">
                                 <StarBar rating={r.rating} />
-                                <span className="text-xs text-gray-400 ml-1">{new Date(r.created_at).toLocaleDateString("fr-DZ")}</span>
+                                <span className="text-xs text-gray-400 ml-1">{new Date(r.created_at).toLocaleDateString(dateLocale)}</span>
                               </div>
                             </div>
                           </div>
@@ -233,7 +244,7 @@ export default async function ProductDetailPage({ params, searchParams }: Props)
               {/* Seller card */}
               {seller && (
                 <div className="bg-[var(--white)] rounded-2xl border border-[var(--border-subtle)] p-6">
-                  <h2 className="text-base font-bold text-[var(--ink)] mb-4">À propos du créateur</h2>
+                  <h2 className="text-base font-bold text-[var(--ink)] mb-4">{t("section.sellerAbout")}</h2>
                   <div className="flex items-start gap-4">
                     <Link href={`/profile/${product.seller_id}`} className="shrink-0">
                       <div className="w-14 h-14 rounded-full overflow-hidden bg-[var(--orange)] flex items-center justify-center">
@@ -244,7 +255,7 @@ export default async function ProductDetailPage({ params, searchParams }: Props)
                       <Link href={`/profile/${product.seller_id}`} className="font-bold text-[var(--ink)] hover:text-[var(--orange)]">{sellerName}</Link>
                       {seller.wilaya && <p className="text-xs text-gray-400">{seller.wilaya}</p>}
                       {seller.bio && <p className="text-sm text-gray-700 mt-2 leading-relaxed">{seller.bio}</p>}
-                      <p className="text-xs text-gray-400 mt-2">Membre depuis {new Date(seller.created_at).toLocaleDateString("fr-DZ", { year: "numeric", month: "long" })}</p>
+                      <p className="text-xs text-gray-400 mt-2">{t("seller.memberSince", { date: formatDate(seller.created_at) })}</p>
                     </div>
                   </div>
                 </div>
@@ -277,7 +288,7 @@ export default async function ProductDetailPage({ params, searchParams }: Props)
           {/* Related products */}
           {related.length > 0 && (
             <div className="mt-12">
-              <h2 className="text-lg font-bold text-[var(--ink)] mb-5">Produits similaires</h2>
+              <h2 className="text-lg font-bold text-[var(--ink)] mb-5">{t("section.related")}</h2>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {related.map(p => <ProductCard key={p.id} product={p} />)}
               </div>

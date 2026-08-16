@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
+import { useTranslations } from "next-intl"
 import Link from "next/link"
 import Navbar from "@/components/Navbar"
 import { createClient } from "@/lib/supabase/client"
@@ -37,30 +38,32 @@ type ConvDisplay = {
   last_message_at: string
 }
 
-function relativeTime(d: string) {
-  const diff = Date.now() - new Date(d).getTime()
-  const m = Math.floor(diff / 60000)
-  if (m < 1) return "À l'instant"
-  if (m < 60) return `Il y a ${m} min`
-  const h = Math.floor(m / 60)
-  if (h < 24) return `Il y a ${h}h`
-  const days = Math.floor(h / 24)
-  if (days === 1) return "Hier"
-  if (days < 7) return `Il y a ${days} j`
-  return new Date(d).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })
-}
-
 function getInitials(name: string | null) {
   return (name || "?").trim().split(/\s+/).map((n) => n[0]).join("").toUpperCase().slice(0, 2)
 }
 
 export default function MessagesPage() {
   const router = useRouter()
+  const t = useTranslations("messages")
+
   const [convs, setConvs] = useState<ConvDisplay[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [userId, setUserId] = useState<string | null>(null)
   const [retryKey, setRetryKey] = useState(0)
+
+  const relativeTime = (d: string) => {
+    const diff = Date.now() - new Date(d).getTime()
+    const m = Math.floor(diff / 60000)
+    if (m < 1) return t("relativeTime.now")
+    if (m < 60) return t("relativeTime.min", { n: m })
+    const h = Math.floor(m / 60)
+    if (h < 24) return t("relativeTime.hours", { n: h })
+    const days = Math.floor(h / 24)
+    if (days === 1) return t("relativeTime.yesterday")
+    if (days < 7) return t("relativeTime.daysAgo", { n: days })
+    return new Date(d).toLocaleDateString(undefined, { day: "numeric", month: "short" })
+  }
 
   useEffect(() => {
     const load = async () => {
@@ -79,7 +82,7 @@ export default function MessagesPage() {
 
         if (convsErr) {
           console.error("[messages] conversations query error:", convsErr)
-          setError("Impossible de charger les conversations.")
+          setError(t("page.loadError"))
           setLoading(false)
           return
         }
@@ -129,7 +132,7 @@ export default function MessagesPage() {
         setLoading(false)
       } catch (e) {
         console.error("[messages] load error:", e)
-        setError("Une erreur inattendue est survenue.")
+        setError(t("error.unexpected"))
         setLoading(false)
       }
     }
@@ -137,12 +140,22 @@ export default function MessagesPage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router, retryKey])
 
+  const getPreview = (m: MsgRow | null, isMe: boolean) => {
+    if (!m) return t("conv.start")
+    const prefix = isMe ? t("conv.youPrefix") : ""
+    if (m.listing_type && !m.content) return prefix + t("conv.listing")
+    if (m.content) return prefix + m.content
+    if (m.attachment_type?.startsWith("image/")) return prefix + t("conv.image")
+    if (m.attachment_type === "application/pdf") return prefix + t("conv.document")
+    return prefix + t("conv.file")
+  }
+
   return (
     <>
       <Navbar />
       <main className="min-h-screen bg-[var(--cream)]">
         <div className="max-w-2xl mx-auto px-4 py-8">
-          <h1 className="text-2xl font-extrabold text-[var(--ink)] mb-6">Messages</h1>
+          <h1 className="text-2xl font-extrabold text-[var(--ink)] mb-6">{t("page.title")}</h1>
 
           {loading ? (
             <div className="flex justify-center py-20">
@@ -155,7 +168,7 @@ export default function MessagesPage() {
                 onClick={() => setRetryKey((k) => k + 1)}
                 className="mt-4 px-4 py-2 bg-[var(--orange)] text-white text-sm font-semibold rounded-xl hover:bg-[var(--orange-dark)] transition-colors"
               >
-                Réessayer
+                {t("page.retry")}
               </button>
             </div>
           ) : convs.length === 0 ? (
@@ -165,32 +178,24 @@ export default function MessagesPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                 </svg>
               </div>
-              <p className="text-gray-500 font-medium">Aucun message pour le moment</p>
-              <p className="text-sm text-gray-400 mt-1">Contactez un vendeur depuis son profil ou une annonce pour démarrer une conversation.</p>
+              <p className="text-gray-500 font-medium">{t("page.noMessages")}</p>
+              <p className="text-sm text-gray-400 mt-1">{t("page.noMessagesHint")}</p>
               <div className="flex gap-3 justify-center mt-6">
                 <Link href="/freelances" className="px-4 py-2 bg-[var(--orange)] text-white text-sm font-semibold rounded-xl hover:bg-[var(--orange-dark)] transition-colors">
-                  Voir les services
+                  {t("page.viewServices")}
                 </Link>
                 <Link href="/marketplace" className="px-4 py-2 border border-[var(--border-subtle)] text-[var(--ink)] text-sm font-semibold rounded-xl hover:border-[var(--orange)]/40 transition-colors">
-                  Marketplace
+                  {t("page.marketplace")}
                 </Link>
               </div>
             </div>
           ) : (
             <div className="space-y-2">
               {convs.map((conv) => {
-                const name = conv.interlocutor.full_name ?? "Utilisateur"
+                const name = conv.interlocutor.full_name ?? t("page.userFallback")
                 const initials = getInitials(conv.interlocutor.full_name)
-                const preview = (() => {
-                  const m = conv.lastMessage
-                  if (!m) return "Démarrez la conversation"
-                  const prefix = m.sender_id === userId ? "Vous : " : ""
-                  if (m.listing_type && !m.content) return prefix + "📌 Annonce partagée"
-                  if (m.content) return prefix + m.content
-                  if (m.attachment_type?.startsWith("image/")) return prefix + "📎 Image"
-                  if (m.attachment_type === "application/pdf") return prefix + "📎 Document"
-                  return prefix + "📎 Fichier"
-                })()
+                const isMe = conv.lastMessage?.sender_id === userId
+                const preview = getPreview(conv.lastMessage, isMe ?? false)
                 return (
                   <Link
                     key={conv.id}

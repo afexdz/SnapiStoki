@@ -230,11 +230,13 @@
     },
     "reviews": {
       "empty": "No reviews yet",
-      "count": "({count} reviews)"
+      "count": "({count} reviews)",
+      "reviewerFallback": "Buyer"
     },
     "seller": {
       "memberSince": "Member since {date}"
     },
+    "created": "Product published successfully!",
     "buybox": {
       "owner": {
         "label": "Your product",
@@ -277,11 +279,13 @@
     "reviews": {
       "empty": "No reviews yet",
       "emptyHint": "Be the first to order this service",
-      "count": "({count} reviews)"
+      "count": "({count} reviews)",
+      "reviewerFallback": "Customer"
     },
     "seller": {
       "memberSince": "Member since {date}"
     },
+    "created": "Service published successfully!",
     "buybox": {
       "owner": {
         "label": "Your service",
@@ -399,7 +403,33 @@
     "context": { "about": "About:" },
     "relativeTime": {
       "now": "Just now",
-      "min": "{n} min"
+      "min": "{n} min",
+      "hours": "{n}h",
+      "yesterday": "Yesterday",
+      "daysAgo": "{n}d ago"
+    },
+    "page": {
+      "title": "Messages",
+      "loadError": "Failed to load conversations.",
+      "retry": "Retry",
+      "noMessages": "No messages yet",
+      "noMessagesHint": "Contact a seller from their profile or a listing to start a conversation.",
+      "viewServices": "Browse services",
+      "marketplace": "Marketplace",
+      "userFallback": "User"
+    },
+    "sidebar": {
+      "title": "Messages",
+      "noConversations": "No conversations",
+      "userFallback": "User"
+    },
+    "conv": {
+      "start": "Start the conversation",
+      "youPrefix": "You: ",
+      "listing": "📌 Shared listing",
+      "image": "📎 Image",
+      "document": "📎 Document",
+      "file": "📎 File"
     },
     "compressing": "Compressing…",
     "readReceipt": "Read",
@@ -419,6 +449,42 @@
       "send": "Send failed: {msg}",
       "unexpected": "Unexpected error",
       "unknown": "Unknown error"
+    }
+  },
+  "search": {
+    "placeholder": "Search for a service or product…",
+    "button": "Search",
+    "countLabel": "{n, plural, one {# result for} other {# results for}}",
+    "noResultsLabel": "No results for",
+    "filters": "Filters",
+    "allCategories": "All categories",
+    "reset": "Reset",
+    "noQuery": {
+      "title": "What are you looking for?",
+      "hint": "Type a service, skill or digital product…"
+    },
+    "sort": {
+      "relevance": "Relevance",
+      "price_asc": "Price: low to high",
+      "price_desc": "Price: high to low",
+      "rating": "Top rated"
+    },
+    "services": {
+      "title": "Available freelancers",
+      "viewAll": "View all →",
+      "empty": "No freelancers found for this search",
+      "freelancerFallback": "Freelance",
+      "viewProfile": "View profile →"
+    },
+    "products": {
+      "title": "Digital products",
+      "viewAll": "View all →",
+      "empty": "No products found for this search",
+      "sellerFallback": "Seller",
+      "by": "by {name}",
+      "sales": "{n, plural, one {# sale} other {# sales}}",
+      "download": "Download",
+      "buy": "Buy"
     }
   }
 }

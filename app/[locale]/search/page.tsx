@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo, Suspense } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
+import { useTranslations } from "next-intl"
 import Link from "next/link"
 import Navbar from "@/components/Navbar"
 import Footer from "@/components/Footer"
@@ -48,6 +49,7 @@ type ProductResult = {
 }
 
 type SortKey = "relevance" | "price_asc" | "price_desc" | "rating"
+const SORT_IDS: SortKey[] = ["relevance", "price_asc", "price_desc", "rating"]
 
 /* ─── Constants ─────────────────────────────────────────────── */
 const GRADIENTS = [
@@ -57,13 +59,6 @@ const GRADIENTS = [
   "from-pink-500 to-rose-600",
   "from-violet-500 to-purple-600",
   "from-amber-500 to-orange-600",
-]
-
-const SORT_OPTIONS: { value: SortKey; label: string }[] = [
-  { value: "relevance",  label: "Pertinence"       },
-  { value: "price_asc",  label: "Prix croissant"   },
-  { value: "price_desc", label: "Prix décroissant" },
-  { value: "rating",     label: "Mieux notés"      },
 ]
 
 /* ─── Skeleton ───────────────────────────────────────────────── */
@@ -132,12 +127,11 @@ function EmptyState({ label }: { label: string }) {
 }
 
 /* ─── Freelancer card ────────────────────────────────────────── */
-function FreelancerCard({ svc, index }: { svc: ServiceResult; index: number }) {
+function FreelancerCard({ svc, index, t }: { svc: ServiceResult; index: number; t: ReturnType<typeof useTranslations<"search">> }) {
   const img = svc.images?.[0]
-  const name = svc.profile?.full_name ?? "Freelance"
+  const name = svc.profile?.full_name ?? t("services.freelancerFallback")
   return (
     <div className="group bg-[var(--white)] dark:bg-[var(--white)] rounded-2xl border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] hover:border-[var(--orange)]/30 hover:shadow-xl hover:shadow-[var(--orange)]/10 transition-all overflow-hidden flex flex-col">
-      {/* Cover */}
       <div className={`h-36 relative overflow-hidden shrink-0 ${!img ? `bg-gradient-to-br ${GRADIENTS[index % GRADIENTS.length]}` : ""}`}>
         {img && <img src={img} alt={svc.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />}
         {svc.category && (
@@ -148,7 +142,6 @@ function FreelancerCard({ svc, index }: { svc: ServiceResult; index: number }) {
       </div>
 
       <div className="p-4 flex flex-col flex-1 gap-3">
-        {/* Seller */}
         <div className="flex items-center gap-2">
           <Avatar url={svc.profile?.avatar_url ?? null} name={name} size={7} />
           <div className="min-w-0">
@@ -165,12 +158,10 @@ function FreelancerCard({ svc, index }: { svc: ServiceResult; index: number }) {
           </div>
         </div>
 
-        {/* Title */}
         <h3 className="text-sm font-semibold text-[var(--ink)] dark:text-[var(--ink)] leading-snug line-clamp-2 group-hover:text-[var(--orange)] transition-colors flex-1">
           {svc.title}
         </h3>
 
-        {/* Rating + price */}
         <div className="flex items-center justify-between">
           {svc.rating != null && svc.rating > 0 ? (
             <div className="flex items-center gap-1">
@@ -179,16 +170,15 @@ function FreelancerCard({ svc, index }: { svc: ServiceResult; index: number }) {
             </div>
           ) : <span />}
           <span className="text-sm font-extrabold text-[var(--ink)] dark:text-[var(--ink)]">
-            {svc.price.toLocaleString("fr-DZ")} <span className="text-[var(--orange)] font-bold">DA</span>
+            {svc.price.toLocaleString()} <span className="text-[var(--orange)] font-bold">DA</span>
           </span>
         </div>
 
-        {/* CTA */}
         <Link
           href={`/profile?seller=${svc.seller_id}`}
           className="w-full flex items-center justify-center gap-1.5 py-2.5 bg-[var(--orange)] hover:bg-[var(--orange-dark)] text-white text-sm font-semibold rounded-xl transition-colors shadow-md shadow-[var(--orange)]/20"
         >
-          Voir le profil →
+          {t("services.viewProfile")}
         </Link>
       </div>
     </div>
@@ -196,11 +186,11 @@ function FreelancerCard({ svc, index }: { svc: ServiceResult; index: number }) {
 }
 
 /* ─── Product card ───────────────────────────────────────────── */
-function ProductCard({ product, index }: { product: ProductResult; index: number }) {
+function ProductCard({ product, index, t }: { product: ProductResult; index: number; t: ReturnType<typeof useTranslations<"search">> }) {
   const coverImg = product.preview_urls?.[0] ?? product.preview_images?.[0] ?? null
+  const salesCount = product.sales_count ?? 0
   return (
     <div className="group bg-[var(--white)] dark:bg-[var(--white)] rounded-2xl border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] hover:border-[var(--orange)]/30 hover:shadow-xl hover:shadow-[var(--orange)]/10 transition-all overflow-hidden flex flex-col">
-      {/* Thumbnail */}
       <div className={`h-36 relative overflow-hidden shrink-0 ${!coverImg ? `bg-gradient-to-br ${GRADIENTS[(index + 2) % GRADIENTS.length]}` : ""}`}>
         {coverImg && (
           <img src={coverImg} alt={product.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
@@ -220,31 +210,26 @@ function ProductCard({ product, index }: { product: ProductResult; index: number
       </div>
 
       <div className="p-4 flex flex-col flex-1 gap-3">
-        {/* Title */}
         <h3 className="text-sm font-semibold text-[var(--ink)] dark:text-[var(--ink)] leading-snug line-clamp-2 group-hover:text-[var(--orange)] transition-colors flex-1">
           {product.title}
         </h3>
 
-        {/* Seller + sales */}
         <div className="flex items-center justify-between text-xs text-gray-400">
           <span className="truncate max-w-[60%]">
-            par {product.profile?.full_name ?? "Vendeur"}
+            {t("products.by", { name: product.profile?.full_name ?? t("products.sellerFallback") })}
           </span>
-          {(product.sales_count ?? 0) > 0 && (
-            <span>{product.sales_count} vente{(product.sales_count ?? 0) > 1 ? "s" : ""}</span>
-          )}
+          {salesCount > 0 && <span>{t("products.sales", { n: salesCount })}</span>}
         </div>
 
-        {/* Price + CTA */}
         <div className="flex items-center justify-between">
           <span className="text-base font-extrabold text-[var(--ink)] dark:text-[var(--ink)]">
-            {product.price.toLocaleString("fr-DZ")} <span className="text-[var(--orange)] font-bold text-sm">DA</span>
+            {product.price.toLocaleString()} <span className="text-[var(--orange)] font-bold text-sm">DA</span>
           </span>
           <Link
             href={`/products/${product.id}`}
             className="flex items-center gap-1 px-4 py-2 bg-[var(--orange)] hover:bg-[var(--orange-dark)] text-white text-xs font-semibold rounded-xl transition-colors shadow-md shadow-[var(--orange)]/20"
           >
-            {product.is_free ? "Télécharger" : "Acheter"}
+            {product.is_free ? t("products.download") : t("products.buy")}
           </Link>
         </div>
       </div>
@@ -256,13 +241,14 @@ function ProductCard({ product, index }: { product: ProductResult; index: number
 function FilterBar({
   sort, onSort,
   filterCategory, onCategory,
-  categories,
+  categories, t,
 }: {
   sort: SortKey
   onSort: (v: SortKey) => void
   filterCategory: string
   onCategory: (v: string) => void
   categories: string[]
+  t: ReturnType<typeof useTranslations<"search">>
 }) {
   return (
     <div className="flex flex-wrap gap-3 items-center py-4 border-y border-[var(--border-subtle)] dark:border-[var(--border-subtle)]">
@@ -270,7 +256,7 @@ function FilterBar({
         <svg className="w-4 h-4 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L13 13.414V19a1 1 0 01-.553.894l-4 2A1 1 0 017 21v-7.586L3.293 6.707A1 1 0 013 6V4z" />
         </svg>
-        <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Filtres</span>
+        <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">{t("filters")}</span>
       </div>
 
       <select
@@ -278,7 +264,7 @@ function FilterBar({
         onChange={(e) => onSort(e.target.value as SortKey)}
         className="text-sm px-3 py-1.5 rounded-xl border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] bg-[var(--white)] dark:bg-[var(--white)] text-[var(--ink)] dark:text-[var(--ink)] outline-none focus:border-[var(--orange)] transition-colors cursor-pointer"
       >
-        {SORT_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+        {SORT_IDS.map(id => <option key={id} value={id}>{t(`sort.${id}`)}</option>)}
       </select>
 
       {categories.length > 0 && (
@@ -287,7 +273,7 @@ function FilterBar({
           onChange={(e) => onCategory(e.target.value)}
           className="text-sm px-3 py-1.5 rounded-xl border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] bg-[var(--white)] dark:bg-[var(--white)] text-[var(--ink)] dark:text-[var(--ink)] outline-none focus:border-[var(--orange)] transition-colors cursor-pointer"
         >
-          <option value="">Toutes les catégories</option>
+          <option value="">{t("allCategories")}</option>
           {categories.map(c => <option key={c} value={c}>{c}</option>)}
         </select>
       )}
@@ -297,7 +283,7 @@ function FilterBar({
           onClick={() => { onCategory("") }}
           className="text-xs text-[var(--orange)] hover:text-[var(--orange-dark)] font-medium transition-colors"
         >
-          Réinitialiser
+          {t("reset")}
         </button>
       )}
     </div>
@@ -309,6 +295,7 @@ function SearchResults() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const q = searchParams.get("q") ?? ""
+  const t = useTranslations("search")
 
   const [inputValue, setInputValue] = useState(q)
   const [services, setServices]     = useState<ServiceResult[]>([])
@@ -419,24 +406,31 @@ function SearchResults() {
                 type="text"
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
-                placeholder="Rechercher un service ou un produit…"
+                placeholder={t("placeholder")}
                 className="flex-1 py-3.5 bg-transparent text-sm text-[var(--ink)] dark:text-[var(--ink)] placeholder-gray-400 outline-none"
               />
               <button
                 type="submit"
                 className="m-1.5 px-5 py-2.5 bg-[var(--orange)] hover:bg-[var(--orange-dark)] text-white text-sm font-semibold rounded-lg transition-colors shrink-0"
               >
-                Rechercher
+                {t("button")}
               </button>
             </form>
 
             {/* Count */}
             {!loading && q && (
               <p className="mt-3 text-sm text-gray-500 dark:text-gray-400">
-                {totalCount > 0
-                  ? <><span className="font-bold text-[var(--ink)] dark:text-[var(--ink)]">{totalCount}</span> résultat{totalCount > 1 ? "s" : ""} pour <span className="font-bold text-[var(--orange)]">"{q}"</span></>
-                  : <>Aucun résultat pour <span className="font-bold text-[var(--orange)]">"{q}"</span></>
-                }
+                {totalCount > 0 ? (
+                  <>
+                    <strong className="text-[var(--ink)] dark:text-[var(--ink)]">{t("countLabel", { n: totalCount })}</strong>{" "}
+                    <span className="font-bold text-[var(--orange)]">«{q}»</span>
+                  </>
+                ) : (
+                  <>
+                    {t("noResultsLabel")}{" "}
+                    <span className="font-bold text-[var(--orange)]">«{q}»</span>
+                  </>
+                )}
               </p>
             )}
           </div>
@@ -450,6 +444,7 @@ function SearchResults() {
               sort={sort} onSort={setSort}
               filterCategory={filterCategory} onCategory={setFilterCategory}
               categories={categories}
+              t={t}
             />
           )}
 
@@ -466,8 +461,8 @@ function SearchResults() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                 </svg>
               </div>
-              <h2 className="text-xl font-bold text-[var(--ink)] dark:text-[var(--ink)] mb-2">Que recherchez-vous ?</h2>
-              <p className="text-gray-400 text-sm">Tapez un service, une compétence ou un produit digital…</p>
+              <h2 className="text-xl font-bold text-[var(--ink)] dark:text-[var(--ink)] mb-2">{t("noQuery.title")}</h2>
+              <p className="text-gray-400 text-sm">{t("noQuery.hint")}</p>
             </div>
           ) : (
             <>
@@ -475,7 +470,7 @@ function SearchResults() {
               <section>
                 <div className="flex items-center justify-between mb-5">
                   <div className="flex items-center gap-3">
-                    <h2 className="text-xl font-black text-[var(--ink)] dark:text-[var(--ink)]">Freelances disponibles</h2>
+                    <h2 className="text-xl font-black text-[var(--ink)] dark:text-[var(--ink)]">{t("services.title")}</h2>
                     {filteredServices.length > 0 && (
                       <span className="px-2.5 py-0.5 bg-[var(--orange)]/10 text-[var(--orange)] text-xs font-bold rounded-full">
                         {filteredServices.length}
@@ -483,18 +478,18 @@ function SearchResults() {
                     )}
                   </div>
                   <Link href="/freelances" className="text-sm text-[var(--orange)] hover:text-[var(--orange-dark)] font-medium transition-colors">
-                    Voir tous →
+                    {t("services.viewAll")}
                   </Link>
                 </div>
 
                 {filteredServices.length === 0 ? (
                   <div className="bg-[var(--white)] dark:bg-[var(--white)] rounded-2xl border border-[var(--border-subtle)] dark:border-[var(--border-subtle)]">
-                    <EmptyState label="Aucun freelance trouvé pour cette recherche" />
+                    <EmptyState label={t("services.empty")} />
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                     {filteredServices.map((svc, i) => (
-                      <FreelancerCard key={svc.id} svc={svc} index={i} />
+                      <FreelancerCard key={svc.id} svc={svc} index={i} t={t} />
                     ))}
                   </div>
                 )}
@@ -503,7 +498,7 @@ function SearchResults() {
               {/* Divider */}
               <div className="flex items-center gap-4">
                 <div className="flex-1 h-px bg-[var(--border-subtle)] dark:bg-[var(--border-subtle)]" />
-                <span className="text-xs font-semibold text-gray-400 uppercase tracking-widest">Produits digitaux</span>
+                <span className="text-xs font-semibold text-gray-400 uppercase tracking-widest">{t("products.title")}</span>
                 <div className="flex-1 h-px bg-[var(--border-subtle)] dark:bg-[var(--border-subtle)]" />
               </div>
 
@@ -511,7 +506,7 @@ function SearchResults() {
               <section>
                 <div className="flex items-center justify-between mb-5">
                   <div className="flex items-center gap-3">
-                    <h2 className="text-xl font-black text-[var(--ink)] dark:text-[var(--ink)]">Produits digitaux</h2>
+                    <h2 className="text-xl font-black text-[var(--ink)] dark:text-[var(--ink)]">{t("products.title")}</h2>
                     {filteredProducts.length > 0 && (
                       <span className="px-2.5 py-0.5 bg-[var(--orange)]/10 text-[var(--orange)] text-xs font-bold rounded-full">
                         {filteredProducts.length}
@@ -519,18 +514,18 @@ function SearchResults() {
                     )}
                   </div>
                   <Link href="/marketplace" className="text-sm text-[var(--orange)] hover:text-[var(--orange-dark)] font-medium transition-colors">
-                    Voir tout →
+                    {t("products.viewAll")}
                   </Link>
                 </div>
 
                 {filteredProducts.length === 0 ? (
                   <div className="bg-[var(--white)] dark:bg-[var(--white)] rounded-2xl border border-[var(--border-subtle)] dark:border-[var(--border-subtle)]">
-                    <EmptyState label="Aucun produit trouvé pour cette recherche" />
+                    <EmptyState label={t("products.empty")} />
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                     {filteredProducts.map((p, i) => (
-                      <ProductCard key={p.id} product={p} index={i} />
+                      <ProductCard key={p.id} product={p} index={i} t={t} />
                     ))}
                   </div>
                 )}
