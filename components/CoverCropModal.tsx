@@ -3,6 +3,7 @@
 import { useRef, useState, useCallback } from "react"
 import ReactCrop, { type Crop, type PixelCrop, centerCrop, makeAspectCrop } from "react-image-crop"
 import "react-image-crop/dist/ReactCrop.css"
+import { useTranslations } from "next-intl"
 
 type Props = {
   src: string
@@ -36,6 +37,7 @@ async function cropToBlob(img: HTMLImageElement, crop: PixelCrop, outW: number, 
 }
 
 export default function CoverCropModal({ src, aspect, outW, outH, onConfirm, onCancel }: Props) {
+  const t = useTranslations("cropModal")
   const imgRef = useRef<HTMLImageElement>(null)
   const [crop, setCrop] = useState<Crop>()
   const [completedCrop, setCompletedCrop] = useState<PixelCrop>()
@@ -60,9 +62,9 @@ export default function CoverCropModal({ src, aspect, outW, outH, onConfirm, onC
   return (
     <div className="fixed inset-0 z-50 bg-black/80 flex flex-col items-center justify-center p-4">
       <div className="bg-[var(--white)] dark:bg-[#1a1a1a] rounded-2xl p-5 w-full max-w-xl shadow-2xl">
-        <h2 className="text-base font-bold text-[var(--ink)] mb-1">Recadrer l&apos;image de couverture</h2>
+        <h2 className="text-base font-bold text-[var(--ink)] mb-1">{t("title")}</h2>
         <p className="text-xs text-gray-400 mb-4">
-          Ratio {aspect}:1 — déplacez et redimensionnez la zone de sélection
+          {t("hint", { aspect })}
         </p>
 
         <div className="overflow-auto max-h-[60vh] flex items-center justify-center bg-black rounded-xl">
@@ -75,7 +77,7 @@ export default function CoverCropModal({ src, aspect, outW, outH, onConfirm, onC
             <img
               ref={imgRef}
               src={src}
-              alt="Recadrage"
+              alt={t("title")}
               onLoad={onImageLoad}
               className="max-h-[60vh] max-w-full object-contain"
             />
@@ -87,7 +89,7 @@ export default function CoverCropModal({ src, aspect, outW, outH, onConfirm, onC
             onClick={onCancel}
             className="flex-1 py-2.5 border border-[var(--ink-12)] text-sm font-semibold text-gray-600 rounded-xl hover:border-gray-300 transition-colors"
           >
-            Annuler
+            {t("cancel")}
           </button>
           <button
             onClick={handleConfirm}
@@ -100,9 +102,9 @@ export default function CoverCropModal({ src, aspect, outW, outH, onConfirm, onC
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                 </svg>
-                Recadrage...
+                {t("cropping")}
               </>
-            ) : "Valider le recadrage"}
+            ) : t("confirm")}
           </button>
         </div>
       </div>

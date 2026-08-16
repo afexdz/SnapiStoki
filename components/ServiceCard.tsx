@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import { useTranslations } from "next-intl"
 
 type Package = { price: number; name?: string; description?: string; delivery_days?: number; revisions?: number }
 
@@ -45,11 +46,12 @@ export default function ServiceCard({
   service: ServiceCardService
   isBestSeller?: boolean
 }) {
+  const t = useTranslations("cards")
   const img = coverImage(service)
   const price = minPackagePrice(service)
   const rating = Number(service.avg_rating ?? service.rating ?? 0)
   const reviews = service.reviews_count ?? 0
-  const name = service.seller?.full_name ?? "Freelance"
+  const name = service.seller?.full_name ?? t("freelanceFallback")
   const initials = name.trim().split(/\s+/).map(n => n[0]).join("").toUpperCase().slice(0, 2) || "?"
 
   return (
@@ -76,14 +78,14 @@ export default function ServiceCard({
 
         {/* Best seller badge */}
         {isBestSeller && (
-          <span className="absolute top-2.5 left-2.5 px-2 py-0.5 bg-[#1A1A1A]/85 text-white text-[10px] font-bold rounded-full font-jakarta">
-            Meilleure vente
+          <span className="absolute top-2.5 start-2.5 px-2 py-0.5 bg-[#1A1A1A]/85 text-white text-[10px] font-bold rounded-full font-jakarta">
+            {t("bestSeller")}
           </span>
         )}
 
         {/* Category chip */}
         {service.category && !isBestSeller && (
-          <span className="absolute top-2.5 right-2.5 px-2 py-0.5 bg-[var(--white)]/88 text-[var(--ink)] text-[9px] font-semibold rounded-full backdrop-blur-sm font-jakarta">
+          <span className="absolute top-2.5 end-2.5 px-2 py-0.5 bg-[var(--white)]/88 text-[var(--ink)] text-[9px] font-semibold rounded-full backdrop-blur-sm font-jakarta">
             {service.category}
           </span>
         )}
@@ -123,12 +125,12 @@ export default function ServiceCard({
               </div>
             ) : (
               <span className="text-[10px] font-semibold text-[var(--orange)] border border-[var(--orange)]/40 rounded-full px-2 py-0.5 font-jakarta">
-                Nouveau
+                {t("new")}
               </span>
             )}
           </div>
-          <div className="text-right">
-            <p className="text-[9px] text-[rgba(26,26,26,0.40)] dark:text-gray-500">À partir de</p>
+          <div className="text-end">
+            <p className="text-[9px] text-[rgba(26,26,26,0.40)] dark:text-gray-500">{t("startingAt")}</p>
             <p className="text-sm font-extrabold text-[var(--ink)] dark:text-[var(--ink)] font-jakarta">
               {price.toLocaleString("fr-DZ")}{" "}
               <span className="text-[var(--orange)] text-xs font-bold">DA</span>

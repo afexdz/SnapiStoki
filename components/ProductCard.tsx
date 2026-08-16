@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import { useTranslations } from "next-intl"
 
 type ProductCardProduct = {
   id: string
@@ -27,12 +28,13 @@ type ProductCardProduct = {
 }
 
 export default function ProductCard({ product }: { product: ProductCardProduct }) {
+  const t = useTranslations("cards")
   const img = product.preview_urls?.[0] ?? product.preview_images?.[0] ?? null
   const rating = Number(product.avg_rating ?? product.rating ?? 0)
   const reviews = product.reviews_count ?? 0
   const sales = product.sales_count ?? product.downloads ?? 0
   const fmt = product.format ?? product.file_format ?? null
-  const name = product.seller?.full_name ?? "Vendeur"
+  const name = product.seller?.full_name ?? t("sellerFallback")
   const initials = name.trim().split(/\s+/).map(n => n[0]).join("").toUpperCase().slice(0, 2) || "?"
 
   return (
@@ -57,17 +59,17 @@ export default function ProductCard({ product }: { product: ProductCardProduct }
           </div>
         )}
 
-        {/* Format badge (dark pill top-left) */}
+        {/* Format badge (dark pill top-start) */}
         {fmt && (
-          <span className="absolute top-2.5 left-2.5 px-2 py-0.5 bg-[#1A1A1A]/85 text-white text-[10px] font-bold rounded-full backdrop-blur-sm font-jakarta">
+          <span className="absolute top-2.5 start-2.5 px-2 py-0.5 bg-[#1A1A1A]/85 text-white text-[10px] font-bold rounded-full backdrop-blur-sm font-jakarta">
             {fmt}
           </span>
         )}
 
         {/* Free badge */}
         {product.is_free && (
-          <span className="absolute top-2.5 right-2.5 px-2 py-0.5 bg-emerald-500 text-white text-[10px] font-bold rounded-full font-jakarta">
-            Gratuit
+          <span className="absolute top-2.5 end-2.5 px-2 py-0.5 bg-emerald-500 text-white text-[10px] font-bold rounded-full font-jakarta">
+            {t("free")}
           </span>
         )}
       </div>
@@ -100,19 +102,21 @@ export default function ProductCard({ product }: { product: ProductCardProduct }
                 <span className="text-[10px] text-[rgba(26,26,26,0.40)] dark:text-gray-500">({reviews})</span>
               </div>
             ) : sales > 0 ? (
-              <span className="text-[10px] text-[rgba(26,26,26,0.40)] dark:text-gray-500">{sales} vente{sales > 1 ? "s" : ""}</span>
+              <span className="text-[10px] text-[rgba(26,26,26,0.40)] dark:text-gray-500">
+                {t("sales", { n: sales })}
+              </span>
             ) : (
               <span className="text-[10px] font-semibold text-[var(--orange)] border border-[var(--orange)]/40 rounded-full px-2 py-0.5 font-jakarta">
-                Nouveau
+                {t("new")}
               </span>
             )}
           </div>
-          <div className="text-right">
+          <div className="text-end">
             {product.is_free ? (
-              <p className="text-sm font-extrabold text-emerald-600 font-jakarta">Gratuit</p>
+              <p className="text-sm font-extrabold text-emerald-600 font-jakarta">{t("free")}</p>
             ) : (
               <>
-                <p className="text-[9px] text-[rgba(26,26,26,0.40)] dark:text-gray-500">À partir de</p>
+                <p className="text-[9px] text-[rgba(26,26,26,0.40)] dark:text-gray-500">{t("startingAt")}</p>
                 <p className="text-sm font-extrabold text-[var(--ink)] dark:text-[var(--ink)] font-jakarta">
                   {product.price.toLocaleString("fr-DZ")}{" "}
                   <span className="text-[var(--orange)] text-xs font-bold">DA</span>

@@ -102,6 +102,38 @@
         "title": "Customers from around the world",
         "desc": "International audience from day one"
       }
+    },
+    "categories": {
+      "eyebrow": "Categories",
+      "title": "Explore by category",
+      "subtitle": "From creative skills to technical services, everything your project needs.",
+      "allCta": "All categories →",
+      "cats": {
+        "design":    { "label": "Design & Graphics",    "sub": "Logos, identities, posters" },
+        "web":       { "label": "Web development",      "sub": "Websites, apps, e-commerce" },
+        "video":     { "label": "Video & Animation",    "sub": "Editing, motion design" },
+        "marketing": { "label": "Digital marketing",    "sub": "Meta Ads, TikTok, SEO" },
+        "writing":   { "label": "Writing & Translation","sub": "FR, AR, EN, Darija" },
+        "audio":     { "label": "Audio & Voice-over",   "sub": "Podcasts, dubbing, jingles" },
+        "ebooks":    { "label": "E-books & Courses",    "sub": "Guides, courses, templates" },
+        "templates": { "label": "Templates & Assets",   "sub": "Canva, Notion, UI kits" }
+      }
+    },
+    "topFreelancers": {
+      "eyebrow": "Services",
+      "title": "Most requested services",
+      "subtitle": "The highest-rated and most popular offers on the platform",
+      "viewAll": "View all services →",
+      "empty": "Be the first to publish a service",
+      "emptyCta": "Publish a service →"
+    },
+    "marketplace": {
+      "eyebrow": "Marketplace",
+      "title": "Download, ready to use",
+      "subtitle": "Templates, packs and digital resources ready to use",
+      "viewAll": "View all products →",
+      "empty": "No products yet",
+      "emptyCta": "Sell a product →"
     }
   },
   "auth": {
@@ -273,6 +305,26 @@
       "contact": "Contact the seller",
       "contacting": "In progress…"
     }
+  },
+  "cards": {
+    "bestSeller": "Best seller",
+    "new": "New",
+    "startingAt": "Starting at",
+    "free": "Free",
+    "sales": "{n, plural, one {# sale} other {# sales}}",
+    "freelanceFallback": "Freelance",
+    "sellerFallback": "Seller"
+  },
+  "contactButton": {
+    "loading": "Loading...",
+    "contact": "Contact"
+  },
+  "cropModal": {
+    "title": "Crop the cover image",
+    "hint": "Ratio {aspect}:1 — move and resize the selection area",
+    "cancel": "Cancel",
+    "cropping": "Cropping...",
+    "confirm": "Apply crop"
   },
   "messages": {
     "empty": {

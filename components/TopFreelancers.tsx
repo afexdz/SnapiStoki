@@ -5,6 +5,7 @@ import Link from "next/link"
 import { createClient } from "@/lib/supabase/client"
 import { rankItems } from "@/lib/ranking"
 import ServiceCard from "@/components/ServiceCard"
+import { useTranslations } from "next-intl"
 
 type Service = {
   id: string
@@ -23,6 +24,7 @@ type Service = {
 }
 
 export default function TopFreelancers() {
+  const t = useTranslations("home.topFreelancers")
   const [services, setServices] = useState<Service[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -50,20 +52,20 @@ export default function TopFreelancers() {
         <div className="flex items-end justify-between mb-10">
           <div>
             <span className="inline-block text-[var(--orange)] text-xs font-bold uppercase tracking-widest mb-3 font-jakarta">
-              Services
+              {t("eyebrow")}
             </span>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-[var(--ink)] dark:text-[var(--ink)]">
-              Les services les plus demandés
+              {t("title")}
             </h2>
             <p className="mt-2 text-[rgba(26,26,26,0.55)] dark:text-gray-400 text-sm max-w-md">
-              Les offres les mieux notées et les plus populaires de la plateforme
+              {t("subtitle")}
             </p>
           </div>
           <Link
             href="/freelances"
             className="hidden sm:inline-flex text-sm font-semibold text-[var(--orange)] hover:text-[var(--orange-dark)] transition-colors font-jakarta"
           >
-            Voir tous les services →
+            {t("viewAll")}
           </Link>
         </div>
 
@@ -80,12 +82,12 @@ export default function TopFreelancers() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4v16m8-8H4" />
               </svg>
             </div>
-            <p className="text-[rgba(26,26,26,0.55)] text-sm mb-3">Soyez le premier à publier un service</p>
+            <p className="text-[rgba(26,26,26,0.55)] text-sm mb-3">{t("empty")}</p>
             <Link
               href="/services/new"
               className="inline-flex items-center gap-1.5 px-5 py-2.5 bg-[var(--orange)] hover:bg-[var(--orange-dark)] text-white text-sm font-semibold rounded-[10px] transition-all hover:-translate-y-px shadow-[0_4px_12px_rgba(250,129,18,0.35)] font-jakarta"
             >
-              Publier un service →
+              {t("emptyCta")}
             </Link>
           </div>
         ) : (

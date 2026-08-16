@@ -102,6 +102,38 @@
         "title": "Des clients partout dans le monde",
         "desc": "Une audience internationale dès le premier jour"
       }
+    },
+    "categories": {
+      "eyebrow": "Catégories",
+      "title": "Explorez par domaine",
+      "subtitle": "Des compétences créatives aux services techniques, tout ce dont votre projet a besoin.",
+      "allCta": "Toutes les catégories →",
+      "cats": {
+        "design":    { "label": "Design & Graphisme",      "sub": "Logos, identités, affiches" },
+        "web":       { "label": "Développement web",       "sub": "Sites, apps, e-commerce" },
+        "video":     { "label": "Vidéo & Animation",       "sub": "Montage, motion design" },
+        "marketing": { "label": "Marketing digital",       "sub": "Meta Ads, TikTok, SEO" },
+        "writing":   { "label": "Rédaction & Traduction",  "sub": "FR, AR, EN, Darija" },
+        "audio":     { "label": "Audio & Voix off",        "sub": "Podcasts, doublage, jingles" },
+        "ebooks":    { "label": "E-books & Formations",    "sub": "Guides, cours, templates" },
+        "templates": { "label": "Templates & Assets",      "sub": "Canva, Notion, UI kits" }
+      }
+    },
+    "topFreelancers": {
+      "eyebrow": "Services",
+      "title": "Les services les plus demandés",
+      "subtitle": "Les offres les mieux notées et les plus populaires de la plateforme",
+      "viewAll": "Voir tous les services →",
+      "empty": "Soyez le premier à publier un service",
+      "emptyCta": "Publier un service →"
+    },
+    "marketplace": {
+      "eyebrow": "Marketplace",
+      "title": "Téléchargez, c'est prêt",
+      "subtitle": "Templates, packs et ressources digitales prêts à l'emploi",
+      "viewAll": "Voir tous les produits →",
+      "empty": "Aucun produit pour le moment",
+      "emptyCta": "Vendre un produit →"
     }
   },
   "auth": {
@@ -273,6 +305,26 @@
       "contact": "Contacter le vendeur",
       "contacting": "En cours…"
     }
+  },
+  "cards": {
+    "bestSeller": "Meilleure vente",
+    "new": "Nouveau",
+    "startingAt": "À partir de",
+    "free": "Gratuit",
+    "sales": "{n, plural, one {# vente} other {# ventes}}",
+    "freelanceFallback": "Freelance",
+    "sellerFallback": "Vendeur"
+  },
+  "contactButton": {
+    "loading": "Chargement...",
+    "contact": "Contacter"
+  },
+  "cropModal": {
+    "title": "Recadrer l'image de couverture",
+    "hint": "Ratio {aspect}:1 — déplacez et redimensionnez la zone de sélection",
+    "cancel": "Annuler",
+    "cropping": "Recadrage...",
+    "confirm": "Valider le recadrage"
   },
   "messages": {
     "empty": {

@@ -1,9 +1,11 @@
-import Link from "next/link";
+"use client"
 
-const categories = [
+import Link from "next/link"
+import { useTranslations } from "next-intl"
+
+const categoryMeta = [
   {
-    label: "Design & Graphisme",
-    subtitle: "Logos, identités, affiches",
+    key: "design",
     q: "Design Graphisme",
     icon: (
       <svg className="w-[23px] h-[23px]" fill="none" stroke="#FA8112" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
@@ -14,8 +16,7 @@ const categories = [
     ),
   },
   {
-    label: "Développement web",
-    subtitle: "Sites, apps, e-commerce",
+    key: "web",
     q: "Développement web",
     icon: (
       <svg className="w-[23px] h-[23px]" fill="none" stroke="#FA8112" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
@@ -24,8 +25,7 @@ const categories = [
     ),
   },
   {
-    label: "Vidéo & Animation",
-    subtitle: "Montage, motion design",
+    key: "video",
     q: "Vidéo Animation",
     icon: (
       <svg className="w-[23px] h-[23px]" fill="none" stroke="#FA8112" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
@@ -35,8 +35,7 @@ const categories = [
     ),
   },
   {
-    label: "Marketing digital",
-    subtitle: "Meta Ads, TikTok, SEO",
+    key: "marketing",
     q: "Marketing digital",
     icon: (
       <svg className="w-[23px] h-[23px]" fill="none" stroke="#FA8112" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
@@ -45,8 +44,7 @@ const categories = [
     ),
   },
   {
-    label: "Rédaction & Traduction",
-    subtitle: "FR, AR, EN, Darija",
+    key: "writing",
     q: "Rédaction Traduction",
     icon: (
       <svg className="w-[23px] h-[23px]" fill="none" stroke="#FA8112" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
@@ -55,8 +53,7 @@ const categories = [
     ),
   },
   {
-    label: "Audio & Voix off",
-    subtitle: "Podcasts, doublage, jingles",
+    key: "audio",
     q: "Audio Voix off",
     icon: (
       <svg className="w-[23px] h-[23px]" fill="none" stroke="#FA8112" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
@@ -67,8 +64,7 @@ const categories = [
     ),
   },
   {
-    label: "E-books & Formations",
-    subtitle: "Guides, cours, templates",
+    key: "ebooks",
     q: "E-books Formations",
     icon: (
       <svg className="w-[23px] h-[23px]" fill="none" stroke="#FA8112" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
@@ -78,8 +74,7 @@ const categories = [
     ),
   },
   {
-    label: "Templates & Assets",
-    subtitle: "Canva, Notion, UI kits",
+    key: "templates",
     q: "Templates Assets",
     icon: (
       <svg className="w-[23px] h-[23px]" fill="none" stroke="#FA8112" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
@@ -90,9 +85,11 @@ const categories = [
       </svg>
     ),
   },
-];
+]
 
 export default function Categories() {
+  const t = useTranslations("home.categories")
+
   return (
     <section className="py-[88px] bg-[var(--white)] dark:bg-[var(--color-bg)]">
       <div className="max-w-[1180px] mx-auto px-6">
@@ -101,25 +98,25 @@ export default function Categories() {
         <div className="flex items-end justify-between gap-6 flex-wrap mb-11">
           <div>
             <span className="eyebrow inline-block font-jakarta font-bold text-[13px] tracking-[.08em] uppercase text-[var(--orange)] mb-3">
-              Catégories
+              {t("eyebrow")}
             </span>
             <h2 className="font-extrabold text-[var(--ink)] dark:text-[var(--ink)]" style={{ fontSize: "clamp(26px, 3.4vw, 38px)", letterSpacing: "-0.02em", lineHeight: 1.15 }}>
-              Explorez par domaine
+              {t("title")}
             </h2>
             <p className="text-[rgba(26,26,26,0.62)] dark:text-gray-400 max-w-[460px] mt-2">
-              Des compétences créatives aux services techniques, tout ce dont votre projet a besoin.
+              {t("subtitle")}
             </p>
           </div>
           <Link href="/freelances" className="font-semibold text-[var(--orange)] hover:underline whitespace-nowrap font-jakarta">
-            Toutes les catégories →
+            {t("allCta")}
           </Link>
         </div>
 
         {/* 4-col grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[18px]">
-          {categories.map((cat) => (
+          {categoryMeta.map((cat) => (
             <Link
-              key={cat.label}
+              key={cat.key}
               href={`/search?q=${encodeURIComponent(cat.q)}`}
               className="group block border-[1.5px] border-[rgba(26,26,26,0.12)] dark:border-[var(--border-subtle)] rounded-[14px] bg-[var(--white)] dark:bg-[var(--white)] transition-all duration-[180ms] ease-out hover:border-[var(--orange)] hover:shadow-[0_12px_30px_rgba(250,129,18,0.14)] hover:-translate-y-[3px]"
               style={{ padding: "26px 22px" }}
@@ -131,15 +128,15 @@ export default function Categories() {
                 {cat.icon}
               </div>
               <h3 className="font-bold text-[16.5px] text-[var(--ink)] dark:text-[var(--ink)] mb-1 group-hover:text-[var(--orange)] transition-colors font-jakarta">
-                {cat.label}
+                {t(`cats.${cat.key}.label`)}
               </h3>
               <p className="text-[13.5px] text-[rgba(26,26,26,0.62)] dark:text-gray-500">
-                {cat.subtitle}
+                {t(`cats.${cat.key}.sub`)}
               </p>
             </Link>
           ))}
         </div>
       </div>
     </section>
-  );
+  )
 }

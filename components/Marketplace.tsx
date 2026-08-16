@@ -5,6 +5,7 @@ import Link from "next/link"
 import { createClient } from "@/lib/supabase/client"
 import { rankItems } from "@/lib/ranking"
 import ProductCard from "@/components/ProductCard"
+import { useTranslations } from "next-intl"
 
 type Product = {
   id: string
@@ -27,6 +28,7 @@ type Product = {
 }
 
 export default function Marketplace() {
+  const t = useTranslations("home.marketplace")
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -54,20 +56,20 @@ export default function Marketplace() {
         <div className="flex items-end justify-between mb-10">
           <div>
             <span className="inline-block text-[var(--orange)] text-xs font-bold uppercase tracking-widest mb-3 font-jakarta">
-              Marketplace
+              {t("eyebrow")}
             </span>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-[var(--ink)] dark:text-[var(--ink)]">
-              Téléchargez, c&apos;est prêt
+              {t("title")}
             </h2>
             <p className="mt-2 text-[rgba(26,26,26,0.55)] dark:text-gray-400 text-sm max-w-md">
-              Templates, packs et ressources digitales prêts à l&apos;emploi
+              {t("subtitle")}
             </p>
           </div>
           <Link
             href="/marketplace"
             className="hidden sm:inline-flex text-sm font-semibold text-[var(--orange)] hover:text-[var(--orange-dark)] transition-colors font-jakarta"
           >
-            Voir tous les produits →
+            {t("viewAll")}
           </Link>
         </div>
 
@@ -84,12 +86,12 @@ export default function Marketplace() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
               </svg>
             </div>
-            <p className="text-[rgba(26,26,26,0.55)] text-sm mb-3">Aucun produit pour le moment</p>
+            <p className="text-[rgba(26,26,26,0.55)] text-sm mb-3">{t("empty")}</p>
             <Link
               href="/products/new"
               className="inline-flex items-center gap-1.5 px-5 py-2.5 bg-[var(--orange)] hover:bg-[var(--orange-dark)] text-white text-sm font-semibold rounded-[10px] transition-all hover:-translate-y-px shadow-[0_4px_12px_rgba(250,129,18,0.35)] font-jakarta"
             >
-              Vendre un produit →
+              {t("emptyCta")}
             </Link>
           </div>
         ) : (

@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { useTranslations } from "next-intl"
 
 export default function ContactButton({
   sellerId,
@@ -10,6 +11,7 @@ export default function ContactButton({
   sellerId: string
   currentUserId: string | null
 }) {
+  const t = useTranslations("contactButton")
   const router = useRouter()
   const [loading, setLoading] = useState(false)
 
@@ -40,7 +42,7 @@ export default function ContactButton({
       disabled={loading}
       className="px-5 py-2.5 bg-[var(--orange)] hover:bg-[var(--orange-dark)] text-white text-sm font-semibold rounded-xl transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
     >
-      {loading ? "Chargement..." : "Contacter"}
+      {loading ? t("loading") : t("contact")}
     </button>
   )
 }
