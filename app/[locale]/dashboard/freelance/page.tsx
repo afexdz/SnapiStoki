@@ -16,6 +16,8 @@ type Profile = {
   role: string | null
   avatar_url: string | null
   rating: number | null
+  location_city: string | null
+  location_country: string | null
 }
 
 // SHOW_ORDERS: keep Order type for re-enable
@@ -181,13 +183,26 @@ export default function FreelanceDashboard() {
 
       const { data: profileData } = await sb
         .from("profiles")
-        .select("id, full_name, bio, wilaya, role, avatar_url, rating")
+        .select("id, full_name, bio, wilaya, role, avatar_url, rating, location_city, location_country")
         .eq("id", u.id)
         .single()
       if (profileData) setProfile(profileData)
 
       const role = profileData?.role ?? "buyer"
       if (role !== "seller" && role !== "both") { router.push("/dashboard/client"); return }
+
+      // Silently backfill location for accounts created before the location feature
+      if (profileData && !profileData.location_city) {
+        try {
+          const geo = await fetch('/api/geo', { signal: AbortSignal.timeout(6000) }).then(r => r.json())
+          if (geo.detected && (geo.city || geo.country)) {
+            await sb.from("profiles").update({
+              location_city: geo.city ?? null,
+              location_country: geo.country ?? null,
+            }).eq("id", u.id)
+          }
+        } catch { /* non-blocking */ }
+      }
 
       // Single parallel fetch for all stats + recent conversations
       const [svcCountRes, prodCountRes, convsCountRes, unreadRes, recentConvsRes] = await Promise.allSettled([
