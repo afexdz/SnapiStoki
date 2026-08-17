@@ -813,5 +813,89 @@
         "save": "Enregistrer les modifications"
       }
     }
+  },
+  "dashboardClient": {
+    "nav": {
+      "dashboard": "Tableau de bord",
+      "orders": "Mes commandes",
+      "messages": "Messages",
+      "favorites": "Favoris",
+      "profile": "Mon profil",
+      "settings": "Paramètres",
+      "logout": "Déconnexion",
+      "space": "Espace Client",
+      "accountType": "Compte Acheteur"
+    },
+    "home": {
+      "greeting": "Bonjour, {name} 👋",
+      "subtitle": "Suivez vos conversations et activités",
+      "findFreelancer": "Trouver un freelance",
+      "stats": {
+        "conversations": "Conversations",
+        "conversationsSub": "total",
+        "unread": "Messages non lus",
+        "unreadAll": "tout lu",
+        "unreadPending": "à lire",
+        "favorites": "Favoris",
+        "favoritesSub": "freelances sauvegardés"
+      },
+      "convs": {
+        "title": "Mes conversations récentes",
+        "viewAll": "Voir tout →",
+        "empty": "Aucune conversation pour l'instant",
+        "findFreelancer": "Trouver un freelance →",
+        "userFallback": "Utilisateur",
+        "you": "Vous : {msg}",
+        "startConv": "Démarrez la conversation",
+        "deletedListing": "Annonce supprimée"
+      },
+      "quickActions": {
+        "title": "Actions rapides",
+        "findFreelancer": "Trouver un freelance",
+        "marketplace": "Marketplace",
+        "profile": "Mon profil"
+      },
+      "account": {
+        "title": "Mon compte",
+        "email": "Email",
+        "wilaya": "Wilaya",
+        "type": "Type",
+        "wilayaEmpty": "Non renseignée",
+        "accountType": "Acheteur",
+        "editProfile": "Modifier le profil →"
+      }
+    },
+    "favorites": {
+      "title": "Mes favoris",
+      "subtitle": "Freelances et créateurs que vous suivez",
+      "empty": "Aucun favori pour l'instant",
+      "emptyHint": "Sauvegardez vos freelances préférés pour les retrouver facilement",
+      "discoverCta": "Découvrir les freelances →",
+      "userFallback": "Utilisateur",
+      "country": "Algérie",
+      "viewProfile": "Voir le profil"
+    },
+    "orders": {
+      "title": "Mes commandes",
+      "subtitle": "Suivez l'avancement de vos commandes",
+      "filter": {
+        "all": "Toutes",
+        "pending": "En attente",
+        "active": "En cours",
+        "completed": "Terminées",
+        "cancelled": "Annulées"
+      },
+      "status": {
+        "pending": "En attente",
+        "active": "En cours",
+        "completed": "Terminée",
+        "cancelled": "Annulée"
+      },
+      "orderPrefix": "Commande #",
+      "serviceType": "Service",
+      "productType": "Produit digital",
+      "empty": "Aucune commande trouvée",
+      "findFreelancer": "Trouver un freelance →"
+    }
   }
 }

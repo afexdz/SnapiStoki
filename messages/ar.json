@@ -813,5 +813,89 @@
         "save": "حفظ التغييرات"
       }
     }
+  },
+  "dashboardClient": {
+    "nav": {
+      "dashboard": "لوحة التحكم",
+      "orders": "طلباتي",
+      "messages": "الرسائل",
+      "favorites": "المفضلة",
+      "profile": "ملفي الشخصي",
+      "settings": "الإعدادات",
+      "logout": "تسجيل الخروج",
+      "space": "فضاء المشتري",
+      "accountType": "حساب مشتري"
+    },
+    "home": {
+      "greeting": "مرحباً، {name} 👋",
+      "subtitle": "تابع محادثاتك ونشاطك",
+      "findFreelancer": "ابحث عن مستقل",
+      "stats": {
+        "conversations": "المحادثات",
+        "conversationsSub": "الإجمالي",
+        "unread": "الرسائل غير المقروءة",
+        "unreadAll": "تمت القراءة",
+        "unreadPending": "للقراءة",
+        "favorites": "المفضلة",
+        "favoritesSub": "مستقلون محفوظون"
+      },
+      "convs": {
+        "title": "المحادثات الأخيرة",
+        "viewAll": "← عرض الكل",
+        "empty": "لا توجد محادثات بعد",
+        "findFreelancer": "← ابحث عن مستقل",
+        "userFallback": "مستخدم",
+        "you": "أنت: {msg}",
+        "startConv": "ابدأ المحادثة",
+        "deletedListing": "إعلان محذوف"
+      },
+      "quickActions": {
+        "title": "إجراءات سريعة",
+        "findFreelancer": "ابحث عن مستقل",
+        "marketplace": "السوق الرقمي",
+        "profile": "ملفي الشخصي"
+      },
+      "account": {
+        "title": "حسابي",
+        "email": "البريد الإلكتروني",
+        "wilaya": "الولاية",
+        "type": "النوع",
+        "wilayaEmpty": "غير محدد",
+        "accountType": "مشتري",
+        "editProfile": "← تعديل الملف الشخصي"
+      }
+    },
+    "favorites": {
+      "title": "مفضلتي",
+      "subtitle": "المستقلون والمبدعون الذين تتابعهم",
+      "empty": "لا توجد مفضلة بعد",
+      "emptyHint": "احفظ مستقليك المفضلين للعثور عليهم بسهولة",
+      "discoverCta": "← اكتشف المستقلين",
+      "userFallback": "مستخدم",
+      "country": "الجزائر",
+      "viewProfile": "عرض الملف الشخصي"
+    },
+    "orders": {
+      "title": "طلباتي",
+      "subtitle": "تابع تقدم طلباتك",
+      "filter": {
+        "all": "الكل",
+        "pending": "في الانتظار",
+        "active": "قيد التنفيذ",
+        "completed": "مكتملة",
+        "cancelled": "ملغاة"
+      },
+      "status": {
+        "pending": "في الانتظار",
+        "active": "قيد التنفيذ",
+        "completed": "مكتملة",
+        "cancelled": "ملغاة"
+      },
+      "orderPrefix": "طلب #",
+      "serviceType": "خدمة",
+      "productType": "منتج رقمي",
+      "empty": "لا توجد طلبات",
+      "findFreelancer": "← ابحث عن مستقل"
+    }
   }
 }

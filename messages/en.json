@@ -813,5 +813,89 @@
         "save": "Save changes"
       }
     }
+  },
+  "dashboardClient": {
+    "nav": {
+      "dashboard": "Dashboard",
+      "orders": "My orders",
+      "messages": "Messages",
+      "favorites": "Favorites",
+      "profile": "My profile",
+      "settings": "Settings",
+      "logout": "Sign out",
+      "space": "Buyer Space",
+      "accountType": "Buyer Account"
+    },
+    "home": {
+      "greeting": "Hello, {name} 👋",
+      "subtitle": "Track your conversations and activity",
+      "findFreelancer": "Find a freelancer",
+      "stats": {
+        "conversations": "Conversations",
+        "conversationsSub": "total",
+        "unread": "Unread messages",
+        "unreadAll": "all read",
+        "unreadPending": "to read",
+        "favorites": "Favorites",
+        "favoritesSub": "saved freelancers"
+      },
+      "convs": {
+        "title": "Recent conversations",
+        "viewAll": "View all →",
+        "empty": "No conversations yet",
+        "findFreelancer": "Find a freelancer →",
+        "userFallback": "User",
+        "you": "You: {msg}",
+        "startConv": "Start the conversation",
+        "deletedListing": "Deleted listing"
+      },
+      "quickActions": {
+        "title": "Quick actions",
+        "findFreelancer": "Find a freelancer",
+        "marketplace": "Marketplace",
+        "profile": "My profile"
+      },
+      "account": {
+        "title": "My account",
+        "email": "Email",
+        "wilaya": "Wilaya",
+        "type": "Type",
+        "wilayaEmpty": "Not provided",
+        "accountType": "Buyer",
+        "editProfile": "Edit profile →"
+      }
+    },
+    "favorites": {
+      "title": "My favorites",
+      "subtitle": "Freelancers and creators you follow",
+      "empty": "No favorites yet",
+      "emptyHint": "Save your favorite freelancers to find them easily",
+      "discoverCta": "Discover freelancers →",
+      "userFallback": "User",
+      "country": "Algeria",
+      "viewProfile": "View profile"
+    },
+    "orders": {
+      "title": "My orders",
+      "subtitle": "Track the progress of your orders",
+      "filter": {
+        "all": "All",
+        "pending": "Pending",
+        "active": "In progress",
+        "completed": "Completed",
+        "cancelled": "Cancelled"
+      },
+      "status": {
+        "pending": "Pending",
+        "active": "In progress",
+        "completed": "Completed",
+        "cancelled": "Cancelled"
+      },
+      "orderPrefix": "Order #",
+      "serviceType": "Service",
+      "productType": "Digital product",
+      "empty": "No orders found",
+      "findFreelancer": "Find a freelancer →"
+    }
   }
 }

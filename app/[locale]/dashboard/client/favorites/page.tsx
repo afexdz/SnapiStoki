@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { useTranslations } from "next-intl"
 import { createClient } from "@/lib/supabase/client"
 
 type FavoriteProfile = {
@@ -16,6 +17,7 @@ type FavoriteProfile = {
 
 export default function ClientFavoritesPage() {
   const router = useRouter()
+  const t = useTranslations("dashboardClient")
   const [favorites, setFavorites] = useState<FavoriteProfile[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -56,9 +58,9 @@ export default function ClientFavoritesPage() {
           </Link>
           <div>
             <h1 className="text-2xl font-extrabold text-[var(--ink)] dark:text-[var(--ink)]" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-              Mes favoris
+              {t("favorites.title")}
             </h1>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Freelances et créateurs que vous suivez</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">{t("favorites.subtitle")}</p>
           </div>
         </div>
 
@@ -84,13 +86,13 @@ export default function ClientFavoritesPage() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                     </svg>
                   </div>
-                  <p className="text-gray-500 dark:text-gray-400 text-sm font-medium mb-1">Aucun favori pour l'instant</p>
-                  <p className="text-gray-400 dark:text-gray-500 text-xs mb-5">Sauvegardez vos freelances préférés pour les retrouver facilement</p>
+                  <p className="text-gray-500 dark:text-gray-400 text-sm font-medium mb-1">{t("favorites.empty")}</p>
+                  <p className="text-gray-400 dark:text-gray-500 text-xs mb-5">{t("favorites.emptyHint")}</p>
                   <Link
                     href="/freelances"
                     className="inline-flex items-center gap-2 px-5 py-2.5 bg-[var(--orange)] hover:bg-[var(--orange-dark)] text-white text-sm font-semibold rounded-xl shadow-md shadow-[var(--orange)]/20 transition-all"
                   >
-                    Découvrir les freelances →
+                    {t("favorites.discoverCta")}
                   </Link>
                 </div>
               )
@@ -107,9 +109,9 @@ export default function ClientFavoritesPage() {
                           </div>
                         )}
                         <div className="min-w-0">
-                          <p className="text-sm font-semibold text-[var(--ink)] dark:text-[var(--ink)] truncate">{profile.full_name ?? "Utilisateur"}</p>
+                          <p className="text-sm font-semibold text-[var(--ink)] dark:text-[var(--ink)] truncate">{profile.full_name ?? t("favorites.userFallback")}</p>
                           {profile.wilaya && (
-                            <p className="text-xs text-gray-400">{profile.wilaya}, Algérie</p>
+                            <p className="text-xs text-gray-400">{profile.wilaya}, {t("favorites.country")}</p>
                           )}
                         </div>
                       </div>
@@ -123,7 +125,7 @@ export default function ClientFavoritesPage() {
                         href={`/freelances`}
                         className="block w-full text-center py-2 rounded-xl border border-[var(--orange)]/30 text-[var(--orange)] text-xs font-semibold hover:bg-[var(--orange)]/5 transition-colors"
                       >
-                        Voir le profil
+                        {t("favorites.viewProfile")}
                       </Link>
                     </div>
                   )

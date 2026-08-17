@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { useTranslations } from "next-intl"
 import { createClient } from "@/lib/supabase/client"
 import UnreadBadge from "@/components/UnreadBadge"
 import { SHOW_ORDERS } from "@/lib/features"
@@ -52,60 +53,8 @@ type Stats = {
   // SHOW_ORDERS: activeOrders, completedOrders, totalSpent
 }
 
-const navItems = [
-  {
-    label: "Tableau de bord",
-    href: "/dashboard/client",
-    icon: "M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6",
-  },
-  // SHOW_ORDERS gate: "Mes commandes" entry shown when orders are re-enabled
-  ...(SHOW_ORDERS ? [{ label: "Mes commandes", href: "/dashboard/client/orders", icon: "M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" }] : []),
-  {
-    label: "Messages",
-    href: "/messages",
-    icon: "M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z",
-  },
-  {
-    label: "Favoris",
-    href: "/dashboard/client/favorites",
-    icon: "M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z",
-  },
-  {
-    label: "Mon profil",
-    href: "/profile",
-    icon: "M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z",
-  },
-  {
-    label: "Paramètres",
-    href: "/profile",
-    icon: "M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z",
-  },
-]
-
-// SHOW_ORDERS: status label map — uncomment when rendering order rows
-// const STATUS_LABELS: Record<string, { label: string; color: string }> = {
-//   pending:   { label: "En attente",  color: "bg-amber-100 text-amber-700" },
-//   active:    { label: "En cours",    color: "bg-blue-100 text-blue-700" },
-//   completed: { label: "Terminée",    color: "bg-green-100 text-green-700" },
-//   cancelled: { label: "Annulée",     color: "bg-red-100 text-red-700" },
-//   paid:      { label: "Payée",       color: "bg-emerald-100 text-emerald-700" },
-// }
-
 function getInitials(name: string | null) {
   return (name || "?").trim().split(/\s+/).map((n) => n[0]).join("").toUpperCase().slice(0, 2)
-}
-
-function relativeTime(d: string) {
-  const diff = Date.now() - new Date(d).getTime()
-  const m = Math.floor(diff / 60000)
-  if (m < 1) return "À l'instant"
-  if (m < 60) return `${m} min`
-  const h = Math.floor(m / 60)
-  if (h < 24) return `${h}h`
-  const days = Math.floor(h / 24)
-  if (days === 1) return "Hier"
-  if (days < 7) return `Il y a ${days} j`
-  return new Date(d).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })
 }
 
 function StatCard({ label, value, sub, color = "text-[var(--orange)]" }: {
@@ -122,12 +71,63 @@ function StatCard({ label, value, sub, color = "text-[var(--orange)]" }: {
 
 export default function ClientDashboard() {
   const router = useRouter()
+  const t = useTranslations("dashboardClient")
+  const tMsg = useTranslations("messages")
+
   const [user, setUser] = useState<User | null>(null)
   const [profile, setProfile] = useState<Profile | null>(null)
   const [stats, setStats] = useState<Stats>({ convCount: 0, unreadCount: 0, favoriteCount: 0 })
   const [recentConvs, setRecentConvs] = useState<RecentConv[]>([])
   const [loading, setLoading] = useState(true)
   const [sidebarOpen, setSidebarOpen] = useState(false)
+
+  const navItems = [
+    {
+      key: "dashboard",
+      label: t("nav.dashboard"),
+      href: "/dashboard/client",
+      icon: "M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6",
+    },
+    // SHOW_ORDERS gate: "Mes commandes" entry shown when orders are re-enabled
+    ...(SHOW_ORDERS ? [{ key: "orders", label: t("nav.orders"), href: "/dashboard/client/orders", icon: "M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" }] : []),
+    {
+      key: "messages",
+      label: t("nav.messages"),
+      href: "/messages",
+      icon: "M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z",
+    },
+    {
+      key: "favorites",
+      label: t("nav.favorites"),
+      href: "/dashboard/client/favorites",
+      icon: "M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z",
+    },
+    {
+      key: "profile",
+      label: t("nav.profile"),
+      href: "/profile",
+      icon: "M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z",
+    },
+    {
+      key: "settings",
+      label: t("nav.settings"),
+      href: "/profile",
+      icon: "M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z",
+    },
+  ]
+
+  function relativeTime(d: string) {
+    const diff = Date.now() - new Date(d).getTime()
+    const m = Math.floor(diff / 60000)
+    if (m < 1) return tMsg("relativeTime.now")
+    if (m < 60) return tMsg("relativeTime.min", { n: m })
+    const h = Math.floor(m / 60)
+    if (h < 24) return tMsg("relativeTime.hours", { n: h })
+    const days = Math.floor(h / 24)
+    if (days === 1) return tMsg("relativeTime.yesterday")
+    if (days < 7) return tMsg("relativeTime.daysAgo", { n: days })
+    return new Date(d).toLocaleDateString(undefined, { day: "numeric", month: "short" })
+  }
 
   useEffect(() => {
     const sb = createClient()
@@ -229,7 +229,7 @@ export default function ClientDashboard() {
           return {
             id: c.id,
             interlocutor: profileMap[interlocutorId] ?? { id: interlocutorId, full_name: null, avatar_url: null },
-            listingTitle: titleMap[c.listing_id] ?? "Annonce supprimée",
+            listingTitle: titleMap[c.listing_id] ?? t("home.convs.deletedListing"),
             lastMessage: lm?.content ?? null,
             lastMessageIsMine: lm?.sender_id === u.id,
             lastMessageAt: c.last_message_at,
@@ -262,7 +262,7 @@ export default function ClientDashboard() {
 
       {/* Sidebar */}
       <aside
-        className={`fixed inset-y-0 left-0 z-30 w-64 bg-[var(--white)] border-r border-[var(--border-subtle)] flex flex-col transition-transform duration-300 ${
+        className={`fixed inset-y-0 start-0 z-30 w-64 bg-[var(--white)] border-e border-[var(--border-subtle)] flex flex-col transition-transform duration-300 ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         } lg:static lg:translate-x-0 lg:flex`}
       >
@@ -271,7 +271,7 @@ export default function ClientDashboard() {
             <span className="text-xl font-extrabold text-[var(--orange)]">Pix</span>
             <span className="text-xl font-extrabold text-[var(--ink)]">Raise</span>
           </Link>
-          <p className="text-xs text-gray-400 mt-0.5">Espace Client</p>
+          <p className="text-xs text-gray-400 mt-0.5">{t("nav.space")}</p>
         </div>
 
         <div className="px-5 py-4 border-b border-[var(--border-subtle)]">
@@ -286,7 +286,7 @@ export default function ClientDashboard() {
             )}
             <div className="min-w-0">
               <p className="text-sm font-semibold text-[var(--ink)] truncate">{displayName}</p>
-              <p className="text-xs text-gray-400">Compte Acheteur</p>
+              <p className="text-xs text-gray-400">{t("nav.accountType")}</p>
             </div>
           </Link>
         </div>
@@ -294,7 +294,7 @@ export default function ClientDashboard() {
         <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
           {navItems.map((item) => (
             <Link
-              key={item.label}
+              key={item.key}
               href={item.href}
               onClick={() => setSidebarOpen(false)}
               className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-600 hover:bg-[var(--cream)] hover:text-[var(--orange)] transition-all group"
@@ -303,7 +303,7 @@ export default function ClientDashboard() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d={item.icon} />
               </svg>
               {item.label}
-              {item.href === "/messages" && <UnreadBadge className="ml-auto" />}
+              {item.href === "/messages" && <UnreadBadge className="ms-auto" />}
             </Link>
           ))}
         </nav>
@@ -319,7 +319,7 @@ export default function ClientDashboard() {
             <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
             </svg>
-            Déconnexion
+            {t("nav.logout")}
           </button>
         </div>
       </aside>
@@ -349,9 +349,9 @@ export default function ClientDashboard() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-black text-[var(--ink)]">
-                Bonjour, {displayName.split(" ")[0]} 👋
+                {t("home.greeting", { name: displayName.split(" ")[0] })}
               </h1>
-              <p className="text-sm text-gray-500 mt-0.5">Suivez vos conversations et activités</p>
+              <p className="text-sm text-gray-500 mt-0.5">{t("home.subtitle")}</p>
             </div>
             <Link
               href="/freelances"
@@ -360,46 +360,46 @@ export default function ClientDashboard() {
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
-              Trouver un freelance
+              {t("home.findFreelancer")}
             </Link>
           </div>
 
           {/* Stats — 3 cards */}
           <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
             <StatCard
-              label="Conversations"
+              label={t("home.stats.conversations")}
               value={String(stats.convCount)}
-              sub="total"
+              sub={t("home.stats.conversationsSub")}
               color="text-[var(--orange)]"
             />
             <StatCard
-              label="Messages non lus"
+              label={t("home.stats.unread")}
               value={String(stats.unreadCount)}
-              sub={stats.unreadCount === 0 ? "tout lu" : "à lire"}
+              sub={stats.unreadCount === 0 ? t("home.stats.unreadAll") : t("home.stats.unreadPending")}
               color={stats.unreadCount > 0 ? "text-blue-600" : "text-emerald-600"}
             />
             <StatCard
-              label="Favoris"
+              label={t("home.stats.favorites")}
               value={String(stats.favoriteCount)}
-              sub="freelances sauvegardés"
+              sub={t("home.stats.favoritesSub")}
               color="text-pink-500"
             />
           </div>
 
           {/* SHOW_ORDERS: replace above with 4-card grid when re-enabled:
-            <StatCard label="Commandes actives" value={String(activeOrders)} sub="en cours" color="text-blue-600" />
-            <StatCard label="Terminées" value={String(completedOrders)} sub="commandes" color="text-emerald-600" />
-            <StatCard label="Total dépensé" value={`${totalSpent.toLocaleString("fr-DZ")} DA`} sub="toutes commandes" color="text-[var(--orange)]" />
-            <StatCard label="Favoris" value={String(favoriteCount)} sub="freelances sauvegardés" color="text-pink-500" />
+            <StatCard label={t("home.stats.activeOrders")} value={String(activeOrders)} sub="en cours" color="text-blue-600" />
+            <StatCard label={t("home.stats.completed")} value={String(completedOrders)} sub="commandes" color="text-emerald-600" />
+            <StatCard label={t("home.stats.totalSpent")} value={`${totalSpent.toLocaleString("fr-DZ")} DA`} sub="toutes commandes" color="text-[var(--orange)]" />
+            <StatCard label={t("home.stats.favorites")} value={String(favoriteCount)} sub={t("home.stats.favoritesSub")} color="text-pink-500" />
           */}
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Recent conversations */}
             <div className="lg:col-span-2 bg-[var(--white)] rounded-2xl border border-[var(--border-subtle)] shadow-sm">
               <div className="flex items-center justify-between px-5 py-4 border-b border-[var(--border-subtle)]">
-                <h2 className="font-bold text-[var(--ink)]">Mes conversations récentes</h2>
+                <h2 className="font-bold text-[var(--ink)]">{t("home.convs.title")}</h2>
                 <Link href="/messages" className="text-xs text-[var(--orange)] hover:text-[var(--orange-dark)] font-medium transition-colors">
-                  Voir tout →
+                  {t("home.convs.viewAll")}
                 </Link>
               </div>
 
@@ -410,22 +410,22 @@ export default function ClientDashboard() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                     </svg>
                   </div>
-                  <p className="text-sm text-gray-400">Aucune conversation pour l'instant</p>
+                  <p className="text-sm text-gray-400">{t("home.convs.empty")}</p>
                   <Link
                     href="/freelances"
                     className="inline-flex items-center gap-1.5 mt-3 text-sm font-medium text-[var(--orange)] hover:text-[var(--orange-dark)] transition-colors"
                   >
-                    Trouver un freelance →
+                    {t("home.convs.findFreelancer")}
                   </Link>
                 </div>
               ) : (
                 <div className="divide-y divide-[var(--border-subtle)]">
                   {recentConvs.map((conv) => {
-                    const name = conv.interlocutor.full_name ?? "Utilisateur"
+                    const name = conv.interlocutor.full_name ?? t("home.convs.userFallback")
                     const initials2 = getInitials(conv.interlocutor.full_name)
                     const preview = conv.lastMessage
-                      ? (conv.lastMessageIsMine ? `Vous : ${conv.lastMessage}` : conv.lastMessage)
-                      : "Démarrez la conversation"
+                      ? (conv.lastMessageIsMine ? t("home.convs.you", { msg: conv.lastMessage }) : conv.lastMessage)
+                      : t("home.convs.startConv")
                     return (
                       <Link
                         key={conv.id}
@@ -470,12 +470,12 @@ export default function ClientDashboard() {
             <div className="space-y-4">
               {/* Quick actions */}
               <div className="bg-[var(--white)] rounded-2xl border border-[var(--border-subtle)] shadow-sm p-5">
-                <h2 className="font-bold text-[var(--ink)] mb-4">Actions rapides</h2>
+                <h2 className="font-bold text-[var(--ink)] mb-4">{t("home.quickActions.title")}</h2>
                 <div className="space-y-2">
                   {[
-                    { label: "Trouver un freelance", href: "/freelances", icon: "M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z", primary: true },
-                    { label: "Marketplace", href: "/marketplace", icon: "M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" },
-                    { label: "Mon profil", href: "/profile", icon: "M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" },
+                    { label: t("home.quickActions.findFreelancer"), href: "/freelances", icon: "M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z", primary: true },
+                    { label: t("home.quickActions.marketplace"), href: "/marketplace", icon: "M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" },
+                    { label: t("home.quickActions.profile"), href: "/profile", icon: "M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" },
                   ].map((a) => (
                     <Link
                       key={a.href}
@@ -497,12 +497,12 @@ export default function ClientDashboard() {
 
               {/* Mon compte */}
               <div className="bg-[var(--white)] rounded-2xl border border-[var(--border-subtle)] shadow-sm p-5">
-                <h2 className="font-bold text-[var(--ink)] mb-4">Mon compte</h2>
+                <h2 className="font-bold text-[var(--ink)] mb-4">{t("home.account.title")}</h2>
                 <div className="space-y-3">
                   {[
-                    { label: "Email", value: user?.email ?? "—" },
-                    { label: "Wilaya", value: profile?.wilaya ?? "Non renseignée" },
-                    { label: "Type", value: "Acheteur" },
+                    { label: t("home.account.email"), value: user?.email ?? "—" },
+                    { label: t("home.account.wilaya"), value: profile?.wilaya ?? t("home.account.wilayaEmpty") },
+                    { label: t("home.account.type"), value: t("home.account.accountType") },
                   ].map((info) => (
                     <div key={info.label} className="flex items-center justify-between">
                       <span className="text-xs text-gray-400">{info.label}</span>
@@ -514,7 +514,7 @@ export default function ClientDashboard() {
                   href="/profile"
                   className="mt-4 flex items-center justify-center gap-1.5 w-full py-2 rounded-xl border border-[var(--orange)]/30 text-[var(--orange)] text-sm font-medium hover:bg-[var(--orange)]/5 transition-colors"
                 >
-                  Modifier le profil →
+                  {t("home.account.editProfile")}
                 </Link>
               </div>
             </div>

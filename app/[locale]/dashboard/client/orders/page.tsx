@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { useTranslations } from "next-intl"
 import { createClient } from "@/lib/supabase/client"
 
 type Order = {
@@ -15,15 +16,16 @@ type Order = {
   product_id: string | null
 }
 
-const STATUS_LABELS: Record<string, { label: string; color: string }> = {
-  pending:   { label: "En attente",  color: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400" },
-  active:    { label: "En cours",    color: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400" },
-  completed: { label: "Terminée",    color: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400" },
-  cancelled: { label: "Annulée",     color: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400" },
+const STATUS_COLORS: Record<string, string> = {
+  pending:   "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
+  active:    "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
+  completed: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
+  cancelled: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
 }
 
 export default function ClientOrdersPage() {
   const router = useRouter()
+  const t = useTranslations("dashboardClient")
   const [orders, setOrders] = useState<Order[]>([])
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState("all")
@@ -61,20 +63,20 @@ export default function ClientOrdersPage() {
           </Link>
           <div>
             <h1 className="text-2xl font-extrabold text-[var(--ink)] dark:text-[var(--ink)]" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-              Mes commandes
+              {t("orders.title")}
             </h1>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Suivez l'avancement de vos commandes</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">{t("orders.subtitle")}</p>
           </div>
         </div>
 
         {/* Filters */}
         <div className="flex gap-2 mb-6 overflow-x-auto pb-1 scrollbar-hide">
           {[
-            { key: "all",       label: "Toutes" },
-            { key: "pending",   label: "En attente" },
-            { key: "active",    label: "En cours" },
-            { key: "completed", label: "Terminées" },
-            { key: "cancelled", label: "Annulées" },
+            { key: "all",       label: t("orders.filter.all") },
+            { key: "pending",   label: t("orders.filter.pending") },
+            { key: "active",    label: t("orders.filter.active") },
+            { key: "completed", label: t("orders.filter.completed") },
+            { key: "cancelled", label: t("orders.filter.cancelled") },
           ].map(f => (
             <button
               key={f.key}
@@ -112,17 +114,18 @@ export default function ClientOrdersPage() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                     </svg>
                   </div>
-                  <p className="text-gray-500 dark:text-gray-400 text-sm font-medium">Aucune commande trouvée</p>
+                  <p className="text-gray-500 dark:text-gray-400 text-sm font-medium">{t("orders.empty")}</p>
                   <Link
                     href="/freelances"
                     className="inline-flex items-center gap-1.5 mt-4 text-sm font-semibold text-[var(--orange)] hover:text-[var(--orange-dark)] transition-colors"
                   >
-                    Trouver un freelance →
+                    {t("orders.findFreelancer")}
                   </Link>
                 </div>
               )
               : filtered.map(order => {
-                  const status = STATUS_LABELS[order.status] ?? { label: order.status, color: "bg-gray-100 dark:bg-[var(--ink-12)] text-gray-600" }
+                  const statusColor = STATUS_COLORS[order.status] ?? "bg-gray-100 dark:bg-[var(--ink-12)] text-gray-600"
+                  const statusLabel = t(`orders.status.${order.status}` as Parameters<typeof t>[0], { defaultValue: order.status })
                   return (
                     <div
                       key={order.id}
@@ -137,17 +140,17 @@ export default function ClientOrdersPage() {
                           </div>
                           <div className="min-w-0">
                             <p className="text-sm font-semibold text-[var(--ink)] dark:text-[var(--ink)] truncate">
-                              Commande #{order.id.slice(0, 8).toUpperCase()}
+                              {t("orders.orderPrefix")}{order.id.slice(0, 8).toUpperCase()}
                             </p>
                             <p className="text-xs text-gray-400 mt-0.5 capitalize">
-                              {order.order_type === "service" ? "Service" : "Produit digital"} ·{" "}
-                              {new Date(order.created_at).toLocaleDateString("fr-DZ", { day: "numeric", month: "short", year: "numeric" })}
+                              {order.order_type === "service" ? t("orders.serviceType") : t("orders.productType")} ·{" "}
+                              {new Date(order.created_at).toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" })}
                             </p>
                           </div>
                         </div>
                         <div className="flex items-center gap-3 shrink-0">
-                          <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${status.color}`}>
-                            {status.label}
+                          <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${statusColor}`}>
+                            {statusLabel}
                           </span>
                           <span className="text-sm font-bold text-[var(--ink)] dark:text-[var(--ink)]">
                             {(order.total_price ?? 0).toLocaleString("fr-DZ")} DA
