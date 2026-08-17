@@ -20,27 +20,30 @@ export async function GET(request: NextRequest) {
     if (cityHeader && isoCountry) {
       const city = decodeURIComponent(cityHeader)
       const country = ISO_TO_FRENCH[isoCountry] ?? isoCountry
-      return NextResponse.json({ city, country, countryCode: isoCountry, detected: true })
+      // Vercel headers don't include coordinates
+      return NextResponse.json({ city, country, countryCode: isoCountry, lat: null, lng: null, detected: true })
     }
 
-    // 2. Fallback: ipapi.co
+    // 2. Fallback: ipapi.co (includes coordinates)
     const forwarded = request.headers.get('x-forwarded-for')
     const ip = forwarded ? forwarded.split(',')[0].trim() : ''
 
     if (!ip || ip === '127.0.0.1' || ip === '::1' || ip.startsWith('192.168.') || ip.startsWith('10.')) {
-      return NextResponse.json({ city: null, country: null, countryCode: null, detected: false })
+      return NextResponse.json({ city: null, country: null, countryCode: null, lat: null, lng: null, detected: false })
     }
 
     const res = await fetch(`https://ipapi.co/${ip}/json/`, {
       signal: AbortSignal.timeout(5000),
     })
-    if (!res.ok) return NextResponse.json({ city: null, country: null, countryCode: null, detected: false })
+    if (!res.ok) return NextResponse.json({ city: null, country: null, countryCode: null, lat: null, lng: null, detected: false })
 
     const data = await res.json()
     const city = data.city ?? null
     const isoCode = data.country_code ?? null
     const country = ISO_TO_FRENCH[isoCode ?? ''] ?? data.country_name ?? null
-    return NextResponse.json({ city, country, countryCode: isoCode, detected: !!(city || country) })
+    const lat = typeof data.latitude === 'number' ? data.latitude : null
+    const lng = typeof data.longitude === 'number' ? data.longitude : null
+    return NextResponse.json({ city, country, countryCode: isoCode, lat, lng, detected: !!(city || country) })
   } catch {
     return NextResponse.json({ city: null, country: null, countryCode: null, detected: false })
   }
