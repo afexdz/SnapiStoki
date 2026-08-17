@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { useTranslations } from "next-intl"
 import { createClient } from "@/lib/supabase/client"
 
 type Service = {
@@ -18,6 +19,7 @@ type Service = {
 
 export default function FreelanceServicesPage() {
   const router = useRouter()
+  const t = useTranslations("dashboardSeller")
   const [services, setServices] = useState<Service[]>([])
   const [loading, setLoading] = useState(true)
   const [deleting, setDeleting] = useState<string | null>(null)
@@ -41,7 +43,7 @@ export default function FreelanceServicesPage() {
   useEffect(() => { fetchServices() }, [router])
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Supprimer ce service ? Cette action est irréversible.")) return
+    if (!confirm(t("services.actions.deleteConfirm"))) return
     setDeleting(id)
     const sb = createClient()
     const { error } = await sb.from("services").delete().eq("id", id)
@@ -72,10 +74,10 @@ export default function FreelanceServicesPage() {
             </Link>
             <div>
               <h1 className="text-2xl font-extrabold text-[var(--ink)] dark:text-[var(--ink)]" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-                Mes services
+                {t("services.title")}
               </h1>
               <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
-                {loading ? "…" : `${services.length} service${services.length !== 1 ? "s" : ""}`}
+                {loading ? "…" : t("services.count", { n: services.length })}
               </p>
             </div>
           </div>
@@ -86,7 +88,7 @@ export default function FreelanceServicesPage() {
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
             </svg>
-            Nouveau service
+            {t("services.newService")}
           </Link>
         </div>
 
@@ -112,13 +114,13 @@ export default function FreelanceServicesPage() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                     </svg>
                   </div>
-                  <p className="text-gray-500 dark:text-gray-400 text-sm font-medium mb-1">Aucun service publié</p>
-                  <p className="text-gray-400 dark:text-gray-500 text-xs mb-5">Créez votre premier service pour commencer à recevoir des commandes</p>
+                  <p className="text-gray-500 dark:text-gray-400 text-sm font-medium mb-1">{t("services.empty")}</p>
+                  <p className="text-gray-400 dark:text-gray-500 text-xs mb-5">{t("services.emptyHint")}</p>
                   <Link
                     href="/services/new"
                     className="inline-flex items-center gap-2 px-5 py-2.5 bg-[var(--orange)] hover:bg-[var(--orange-dark)] text-white text-sm font-semibold rounded-xl shadow-md shadow-[var(--orange)]/20 transition-all"
                   >
-                    Publier un service →
+                    {t("services.publishCta")}
                   </Link>
                 </div>
               )
@@ -155,7 +157,7 @@ export default function FreelanceServicesPage() {
                                   }`}
                                 >
                                   <span className={`w-1.5 h-1.5 rounded-full ${service.is_active ? "bg-green-500" : "bg-amber-500"}`} />
-                                  {service.is_active ? "Actif" : "En pause"}
+                                  {service.is_active ? t("services.status.active") : t("services.status.paused")}
                                 </span>
                               </div>
                             </div>
@@ -170,26 +172,26 @@ export default function FreelanceServicesPage() {
                               onClick={() => handleToggleStatus(service.id, service.is_active)}
                               className="px-3 py-1.5 rounded-lg border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] text-xs font-medium text-gray-600 dark:text-gray-400 hover:border-[var(--orange)]/40 hover:text-[var(--orange)] transition-all"
                             >
-                              {service.is_active ? "Mettre en pause" : "Réactiver"}
+                              {service.is_active ? t("services.actions.pause") : t("services.actions.activate")}
                             </button>
                           <Link
                             href={`/dashboard/freelance/services/${service.id}/edit`}
                             className="px-3 py-1.5 rounded-lg border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] text-xs font-medium text-gray-600 dark:text-gray-400 hover:border-[var(--orange)]/40 hover:text-[var(--orange)] transition-all"
                           >
-                            Modifier
+                            {t("services.actions.edit")}
                           </Link>
                           <Link
                             href={`/services/${service.id}`}
                             className="px-3 py-1.5 rounded-lg border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] text-xs font-medium text-gray-600 dark:text-gray-400 hover:border-[var(--orange)]/40 hover:text-[var(--orange)] transition-all"
                           >
-                            Voir la fiche
+                            {t("services.actions.view")}
                           </Link>
                           <button
                             onClick={() => handleDelete(service.id)}
                             disabled={deleting === service.id}
                             className="px-3 py-1.5 rounded-lg border border-red-200 dark:border-red-900/40 text-xs font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all disabled:opacity-50"
                           >
-                            {deleting === service.id ? "Suppression…" : "Supprimer"}
+                            {deleting === service.id ? t("services.actions.deleting") : t("services.actions.delete")}
                           </button>
                         </div>
                       </div>

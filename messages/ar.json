@@ -563,5 +563,255 @@
       "back": "→ العودة إلى لوحة التحكم",
       "error": "حدث خطأ"
     }
+  },
+  "dashboardSeller": {
+    "nav": {
+      "dashboard": "لوحة التحكم",
+      "services": "خدماتي",
+      "products": "منتجاتي",
+      "orders": "الطلبات",
+      "messages": "الرسائل",
+      "profile": "ملفي الشخصي",
+      "publishService": "نشر خدمة",
+      "logout": "تسجيل الخروج",
+      "space": "فضاء المستقل"
+    },
+    "home": {
+      "greeting": "مرحباً، {name} 👋",
+      "subtitle": "إليك نظرة عامة على نشاطك",
+      "myProfile": "ملفي الشخصي",
+      "stats": {
+        "services": "الخدمات المنشورة",
+        "servicesHint": "نشطة",
+        "products": "المنتجات الرقمية",
+        "productsHint": "معروضة",
+        "conversations": "المحادثات",
+        "conversationsHint": "مستلمة",
+        "unread": "الرسائل غير المقروءة",
+        "unreadAll": "تمت القراءة",
+        "unreadPending": "للقراءة"
+      },
+      "requests": {
+        "title": "الطلبات الأخيرة",
+        "viewAll": "عرض الكل →",
+        "empty": "لا توجد طلبات بعد",
+        "emptyHint": "انشر خدمات لتلقي الرسائل",
+        "you": "أنت: {msg}",
+        "startConv": "ابدأ المحادثة",
+        "deletedListing": "إعلان محذوف"
+      },
+      "quickActions": {
+        "title": "إجراءات سريعة",
+        "publishService": "نشر خدمة",
+        "sellProduct": "بيع منتج",
+        "viewProfile": "عرض ملفي",
+        "explore": "استكشاف"
+      },
+      "myServices": {
+        "title": "خدماتي",
+        "empty": "لا توجد خدمات منشورة",
+        "noCategory": "بدون فئة"
+      },
+      "account": {
+        "title": "معلومات الحساب",
+        "email": "البريد الإلكتروني",
+        "wilaya": "الولاية",
+        "account": "الحساب",
+        "wilayaEmpty": "غير محدد",
+        "role": "بائع / مستقل"
+      }
+    },
+    "services": {
+      "title": "خدماتي",
+      "count": "{n, plural, zero {# خدمات} one {# خدمة} two {# خدمتان} few {# خدمات} many {# خدمة} other {# خدمة}}",
+      "newService": "خدمة جديدة",
+      "empty": "لا توجد خدمات منشورة",
+      "emptyHint": "أنشئ خدمتك الأولى لتبدأ في استقبال الطلبات",
+      "publishCta": "نشر خدمة ←",
+      "status": {
+        "active": "نشط",
+        "paused": "متوقف"
+      },
+      "actions": {
+        "pause": "إيقاف مؤقت",
+        "reactivate": "إعادة التفعيل",
+        "edit": "تعديل",
+        "view": "عرض الإعلان",
+        "delete": "حذف",
+        "deleting": "جارٍ الحذف…",
+        "confirmDelete": "حذف هذه الخدمة؟ هذا الإجراء لا يمكن التراجع عنه."
+      }
+    },
+    "products": {
+      "title": "منتجاتي",
+      "count": "{n, plural, zero {# منتجات} one {# منتج} two {# منتجان} few {# منتجات} many {# منتج} other {# منتج}}",
+      "newProduct": "منتج جديد",
+      "empty": "لا توجد منتجات منشورة",
+      "emptyHint": "اعرض مواردك الرقمية للبيع",
+      "publishCta": "نشر منتج ←",
+      "free": "مجاني",
+      "sales": "{n, plural, zero {# مبيعات} one {# مبيعة} two {# مبيعتان} few {# مبيعات} many {# مبيعة} other {# مبيعة}}",
+      "status": {
+        "active": "نشط",
+        "paused": "متوقف"
+      },
+      "actions": {
+        "pause": "إيقاف مؤقت",
+        "reactivate": "إعادة التفعيل",
+        "edit": "تعديل",
+        "view": "عرض الإعلان",
+        "delete": "حذف",
+        "deleting": "جارٍ الحذف…",
+        "confirmDelete": "حذف هذا المنتج؟ هذا الإجراء لا يمكن التراجع عنه."
+      }
+    },
+    "orders": {
+      "title": "الطلبات المستلمة",
+      "subtitle": "إدارة طلبات عملائك",
+      "totalRevenue": "إجمالي الأرباح",
+      "inProgress": "قيد التنفيذ",
+      "completed": "مكتملة",
+      "filter": {
+        "all": "الكل",
+        "pending": "في الانتظار",
+        "active": "قيد التنفيذ",
+        "completed": "مكتملة",
+        "cancelled": "ملغاة"
+      },
+      "status": {
+        "pending": "في الانتظار",
+        "active": "قيد التنفيذ",
+        "completed": "مكتملة",
+        "cancelled": "ملغاة"
+      },
+      "orderPrefix": "طلب #",
+      "serviceType": "خدمة",
+      "productType": "منتج رقمي",
+      "empty": "لا توجد طلبات مستلمة",
+      "emptyHint": "انشر خدماتك لتبدأ في استقبال الطلبات",
+      "publishCta": "نشر خدمة ←"
+    },
+    "editService": {
+      "title": "تعديل الخدمة",
+      "subtitle": "تحديث معلومات خدمتك",
+      "steps": {
+        "overview": "نظرة عامة",
+        "pricing": "الأسعار",
+        "description": "الوصف والأسئلة",
+        "gallery": "المعرض"
+      },
+      "fields": {
+        "titleLabel": "عنوان الخدمة",
+        "titlePlaceholder": "سأصمم شعارك الاحترافي...",
+        "titleMin": "15 حرفاً على الأقل",
+        "category": "الفئة",
+        "categoryPlaceholder": "اختر فئة",
+        "tags": "العلامات",
+        "tagsMax": "(حد أقصى 5)",
+        "tagsPlaceholder": "مثال: شعار، تصميم، هوية"
+      },
+      "packages": {
+        "title": "باقات الأسعار",
+        "singleToggle": "باقة واحدة",
+        "basic": "أساسي",
+        "standard": "قياسي",
+        "premium": "مميز",
+        "descriptionLabel": "الوصف",
+        "descriptionPlaceholder": "ما يتضمنه هذا الباقة...",
+        "deliveryLabel": "المدة",
+        "deliveryDay": "{n} يوم",
+        "deliveryDays": "{n} أيام",
+        "revisionsLabel": "التعديلات",
+        "revisionsUnlimited": "غير محدود",
+        "priceLabel": "السعر (DA)",
+        "priceMin": "الحد الأدنى 1,000 DA",
+        "priceError": "يجب أن يكون سعر القياسي ≥ الأساسي، والمميز ≥ القياسي. الحد الأدنى 1,000 DA."
+      },
+      "description": {
+        "label": "وصف الخدمة",
+        "placeholder": "اصف خدمتك بالتفصيل...",
+        "minError": "120 حرفاً على الأقل ({n} متبقية)"
+      },
+      "faq": {
+        "label": "الأسئلة الشائعة",
+        "optional": "(اختياري، حد أقصى 5)",
+        "addQuestion": "+ إضافة سؤال",
+        "questionN": "سؤال {n}",
+        "deleteQuestion": "حذف",
+        "questionPlaceholder": "مثال: ما تنسيقات الملفات التي تسلمها؟",
+        "answerPlaceholder": "الإجابة..."
+      },
+      "gallery": {
+        "label": "صور الخدمة",
+        "hint": "(1–3 صور، حد أقصى 5MB)",
+        "dropHint": "اسحب الصور هنا أو",
+        "dropClick": "انقر",
+        "formatHint": "JPG، PNG، WebP — حد أقصى 5MB",
+        "typeError": "نوع غير مدعوم (jpg, png, webp)",
+        "sizeError": "الملف كبير جداً — حد أقصى 5MB",
+        "coverBadge": "غلاف",
+        "newBadge": "جديد"
+      },
+      "video": {
+        "label": "رابط فيديو",
+        "optional": "(اختياري — YouTube أو Vimeo)",
+        "placeholder": "https://youtube.com/watch?v=..."
+      },
+      "actions": {
+        "back": "رجوع ←",
+        "continue": "متابعة ←",
+        "noImageError": "أضف صورة واحدة على الأقل",
+        "unauthError": "غير مصادق",
+        "success": "تم تحديث الخدمة",
+        "saving": "جارٍ الحفظ...",
+        "save": "حفظ التغييرات"
+      }
+    },
+    "editProduct": {
+      "title": "تعديل المنتج",
+      "subtitle": "تحديث موردك الرقمي",
+      "fields": {
+        "titleLabel": "عنوان المنتج",
+        "titlePlaceholder": "مثال: مجموعة أيقونات بسيطة...",
+        "type": "النوع",
+        "typePlaceholder": "اختر نوعاً",
+        "license": "الترخيص",
+        "description": "الوصف",
+        "descriptionOptional": "(اختياري)",
+        "descriptionPlaceholder": "اصف منتجك...",
+        "tags": "العلامات",
+        "tagsMax": "(حد أقصى 8)",
+        "tagsPlaceholder": "مثال: أيقونات، تصميم...",
+        "price": "السعر",
+        "free": "مجاني",
+        "priceMin": "الحد الأدنى 500 DA"
+      },
+      "previews": {
+        "label": "صور المعاينة",
+        "hint": "(1–3 صور، حد أقصى 5MB)",
+        "dropHint": "اسحب أو",
+        "dropClick": "انقر",
+        "formatHint": "JPG، PNG، WebP — حد أقصى 5MB",
+        "typeError": "نوع غير مدعوم (jpg, png, webp)",
+        "sizeError": "الملف كبير جداً — حد أقصى 5MB",
+        "newBadge": "جديد"
+      },
+      "file": {
+        "label": "ملف المنتج",
+        "optional": "(اختياري — يستبدل الملف الحالي)",
+        "existingLabel": "الملف الحالي محفوظ",
+        "existingHint": "اتركه فارغاً للاحتفاظ بهذا الملف",
+        "dropHint": "اسحب أو",
+        "dropClick": "انقر"
+      },
+      "actions": {
+        "noPriceError": "الحد الأدنى للسعر 500 DA",
+        "noImageError": "أضف صورة معاينة واحدة على الأقل",
+        "unauthError": "غير مصادق",
+        "success": "تم تحديث المنتج",
+        "saving": "جارٍ الحفظ...",
+        "save": "حفظ التغييرات"
+      }
+    }
   }
 }

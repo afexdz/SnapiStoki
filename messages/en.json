@@ -563,5 +563,255 @@
       "back": "← Back to dashboard",
       "error": "An error occurred"
     }
+  },
+  "dashboardSeller": {
+    "nav": {
+      "dashboard": "Dashboard",
+      "services": "My services",
+      "products": "My products",
+      "orders": "Orders",
+      "messages": "Messages",
+      "profile": "My profile",
+      "publishService": "Publish a service",
+      "logout": "Sign out",
+      "space": "Freelancer Space"
+    },
+    "home": {
+      "greeting": "Hello, {name} 👋",
+      "subtitle": "Here's an overview of your activity",
+      "myProfile": "My profile",
+      "stats": {
+        "services": "Published services",
+        "servicesHint": "active",
+        "products": "Digital products",
+        "productsHint": "for sale",
+        "conversations": "Conversations",
+        "conversationsHint": "received",
+        "unread": "Unread messages",
+        "unreadAll": "all read",
+        "unreadPending": "to read"
+      },
+      "requests": {
+        "title": "Recent requests",
+        "viewAll": "View all →",
+        "empty": "No requests yet",
+        "emptyHint": "Publish services to receive messages",
+        "you": "You: {msg}",
+        "startConv": "Start the conversation",
+        "deletedListing": "Deleted listing"
+      },
+      "quickActions": {
+        "title": "Quick actions",
+        "publishService": "Publish a service",
+        "sellProduct": "Sell a product",
+        "viewProfile": "View my profile",
+        "explore": "Explore"
+      },
+      "myServices": {
+        "title": "My services",
+        "empty": "No published services",
+        "noCategory": "No category"
+      },
+      "account": {
+        "title": "Account information",
+        "email": "Email",
+        "wilaya": "Wilaya",
+        "account": "Account",
+        "wilayaEmpty": "Not provided",
+        "role": "Seller / Freelancer"
+      }
+    },
+    "services": {
+      "title": "My services",
+      "count": "{n, plural, one {# service} other {# services}}",
+      "newService": "New service",
+      "empty": "No published services",
+      "emptyHint": "Create your first service to start receiving orders",
+      "publishCta": "Publish a service →",
+      "status": {
+        "active": "Active",
+        "paused": "Paused"
+      },
+      "actions": {
+        "pause": "Pause",
+        "reactivate": "Reactivate",
+        "edit": "Edit",
+        "view": "View listing",
+        "delete": "Delete",
+        "deleting": "Deleting…",
+        "confirmDelete": "Delete this service? This action is irreversible."
+      }
+    },
+    "products": {
+      "title": "My products",
+      "count": "{n, plural, one {# product} other {# products}}",
+      "newProduct": "New product",
+      "empty": "No published products",
+      "emptyHint": "Put your digital resources up for sale",
+      "publishCta": "Publish a product →",
+      "free": "Free",
+      "sales": "{n, plural, one {# sale} other {# sales}}",
+      "status": {
+        "active": "Active",
+        "paused": "Paused"
+      },
+      "actions": {
+        "pause": "Pause",
+        "reactivate": "Reactivate",
+        "edit": "Edit",
+        "view": "View listing",
+        "delete": "Delete",
+        "deleting": "Deleting…",
+        "confirmDelete": "Delete this product? This action is irreversible."
+      }
+    },
+    "orders": {
+      "title": "Received orders",
+      "subtitle": "Manage your clients' orders",
+      "totalRevenue": "Total revenue",
+      "inProgress": "In progress",
+      "completed": "Completed",
+      "filter": {
+        "all": "All",
+        "pending": "Pending",
+        "active": "In progress",
+        "completed": "Completed",
+        "cancelled": "Cancelled"
+      },
+      "status": {
+        "pending": "Pending",
+        "active": "In progress",
+        "completed": "Completed",
+        "cancelled": "Cancelled"
+      },
+      "orderPrefix": "Order #",
+      "serviceType": "Service",
+      "productType": "Digital product",
+      "empty": "No orders received",
+      "emptyHint": "Publish your services to start receiving orders",
+      "publishCta": "Publish a service →"
+    },
+    "editService": {
+      "title": "Edit service",
+      "subtitle": "Update your service information",
+      "steps": {
+        "overview": "Overview",
+        "pricing": "Pricing",
+        "description": "Description & FAQ",
+        "gallery": "Gallery"
+      },
+      "fields": {
+        "titleLabel": "Service title",
+        "titlePlaceholder": "I will create your professional logo...",
+        "titleMin": "Minimum 15 characters",
+        "category": "Category",
+        "categoryPlaceholder": "Choose a category",
+        "tags": "Tags",
+        "tagsMax": "(max 5)",
+        "tagsPlaceholder": "e.g. logo, design, branding"
+      },
+      "packages": {
+        "title": "Pricing packages",
+        "singleToggle": "Single package",
+        "basic": "Basic",
+        "standard": "Standard",
+        "premium": "Premium",
+        "descriptionLabel": "Description",
+        "descriptionPlaceholder": "What's included in this package...",
+        "deliveryLabel": "Delivery",
+        "deliveryDay": "{n} day",
+        "deliveryDays": "{n} days",
+        "revisionsLabel": "Revisions",
+        "revisionsUnlimited": "Unlimited",
+        "priceLabel": "Price (DA)",
+        "priceMin": "Minimum 1,000 DA",
+        "priceError": "Standard price must be ≥ Basic, and Premium ≥ Standard. Minimum 1,000 DA."
+      },
+      "description": {
+        "label": "Service description",
+        "placeholder": "Describe your service in detail...",
+        "minError": "Minimum 120 characters ({n} remaining)"
+      },
+      "faq": {
+        "label": "FAQ",
+        "optional": "(optional, max 5)",
+        "addQuestion": "+ Add a question",
+        "questionN": "Question {n}",
+        "deleteQuestion": "Delete",
+        "questionPlaceholder": "e.g. What file formats do you deliver?",
+        "answerPlaceholder": "Answer..."
+      },
+      "gallery": {
+        "label": "Service images",
+        "hint": "(1–3 images, max 5MB)",
+        "dropHint": "Drag images here or",
+        "dropClick": "click",
+        "formatHint": "JPG, PNG, WebP — max 5MB",
+        "typeError": "Unsupported type (jpg, png, webp)",
+        "sizeError": "File too large — max 5MB",
+        "coverBadge": "Cover",
+        "newBadge": "New"
+      },
+      "video": {
+        "label": "Video link",
+        "optional": "(optional — YouTube or Vimeo)",
+        "placeholder": "https://youtube.com/watch?v=..."
+      },
+      "actions": {
+        "back": "← Back",
+        "continue": "Continue →",
+        "noImageError": "Add at least one image",
+        "unauthError": "Not authenticated",
+        "success": "Service updated",
+        "saving": "Saving...",
+        "save": "Save changes"
+      }
+    },
+    "editProduct": {
+      "title": "Edit product",
+      "subtitle": "Update your digital resource",
+      "fields": {
+        "titleLabel": "Product title",
+        "titlePlaceholder": "e.g. Minimalist icon pack...",
+        "type": "Type",
+        "typePlaceholder": "Choose a type",
+        "license": "License",
+        "description": "Description",
+        "descriptionOptional": "(optional)",
+        "descriptionPlaceholder": "Describe your product...",
+        "tags": "Tags",
+        "tagsMax": "(max 8)",
+        "tagsPlaceholder": "e.g. icons, design...",
+        "price": "Price",
+        "free": "Free",
+        "priceMin": "Minimum 500 DA"
+      },
+      "previews": {
+        "label": "Preview images",
+        "hint": "(1–3 images, max 5MB)",
+        "dropHint": "Drag or",
+        "dropClick": "click",
+        "formatHint": "JPG, PNG, WebP — max 5MB",
+        "typeError": "Unsupported type (jpg, png, webp)",
+        "sizeError": "File too large — max 5MB",
+        "newBadge": "New"
+      },
+      "file": {
+        "label": "Product file",
+        "optional": "(optional — replaces the current file)",
+        "existingLabel": "Current file saved",
+        "existingHint": "Leave empty to keep this file",
+        "dropHint": "Drag or",
+        "dropClick": "click"
+      },
+      "actions": {
+        "noPriceError": "Minimum price 500 DA",
+        "noImageError": "Add at least one preview image",
+        "unauthError": "Not authenticated",
+        "success": "Product updated",
+        "saving": "Saving...",
+        "save": "Save changes"
+      }
+    }
   }
 }

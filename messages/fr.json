@@ -563,5 +563,255 @@
       "back": "← Retour au tableau de bord",
       "error": "Une erreur est survenue"
     }
+  },
+  "dashboardSeller": {
+    "nav": {
+      "dashboard": "Tableau de bord",
+      "services": "Mes services",
+      "products": "Mes produits",
+      "orders": "Commandes",
+      "messages": "Messages",
+      "profile": "Mon profil",
+      "publishService": "Publier un service",
+      "logout": "Déconnexion",
+      "space": "Espace Freelance"
+    },
+    "home": {
+      "greeting": "Bonjour, {name} 👋",
+      "subtitle": "Voici un aperçu de votre activité",
+      "myProfile": "Mon profil",
+      "stats": {
+        "services": "Services publiés",
+        "servicesHint": "actifs",
+        "products": "Produits digitaux",
+        "productsHint": "en vente",
+        "conversations": "Conversations",
+        "conversationsHint": "reçues",
+        "unread": "Messages non lus",
+        "unreadAll": "tout lu",
+        "unreadPending": "à lire"
+      },
+      "requests": {
+        "title": "Demandes récentes",
+        "viewAll": "Voir tout →",
+        "empty": "Aucune demande pour l'instant",
+        "emptyHint": "Publiez des services pour recevoir des messages",
+        "you": "Vous : {msg}",
+        "startConv": "Démarrez la conversation",
+        "deletedListing": "Annonce supprimée"
+      },
+      "quickActions": {
+        "title": "Actions rapides",
+        "publishService": "Publier un service",
+        "sellProduct": "Vendre un produit",
+        "viewProfile": "Voir mon profil",
+        "explore": "Explorer"
+      },
+      "myServices": {
+        "title": "Mes services",
+        "empty": "Aucun service publié",
+        "noCategory": "Sans catégorie"
+      },
+      "account": {
+        "title": "Informations du compte",
+        "email": "Email",
+        "wilaya": "Wilaya",
+        "account": "Compte",
+        "wilayaEmpty": "Non renseignée",
+        "role": "Vendeur / Freelance"
+      }
+    },
+    "services": {
+      "title": "Mes services",
+      "count": "{n, plural, one {# service} other {# services}}",
+      "newService": "Nouveau service",
+      "empty": "Aucun service publié",
+      "emptyHint": "Créez votre premier service pour commencer à recevoir des commandes",
+      "publishCta": "Publier un service →",
+      "status": {
+        "active": "Actif",
+        "paused": "En pause"
+      },
+      "actions": {
+        "pause": "Mettre en pause",
+        "reactivate": "Réactiver",
+        "edit": "Modifier",
+        "view": "Voir la fiche",
+        "delete": "Supprimer",
+        "deleting": "Suppression…",
+        "confirmDelete": "Supprimer ce service ? Cette action est irréversible."
+      }
+    },
+    "products": {
+      "title": "Mes produits",
+      "count": "{n, plural, one {# produit} other {# produits}}",
+      "newProduct": "Nouveau produit",
+      "empty": "Aucun produit publié",
+      "emptyHint": "Mettez en vente vos ressources numériques",
+      "publishCta": "Publier un produit →",
+      "free": "Gratuit",
+      "sales": "{n, plural, one {# vente} other {# ventes}}",
+      "status": {
+        "active": "Actif",
+        "paused": "En pause"
+      },
+      "actions": {
+        "pause": "Mettre en pause",
+        "reactivate": "Réactiver",
+        "edit": "Modifier",
+        "view": "Voir la fiche",
+        "delete": "Supprimer",
+        "deleting": "Suppression…",
+        "confirmDelete": "Supprimer ce produit ? Cette action est irréversible."
+      }
+    },
+    "orders": {
+      "title": "Commandes reçues",
+      "subtitle": "Gérez les commandes de vos clients",
+      "totalRevenue": "Revenu total",
+      "inProgress": "En cours",
+      "completed": "Terminées",
+      "filter": {
+        "all": "Toutes",
+        "pending": "En attente",
+        "active": "En cours",
+        "completed": "Terminées",
+        "cancelled": "Annulées"
+      },
+      "status": {
+        "pending": "En attente",
+        "active": "En cours",
+        "completed": "Terminée",
+        "cancelled": "Annulée"
+      },
+      "orderPrefix": "Commande #",
+      "serviceType": "Service",
+      "productType": "Produit digital",
+      "empty": "Aucune commande reçue",
+      "emptyHint": "Publiez vos services pour commencer à recevoir des commandes",
+      "publishCta": "Publier un service →"
+    },
+    "editService": {
+      "title": "Modifier le service",
+      "subtitle": "Mettez à jour les informations de votre service",
+      "steps": {
+        "overview": "Aperçu",
+        "pricing": "Tarifs",
+        "description": "Description & FAQ",
+        "gallery": "Galerie"
+      },
+      "fields": {
+        "titleLabel": "Titre du service",
+        "titlePlaceholder": "Je vais créer votre logo professionnel...",
+        "titleMin": "Minimum 15 caractères",
+        "category": "Catégorie",
+        "categoryPlaceholder": "Choisir une catégorie",
+        "tags": "Tags",
+        "tagsMax": "(max 5)",
+        "tagsPlaceholder": "Ex: logo, design, branding"
+      },
+      "packages": {
+        "title": "Packages tarifaires",
+        "singleToggle": "Package unique",
+        "basic": "Basique",
+        "standard": "Standard",
+        "premium": "Premium",
+        "descriptionLabel": "Description",
+        "descriptionPlaceholder": "Ce que comprend ce package...",
+        "deliveryLabel": "Délai",
+        "deliveryDay": "{n} jour",
+        "deliveryDays": "{n} jours",
+        "revisionsLabel": "Révisions",
+        "revisionsUnlimited": "Illimité",
+        "priceLabel": "Prix (DA)",
+        "priceMin": "Minimum 1 000 DA",
+        "priceError": "Le prix Standard doit être ≥ Basique, et Premium ≥ Standard. Minimum 1 000 DA."
+      },
+      "description": {
+        "label": "Description du service",
+        "placeholder": "Décrivez votre service en détail...",
+        "minError": "Minimum 120 caractères ({n} manquants)"
+      },
+      "faq": {
+        "label": "FAQ",
+        "optional": "(optionnel, max 5)",
+        "addQuestion": "+ Ajouter une question",
+        "questionN": "Question {n}",
+        "deleteQuestion": "Supprimer",
+        "questionPlaceholder": "Ex: Quel format de fichiers livrez-vous ?",
+        "answerPlaceholder": "Réponse..."
+      },
+      "gallery": {
+        "label": "Images du service",
+        "hint": "(1–3 images, max 5MB)",
+        "dropHint": "Glissez des images ici ou",
+        "dropClick": "cliquez",
+        "formatHint": "JPG, PNG, WebP — max 5MB",
+        "typeError": "Type non supporté (jpg, png, webp)",
+        "sizeError": "Fichier trop volumineux — max 5MB",
+        "coverBadge": "Cover",
+        "newBadge": "Nouveau"
+      },
+      "video": {
+        "label": "Lien vidéo",
+        "optional": "(optionnel — YouTube ou Vimeo)",
+        "placeholder": "https://youtube.com/watch?v=..."
+      },
+      "actions": {
+        "back": "← Retour",
+        "continue": "Continuer →",
+        "noImageError": "Ajoutez au moins une image",
+        "unauthError": "Non authentifié",
+        "success": "Service mis à jour",
+        "saving": "Enregistrement...",
+        "save": "Enregistrer les modifications"
+      }
+    },
+    "editProduct": {
+      "title": "Modifier le produit",
+      "subtitle": "Mettez à jour votre ressource numérique",
+      "fields": {
+        "titleLabel": "Titre du produit",
+        "titlePlaceholder": "Ex: Pack d'icônes minimalistes...",
+        "type": "Type",
+        "typePlaceholder": "Choisir un type",
+        "license": "Licence",
+        "description": "Description",
+        "descriptionOptional": "(optionnel)",
+        "descriptionPlaceholder": "Décrivez votre produit...",
+        "tags": "Tags",
+        "tagsMax": "(max 8)",
+        "tagsPlaceholder": "Ex: icônes, design...",
+        "price": "Prix",
+        "free": "Gratuit",
+        "priceMin": "Minimum 500 DA"
+      },
+      "previews": {
+        "label": "Images d'aperçu",
+        "hint": "(1–3 images, max 5MB)",
+        "dropHint": "Glissez ou",
+        "dropClick": "cliquez",
+        "formatHint": "JPG, PNG, WebP — max 5MB",
+        "typeError": "Type non supporté (jpg, png, webp)",
+        "sizeError": "Fichier trop volumineux — max 5MB",
+        "newBadge": "Nouveau"
+      },
+      "file": {
+        "label": "Fichier produit",
+        "optional": "(optionnel — remplace le fichier actuel)",
+        "existingLabel": "Fichier actuel enregistré",
+        "existingHint": "Laissez vide pour conserver ce fichier",
+        "dropHint": "Glissez ou",
+        "dropClick": "cliquez"
+      },
+      "actions": {
+        "noPriceError": "Prix minimum 500 DA",
+        "noImageError": "Ajoutez au moins une image d'aperçu",
+        "unauthError": "Non authentifié",
+        "success": "Produit mis à jour",
+        "saving": "Enregistrement...",
+        "save": "Enregistrer les modifications"
+      }
+    }
   }
 }

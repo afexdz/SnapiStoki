@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { useTranslations } from "next-intl"
 import { createClient } from "@/lib/supabase/client"
 import UnreadBadge from "@/components/UnreadBadge"
 import { SHOW_ORDERS } from "@/lib/features"
@@ -66,66 +67,6 @@ type Stats = {
   // SHOW_ORDERS: activeOrders, completedOrders, revenueMonth, revenueTotal, reviewCount, rating
 }
 
-const navItems = [
-  {
-    label: "Tableau de bord",
-    href: "/dashboard/freelance",
-    icon: (
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8}
-        d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-    ),
-  },
-  {
-    label: "Mes services",
-    href: "/dashboard/freelance/services",
-    icon: (
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8}
-        d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-    ),
-  },
-  {
-    label: "Mes produits",
-    href: "/dashboard/freelance/products",
-    icon: (
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8}
-        d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10" />
-    ),
-  },
-  // SHOW_ORDERS gate: "Commandes" entry shown when orders are re-enabled
-  ...(SHOW_ORDERS ? [{
-    label: "Commandes",
-    href: "/dashboard/freelance/orders",
-    icon: (
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8}
-        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
-    ),
-  }] : []),
-  {
-    label: "Messages",
-    href: "/messages",
-    icon: (
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8}
-        d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-    ),
-  },
-  {
-    label: "Mon profil",
-    href: "/profile",
-    icon: (
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8}
-        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-    ),
-  },
-  {
-    label: "Publier un service",
-    href: "/services/new",
-    icon: (
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8}
-        d="M12 4v16m8-8H4" />
-    ),
-  },
-]
-
 // SHOW_ORDERS: status label map — uncomment when rendering order rows
 // const STATUS_LABELS: Record<string, { label: string; color: string }> = {
 //   pending:   { label: "En attente",  color: "bg-amber-100 text-amber-700" },
@@ -137,19 +78,6 @@ const navItems = [
 
 function getInitials(name: string | null) {
   return (name || "?").trim().split(/\s+/).map((n) => n[0]).join("").toUpperCase().slice(0, 2)
-}
-
-function relativeTime(d: string) {
-  const diff = Date.now() - new Date(d).getTime()
-  const m = Math.floor(diff / 60000)
-  if (m < 1) return "À l'instant"
-  if (m < 60) return `${m} min`
-  const h = Math.floor(m / 60)
-  if (h < 24) return `${h}h`
-  const days = Math.floor(h / 24)
-  if (days === 1) return "Hier"
-  if (days < 7) return `Il y a ${days} j`
-  return new Date(d).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })
 }
 
 function StatCard({
@@ -166,6 +94,8 @@ function StatCard({
 
 export default function FreelanceDashboard() {
   const router = useRouter()
+  const t = useTranslations("dashboardSeller")
+  const tMsg = useTranslations("messages")
   const [user, setUser] = useState<User | null>(null)
   const [profile, setProfile] = useState<Profile | null>(null)
   const [stats, setStats] = useState<Stats>({ serviceCount: 0, productCount: 0, convCount: 0, unreadCount: 0 })
@@ -173,6 +103,79 @@ export default function FreelanceDashboard() {
   const [services, setServices] = useState<Service[]>([])
   const [loading, setLoading] = useState(true)
   const [sidebarOpen, setSidebarOpen] = useState(false)
+
+  function relativeTime(d: string) {
+    const diff = Date.now() - new Date(d).getTime()
+    const m = Math.floor(diff / 60000)
+    if (m < 1) return tMsg("relativeTime.now")
+    if (m < 60) return tMsg("relativeTime.min", { n: m })
+    const h = Math.floor(m / 60)
+    if (h < 24) return tMsg("relativeTime.hours", { n: h })
+    const days = Math.floor(h / 24)
+    if (days === 1) return tMsg("relativeTime.yesterday")
+    if (days < 7) return tMsg("relativeTime.daysAgo", { n: days })
+    return new Date(d).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })
+  }
+
+  const navItems = [
+    {
+      label: t("nav.dashboard"),
+      href: "/dashboard/freelance",
+      icon: (
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8}
+          d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+      ),
+    },
+    {
+      label: t("nav.services"),
+      href: "/dashboard/freelance/services",
+      icon: (
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8}
+          d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+      ),
+    },
+    {
+      label: t("nav.products"),
+      href: "/dashboard/freelance/products",
+      icon: (
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8}
+          d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10" />
+      ),
+    },
+    // SHOW_ORDERS gate: "Commandes" entry shown when orders are re-enabled
+    ...(SHOW_ORDERS ? [{
+      label: t("nav.orders"),
+      href: "/dashboard/freelance/orders",
+      icon: (
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8}
+          d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+      ),
+    }] : []),
+    {
+      label: t("nav.messages"),
+      href: "/messages",
+      icon: (
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8}
+          d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+      ),
+    },
+    {
+      label: t("nav.profile"),
+      href: "/profile",
+      icon: (
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8}
+          d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+      ),
+    },
+    {
+      label: t("nav.publishService"),
+      href: "/services/new",
+      icon: (
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8}
+          d="M12 4v16m8-8H4" />
+      ),
+    },
+  ]
 
   useEffect(() => {
     const sb = createClient()
@@ -293,7 +296,7 @@ export default function FreelanceDashboard() {
           return {
             id: c.id,
             interlocutor: profileMap[interlocutorId] ?? { id: interlocutorId, full_name: null, avatar_url: null },
-            listingTitle: titleMap[c.listing_id] ?? "Annonce supprimée",
+            listingTitle: titleMap[c.listing_id] ?? t("home.requests.deletedListing"),
             lastMessage: lm?.content ?? null,
             lastMessageIsMine: lm?.sender_id === u.id,
             lastMessageAt: c.last_message_at,
@@ -348,7 +351,7 @@ export default function FreelanceDashboard() {
             <span className="text-xl font-extrabold text-[var(--orange)]">Pix</span>
             <span className="text-xl font-extrabold text-[var(--ink)]">Raise</span>
           </Link>
-          <p className="text-xs text-gray-400 mt-0.5">Espace Freelance</p>
+          <p className="text-xs text-gray-400 mt-0.5">{t("nav.space")}</p>
         </div>
 
         <div className="px-5 py-4 border-b border-[var(--border-subtle)]">
@@ -373,7 +376,7 @@ export default function FreelanceDashboard() {
         <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
           {navItems.map((item) => (
             <Link
-              key={item.label}
+              key={item.href}
               href={item.href}
               onClick={() => setSidebarOpen(false)}
               className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-600 hover:bg-[var(--cream)] hover:text-[var(--orange)] transition-all group"
@@ -398,7 +401,7 @@ export default function FreelanceDashboard() {
             <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
             </svg>
-            Déconnexion
+            {t("nav.logout")}
           </button>
         </div>
       </aside>
@@ -428,10 +431,10 @@ export default function FreelanceDashboard() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-black text-[var(--ink)]">
-                Bonjour, {displayName.split(" ")[0]} 👋
+                {t("home.greeting", { name: displayName.split(" ")[0] })}
               </h1>
               <p className="text-sm text-gray-500 mt-0.5">
-                Voici un aperçu de votre activité
+                {t("home.subtitle")}
               </p>
             </div>
             <Link
@@ -441,34 +444,34 @@ export default function FreelanceDashboard() {
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
               </svg>
-              Mon profil
+              {t("home.myProfile")}
             </Link>
           </div>
 
           {/* Stats — 4 cards */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             <StatCard
-              label="Services publiés"
+              label={t("home.stats.services")}
               value={String(stats.serviceCount)}
-              sub="actifs"
+              sub={t("home.stats.servicesHint")}
               color="text-[var(--orange)]"
             />
             <StatCard
-              label="Produits digitaux"
+              label={t("home.stats.products")}
               value={String(stats.productCount)}
-              sub="en vente"
+              sub={t("home.stats.productsHint")}
               color="text-purple-600"
             />
             <StatCard
-              label="Conversations"
+              label={t("home.stats.conversations")}
               value={String(stats.convCount)}
-              sub="reçues"
+              sub={t("home.stats.conversationsHint")}
               color="text-blue-600"
             />
             <StatCard
-              label="Messages non lus"
+              label={t("home.stats.unread")}
               value={String(stats.unreadCount)}
-              sub={stats.unreadCount === 0 ? "tout lu" : "à lire"}
+              sub={stats.unreadCount === 0 ? t("home.stats.unreadAll") : t("home.stats.unreadPending")}
               color={stats.unreadCount > 0 ? "text-blue-600" : "text-emerald-600"}
             />
           </div>
@@ -484,9 +487,9 @@ export default function FreelanceDashboard() {
             {/* Recent conversations / SHOW_ORDERS: switch to orders */}
             <div className="lg:col-span-2 bg-[var(--white)] rounded-2xl border border-[var(--border-subtle)] shadow-sm">
               <div className="flex items-center justify-between px-5 py-4 border-b border-[var(--border-subtle)]">
-                <h2 className="font-bold text-[var(--ink)]">Demandes récentes</h2>
+                <h2 className="font-bold text-[var(--ink)]">{t("home.requests.title")}</h2>
                 <Link href="/messages" className="text-xs text-[var(--orange)] hover:text-[var(--orange-dark)] font-medium transition-colors">
-                  Voir tout →
+                  {t("home.requests.viewAll")}
                 </Link>
               </div>
 
@@ -497,8 +500,8 @@ export default function FreelanceDashboard() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                     </svg>
                   </div>
-                  <p className="text-sm text-gray-400">Aucune demande pour l'instant</p>
-                  <p className="text-xs text-gray-300 mt-1">Publiez des services pour recevoir des messages</p>
+                  <p className="text-sm text-gray-400">{t("home.requests.empty")}</p>
+                  <p className="text-xs text-gray-300 mt-1">{t("home.requests.emptyHint")}</p>
                 </div>
               ) : (
                 <div className="divide-y divide-[var(--border-subtle)]">
@@ -506,8 +509,8 @@ export default function FreelanceDashboard() {
                     const name = conv.interlocutor.full_name ?? "Utilisateur"
                     const initials2 = getInitials(conv.interlocutor.full_name)
                     const preview = conv.lastMessage
-                      ? (conv.lastMessageIsMine ? `Vous : ${conv.lastMessage}` : conv.lastMessage)
-                      : "Démarrez la conversation"
+                      ? (conv.lastMessageIsMine ? t("home.requests.you", { msg: conv.lastMessage }) : conv.lastMessage)
+                      : t("home.requests.startConv")
                     return (
                       <Link
                         key={conv.id}
@@ -550,13 +553,13 @@ export default function FreelanceDashboard() {
             <div className="space-y-4">
               {/* Quick actions */}
               <div className="bg-[var(--white)] rounded-2xl border border-[var(--border-subtle)] shadow-sm p-5">
-                <h2 className="font-bold text-[var(--ink)] mb-4">Actions rapides</h2>
+                <h2 className="font-bold text-[var(--ink)] mb-4">{t("home.quickActions.title")}</h2>
                 <div className="space-y-2">
                   {[
-                    { label: "Publier un service", href: "/services/new",   icon: "M12 4v16m8-8H4", primary: true },
-                    { label: "Vendre un produit",  href: "/products/new",   icon: "M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" },
-                    { label: "Voir mon profil",    href: "/profile",        icon: "M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" },
-                    { label: "Explorer",           href: "/freelances",     icon: "M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" },
+                    { label: t("home.quickActions.publishService"), href: "/services/new",   icon: "M12 4v16m8-8H4", primary: true },
+                    { label: t("home.quickActions.sellProduct"),    href: "/products/new",   icon: "M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" },
+                    { label: t("home.quickActions.viewProfile"),    href: "/profile",        icon: "M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" },
+                    { label: t("home.quickActions.explore"),        href: "/freelances",     icon: "M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" },
                   ].map((a) => (
                     <Link
                       key={a.href}
@@ -579,20 +582,20 @@ export default function FreelanceDashboard() {
               {/* Services summary */}
               <div className="bg-[var(--white)] rounded-2xl border border-[var(--border-subtle)] shadow-sm p-5">
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="font-bold text-[var(--ink)]">Mes services</h2>
+                  <h2 className="font-bold text-[var(--ink)]">{t("home.myServices.title")}</h2>
                   <span className="text-xs bg-[var(--orange)]/10 text-[var(--orange)] font-semibold px-2 py-0.5 rounded-full">
                     {stats.serviceCount}
                   </span>
                 </div>
                 {services.length === 0 ? (
-                  <p className="text-sm text-gray-400 text-center py-4">Aucun service publié</p>
+                  <p className="text-sm text-gray-400 text-center py-4">{t("home.myServices.empty")}</p>
                 ) : (
                   <div className="space-y-2">
                     {services.map((svc) => (
                       <div key={svc.id} className="flex items-center justify-between py-2 border-b border-[var(--border-subtle)] last:border-0">
                         <div className="min-w-0">
                           <p className="text-sm font-medium text-[var(--ink)] truncate">{svc.title}</p>
-                          <p className="text-xs text-gray-400">{svc.category ?? "Sans catégorie"}</p>
+                          <p className="text-xs text-gray-400">{svc.category ?? t("home.myServices.noCategory")}</p>
                         </div>
                         <span className="text-sm font-bold text-[var(--orange)] shrink-0 ml-2">
                           {(svc.price ?? 0).toLocaleString("fr-DZ")} DA
@@ -607,12 +610,12 @@ export default function FreelanceDashboard() {
 
           {/* Account info */}
           <div className="bg-[var(--white)] rounded-2xl border border-[var(--border-subtle)] shadow-sm p-5">
-            <h2 className="font-bold text-[var(--ink)] mb-4">Informations du compte</h2>
+            <h2 className="font-bold text-[var(--ink)] mb-4">{t("home.account.title")}</h2>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               {[
-                { label: "Email", value: user?.email ?? "—" },
-                { label: "Wilaya", value: profile?.wilaya ?? "Non renseignée" },
-                { label: "Compte", value: "Vendeur / Freelance" },
+                { label: t("home.account.email"), value: user?.email ?? "—" },
+                { label: t("home.account.wilaya"), value: profile?.wilaya ?? t("home.account.wilayaEmpty") },
+                { label: t("home.account.account"), value: t("home.account.role") },
               ].map((info) => (
                 <div key={info.label}>
                   <p className="text-xs text-gray-400 mb-0.5">{info.label}</p>

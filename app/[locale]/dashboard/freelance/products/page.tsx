@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { useTranslations } from "next-intl"
 import { createClient } from "@/lib/supabase/client"
 
 type Product = {
@@ -20,6 +21,7 @@ type Product = {
 
 export default function FreelanceProductsPage() {
   const router = useRouter()
+  const t = useTranslations("dashboardSeller")
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
   const [deleting, setDeleting] = useState<string | null>(null)
@@ -43,7 +45,7 @@ export default function FreelanceProductsPage() {
   useEffect(() => { fetchProducts() }, [router])
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Supprimer ce produit ? Cette action est irréversible.")) return
+    if (!confirm(t("products.actions.deleteConfirm"))) return
     setDeleting(id)
     const sb = createClient()
     const { error } = await sb.from("digital_products").delete().eq("id", id)
@@ -73,10 +75,10 @@ export default function FreelanceProductsPage() {
             </Link>
             <div>
               <h1 className="text-2xl font-extrabold text-[var(--ink)] dark:text-[var(--ink)]" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-                Mes produits
+                {t("products.title")}
               </h1>
               <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
-                {loading ? "…" : `${products.length} produit${products.length !== 1 ? "s" : ""}`}
+                {loading ? "…" : t("products.count", { n: products.length })}
               </p>
             </div>
           </div>
@@ -87,7 +89,7 @@ export default function FreelanceProductsPage() {
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
             </svg>
-            Nouveau produit
+            {t("products.newProduct")}
           </Link>
         </div>
 
@@ -112,13 +114,13 @@ export default function FreelanceProductsPage() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10" />
                     </svg>
                   </div>
-                  <p className="text-gray-500 dark:text-gray-400 text-sm font-medium mb-1">Aucun produit publié</p>
-                  <p className="text-gray-400 dark:text-gray-500 text-xs mb-5">Mettez en vente vos ressources numériques</p>
+                  <p className="text-gray-500 dark:text-gray-400 text-sm font-medium mb-1">{t("products.empty")}</p>
+                  <p className="text-gray-400 dark:text-gray-500 text-xs mb-5">{t("products.emptyHint")}</p>
                   <Link
                     href="/products/new"
                     className="inline-flex items-center gap-2 px-5 py-2.5 bg-[var(--orange)] hover:bg-[var(--orange-dark)] text-white text-sm font-semibold rounded-xl shadow-md shadow-[var(--orange)]/20 transition-all"
                   >
-                    Publier un produit →
+                    {t("products.publishCta")}
                   </Link>
                 </div>
               )
@@ -147,14 +149,14 @@ export default function FreelanceProductsPage() {
                                 )}
                                 <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${product.is_active ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400" : "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400"}`}>
                                   <span className={`w-1.5 h-1.5 rounded-full ${product.is_active ? "bg-green-500" : "bg-amber-500"}`} />
-                                  {product.is_active ? "Actif" : "En pause"}
+                                  {product.is_active ? t("products.status.active") : t("products.status.paused")}
                                 </span>
-                                {product.is_free && <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">Gratuit</span>}
+                                {product.is_free && <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">{t("products.free")}</span>}
                               </div>
                             </div>
                             <div className="text-right shrink-0 space-y-0.5">
-                              <div className="text-sm font-black text-[var(--orange)]">{product.is_free ? "Gratuit" : `${(product.price ?? 0).toLocaleString("fr-DZ")} DA`}</div>
-                              <div className="text-xs text-gray-400">{product.sales_count ?? 0} vente{(product.sales_count ?? 0) !== 1 ? "s" : ""}</div>
+                              <div className="text-sm font-black text-[var(--orange)]">{product.is_free ? t("products.free") : `${(product.price ?? 0).toLocaleString("fr-DZ")} DA`}</div>
+                              <div className="text-xs text-gray-400">{t("products.sales", { n: product.sales_count ?? 0 })}</div>
                             </div>
                           </div>
 
@@ -163,26 +165,26 @@ export default function FreelanceProductsPage() {
                               onClick={() => handleToggle(product.id, product.is_active)}
                               className="px-3 py-1.5 rounded-lg border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] text-xs font-medium text-gray-600 dark:text-gray-400 hover:border-[var(--orange)]/40 hover:text-[var(--orange)] transition-all"
                             >
-                              {product.is_active ? "Mettre en pause" : "Réactiver"}
+                              {product.is_active ? t("products.actions.pause") : t("products.actions.activate")}
                             </button>
                             <Link
                               href={`/dashboard/freelance/products/${product.id}/edit`}
                               className="px-3 py-1.5 rounded-lg border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] text-xs font-medium text-gray-600 dark:text-gray-400 hover:border-[var(--orange)]/40 hover:text-[var(--orange)] transition-all"
                             >
-                              Modifier
+                              {t("products.actions.edit")}
                             </Link>
                             <Link
                               href={`/products/${product.id}`}
                               className="px-3 py-1.5 rounded-lg border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] text-xs font-medium text-gray-600 dark:text-gray-400 hover:border-[var(--orange)]/40 hover:text-[var(--orange)] transition-all"
                             >
-                              Voir la fiche
+                              {t("products.actions.view")}
                             </Link>
                             <button
                               onClick={() => handleDelete(product.id)}
                               disabled={deleting === product.id}
                               className="px-3 py-1.5 rounded-lg border border-red-200 dark:border-red-900/40 text-xs font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all disabled:opacity-50"
                             >
-                              {deleting === product.id ? "Suppression…" : "Supprimer"}
+                              {deleting === product.id ? t("products.actions.deleting") : t("products.actions.delete")}
                             </button>
                           </div>
                         </div>

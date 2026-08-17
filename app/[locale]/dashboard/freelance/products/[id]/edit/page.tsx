@@ -30,6 +30,7 @@ export default function EditProductPage() {
   const { id } = useParams<{ id: string }>()
   const router = useRouter()
   const tu = useTranslations("product.upload")
+  const t = useTranslations("dashboardSeller")
   const [loading, setLoading] = useState(true)
   const [submitting, setSubmitting] = useState(false)
   const [toast, setToast] = useState<{ msg: string; type: "success" | "error" } | null>(null)
@@ -144,14 +145,14 @@ export default function EditProductPage() {
   }
 
   async function handleSubmit() {
-    if (!isFree && price < 500) { showToast("Prix minimum 500 DA", "error"); return }
-    if (totalPreviews === 0) { showToast("Ajoutez au moins une image d'aperçu", "error"); return }
+    if (!isFree && price < 500) { showToast(t("editProduct.actions.noPriceError"), "error"); return }
+    if (totalPreviews === 0) { showToast(t("editProduct.actions.noImageError"), "error"); return }
 
     setSubmitting(true)
     try {
       const sb = createClient()
       const { data: { user } } = await sb.auth.getUser()
-      if (!user) throw new Error("Non authentifié")
+      if (!user) throw new Error(t("editProduct.actions.unauthError"))
 
       const uploadedPreviewUrls = await Promise.all(
         newPreviews.map(async img => {
@@ -189,7 +190,7 @@ export default function EditProductPage() {
       }).eq("id", id).eq("seller_id", user.id)
 
       if (error) throw error
-      showToast("Produit mis à jour", "success")
+      showToast(t("editProduct.actions.success"), "success")
       setTimeout(() => router.push(`/products/${id}`), 1000)
     } catch (err: unknown) {
       showToast((err as Error).message ?? "Erreur", "error")
@@ -215,28 +216,28 @@ export default function EditProductPage() {
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
             </Link>
             <div>
-              <h1 className="text-2xl font-bold text-[var(--ink)]">Modifier le produit</h1>
-              <p className="text-sm text-gray-500 mt-1">Mettez à jour votre ressource numérique</p>
+              <h1 className="text-2xl font-bold text-[var(--ink)]">{t("editProduct.title")}</h1>
+              <p className="text-sm text-gray-500 mt-1">{t("editProduct.subtitle")}</p>
             </div>
           </div>
 
           <div className="bg-[var(--white)] rounded-2xl border border-[var(--ink-12)] p-6 shadow-sm space-y-6">
             <div>
-              <label className={labelCls}>Titre du produit</label>
-              <input type="text" value={title} onChange={e => setTitle(e.target.value.slice(0, 80))} placeholder="Ex: Pack d'icônes minimalistes..." className={inputCls} />
+              <label className={labelCls}>{t("editProduct.fields.titleLabel")}</label>
+              <input type="text" value={title} onChange={e => setTitle(e.target.value.slice(0, 80))} placeholder={t("editProduct.fields.titlePlaceholder")} className={inputCls} />
               <p className={`text-xs text-right mt-1 ${title.length > 70 ? "text-orange-500" : "text-gray-400"}`}>{title.length}/80</p>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className={labelCls}>Type</label>
+                <label className={labelCls}>{t("editProduct.fields.type")}</label>
                 <select value={productType} onChange={e => setProductType(e.target.value)} className={inputCls}>
-                  <option value="">Choisir un type</option>
+                  <option value="">{t("editProduct.fields.typePlaceholder")}</option>
                   {PRODUCT_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
                 </select>
               </div>
               <div>
-                <label className={labelCls}>Licence</label>
+                <label className={labelCls}>{t("editProduct.fields.license")}</label>
                 <select value={license} onChange={e => setLicense(e.target.value)} className={inputCls}>
                   {LICENSES.map(l => <option key={l} value={l}>{l}</option>)}
                 </select>
@@ -244,23 +245,23 @@ export default function EditProductPage() {
             </div>
 
             <div>
-              <label className={labelCls}>Description <span className="text-gray-400 font-normal">(optionnel)</span></label>
-              <textarea value={description} onChange={e => setDescription(e.target.value.slice(0, 800))} rows={4} placeholder="Décrivez votre produit..." className={inputCls + " resize-none"} />
+              <label className={labelCls}>{t("editProduct.fields.description")} <span className="text-gray-400 font-normal">{t("editProduct.fields.descriptionOptional")}</span></label>
+              <textarea value={description} onChange={e => setDescription(e.target.value.slice(0, 800))} rows={4} placeholder={t("editProduct.fields.descriptionPlaceholder")} className={inputCls + " resize-none"} />
               <p className="text-xs text-right mt-1 text-gray-400">{description.length}/800</p>
             </div>
 
             <div>
-              <label className={labelCls}>Tags <span className="text-gray-400 font-normal">(max 8)</span></label>
+              <label className={labelCls}>{t("editProduct.fields.tags")} <span className="text-gray-400 font-normal">{t("editProduct.fields.tagsMax")}</span></label>
               <div className="flex flex-wrap gap-2 mb-2">
-                {tags.map(t => (
-                  <span key={t} className="flex items-center gap-1 px-2.5 py-1 bg-[var(--cream)] text-[var(--orange)] text-xs rounded-lg border border-[var(--orange)]/20">
-                    {t}<button onClick={() => setTags(p => p.filter(x => x !== t))} className="ml-1 hover:text-red-500">×</button>
+                {tags.map(tag => (
+                  <span key={tag} className="flex items-center gap-1 px-2.5 py-1 bg-[var(--cream)] text-[var(--orange)] text-xs rounded-lg border border-[var(--orange)]/20">
+                    {tag}<button onClick={() => setTags(p => p.filter(x => x !== tag))} className="ml-1 hover:text-red-500">×</button>
                   </span>
                 ))}
               </div>
               {tags.length < 8 && (
                 <div className="flex gap-2">
-                  <input type="text" value={tagInput} onChange={e => setTagInput(e.target.value)} onKeyDown={e => { if (e.key === "Enter") { e.preventDefault(); addTag() } }} placeholder="Ex: icônes, design..." className={inputCls + " flex-1"} />
+                  <input type="text" value={tagInput} onChange={e => setTagInput(e.target.value)} onKeyDown={e => { if (e.key === "Enter") { e.preventDefault(); addTag() } }} placeholder={t("editProduct.fields.tagsPlaceholder")} className={inputCls + " flex-1"} />
                   <button onClick={addTag} className="px-4 py-2.5 bg-[var(--orange)] text-white text-sm font-semibold rounded-xl">+</button>
                 </div>
               )}
@@ -268,9 +269,9 @@ export default function EditProductPage() {
 
             <div>
               <div className="flex items-center justify-between mb-3">
-                <label className={labelCls + " mb-0"}>Prix</label>
+                <label className={labelCls + " mb-0"}>{t("editProduct.fields.price")}</label>
                 <label className="flex items-center gap-2 cursor-pointer">
-                  <span className="text-sm text-gray-600">Gratuit</span>
+                  <span className="text-sm text-gray-600">{t("editProduct.fields.free")}</span>
                   <div onClick={() => setIsFree(p => !p)} className={`relative w-10 h-5 rounded-full transition-colors cursor-pointer ${isFree ? "bg-[var(--orange)]" : "bg-gray-200 dark:bg-[var(--ink-12)]"}`}>
                     <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-[var(--white)] shadow transition-all ${isFree ? "left-5" : "left-0.5"}`} />
                   </div>
@@ -282,15 +283,15 @@ export default function EditProductPage() {
                   <span className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-gray-400 font-medium">DA</span>
                 </div>
               )}
-              {!isFree && price < 500 && <p className="text-xs text-red-500 mt-1">Minimum 500 DA</p>}
+              {!isFree && price < 500 && <p className="text-xs text-red-500 mt-1">{t("editProduct.fields.priceMin")}</p>}
             </div>
 
             <div>
-              <label className={labelCls}>Images d'aperçu <span className="text-gray-400 font-normal">(1–3 images, max 5MB)</span></label>
+              <label className={labelCls}>{t("editProduct.previews.label")} <span className="text-gray-400 font-normal">{t("editProduct.previews.hint")}</span></label>
               {totalPreviews < 3 && (
                 <div onDrop={onPreviewDrop} onDragOver={e => e.preventDefault()} className="border-2 border-dashed border-[var(--ink-12)] rounded-xl p-6 text-center cursor-pointer hover:border-[var(--orange)]/40 transition-colors" onClick={() => document.getElementById("edit-preview-input")?.click()}>
-                  <p className="text-sm text-gray-500">Glissez ou <span className="text-[var(--orange)] font-semibold">cliquez</span></p>
-                  <p className="text-xs text-gray-400 mt-1">JPG, PNG, WebP — max 5MB</p>
+                  <p className="text-sm text-gray-500">{t("editProduct.previews.dropHint")} <span className="text-[var(--orange)] font-semibold">{t("editProduct.previews.dropClick")}</span></p>
+                  <p className="text-xs text-gray-400 mt-1">{t("editProduct.previews.formatHint")}</p>
                   <input id="edit-preview-input" type="file" accept="image/jpeg,image/png,image/webp" multiple className="hidden" onChange={onPreviewInput} />
                 </div>
               )}
@@ -307,7 +308,7 @@ export default function EditProductPage() {
                     <div key={i} className="relative aspect-video bg-gray-100 dark:bg-[var(--ink-12)] rounded-xl overflow-hidden">
                       <img src={img.preview} alt="" className="w-full h-full object-cover" />
                       <button onClick={() => setNewPreviews(p => p.filter((_, j) => j !== i))} className="absolute top-1.5 right-1.5 w-6 h-6 bg-black/50 text-white rounded-full text-xs flex items-center justify-center hover:bg-red-600">×</button>
-                      <span className="absolute bottom-1.5 left-1.5 px-1.5 py-0.5 bg-blue-500 text-white text-[9px] font-bold rounded">Nouveau</span>
+                      <span className="absolute bottom-1.5 left-1.5 px-1.5 py-0.5 bg-blue-500 text-white text-[9px] font-bold rounded">{t("editProduct.previews.newBadge")}</span>
                     </div>
                   ))}
                 </div>
@@ -315,11 +316,11 @@ export default function EditProductPage() {
             </div>
 
             <div>
-              <label className={labelCls}>Fichier produit <span className="text-gray-400 font-normal">(optionnel — remplace le fichier actuel)</span></label>
+              <label className={labelCls}>{t("editProduct.file.label")} <span className="text-gray-400 font-normal">{t("editProduct.file.optional")}</span></label>
               {existingFileUrl && !newProductFile && (
                 <div className="mb-3 px-4 py-3 bg-green-50 border border-green-200 rounded-xl">
-                  <p className="text-xs text-green-700 font-medium">Fichier actuel enregistré</p>
-                  <p className="text-xs text-green-600 mt-0.5">Laissez vide pour conserver ce fichier</p>
+                  <p className="text-xs text-green-700 font-medium">{t("editProduct.file.existingLabel")}</p>
+                  <p className="text-xs text-green-600 mt-0.5">{t("editProduct.file.existingHint")}</p>
                 </div>
               )}
               {newProductFile ? (
@@ -333,7 +334,7 @@ export default function EditProductPage() {
                 </div>
               ) : (
                 <div onDrop={onProductFileDrop} onDragOver={e => e.preventDefault()} className="border-2 border-dashed border-[var(--ink-12)] rounded-xl p-6 text-center cursor-pointer hover:border-[var(--orange)]/40 transition-colors" onClick={() => document.getElementById("edit-product-file")?.click()}>
-                  <p className="text-sm text-gray-500">Glissez ou <span className="text-[var(--orange)] font-semibold">cliquez</span></p>
+                  <p className="text-sm text-gray-500">{t("editProduct.file.dropHint")} <span className="text-[var(--orange)] font-semibold">{t("editProduct.file.dropClick")}</span></p>
                   <p className="text-xs text-gray-400 mt-1">{tu("hint")}</p>
                   <input id="edit-product-file" type="file" className="hidden" onChange={onProductFileInput} />
                 </div>
@@ -346,7 +347,7 @@ export default function EditProductPage() {
               disabled={submitting || !title.trim()}
               className="w-full py-3 bg-[var(--orange)] text-white font-bold rounded-xl hover:bg-[var(--orange-dark)] transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
-              {submitting ? <><div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> Enregistrement...</> : "Enregistrer les modifications"}
+              {submitting ? <><div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> {t("editProduct.actions.saving")}</> : t("editProduct.actions.save")}
             </button>
           </div>
         </div>
