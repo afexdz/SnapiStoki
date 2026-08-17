@@ -1,6 +1,11 @@
 import { type Wilaya, WILAYAS, getWilayaByName, findNearestWilaya } from './wilayas'
 
-// English/ASCII aliases for city names returned by Vercel geo headers or ipapi.co
+export type UserLocation = {
+  wilaya: Wilaya | null
+  countryCode: string | null   // ISO-2: 'DZ', 'FR', …
+  country: string | null       // French name matching DB: 'Algérie', 'France', …
+}
+
 const CITY_ALIASES: Record<string, string> = {
   'algiers': 'Alger',
   'oran city': 'Oran',
@@ -15,19 +20,16 @@ function resolveWilayaByName(city: string): Wilaya | undefined {
   if (exact) return exact
   const alias = CITY_ALIASES[city.toLowerCase()]
   if (alias) return getWilayaByName(alias)
-  // accent-stripped comparison
   const normalCity = normalize(city)
-  return WILAYAS.find((w: Wilaya) => normalize(w.name) === normalCity)
+  return WILAYAS.find(w => normalize(w.name) === normalCity)
 }
 
-export async function detectUserWilaya(): Promise<Wilaya | null> {
-  const cached = typeof window !== 'undefined' ? localStorage.getItem('userWilaya') : null
+export async function detectUserLocation(): Promise<UserLocation | null> {
+  if (typeof window === 'undefined') return null
+
+  const cached = localStorage.getItem('userLocation')
   if (cached) {
-    try {
-      return JSON.parse(cached) as Wilaya
-    } catch {
-      localStorage.removeItem('userWilaya')
-    }
+    try { return JSON.parse(cached) as UserLocation } catch { localStorage.removeItem('userLocation') }
   }
 
   try {
@@ -35,31 +37,35 @@ export async function detectUserWilaya(): Promise<Wilaya | null> {
     if (!res.ok) return null
     const data = await res.json()
 
+    const countryCode: string | null = data.countryCode ?? null
+    const country: string | null = data.country ?? null
+
     let wilaya: Wilaya | undefined
-
-    // Prefer coordinates — handles communes, suburbs, and non-French city names
-    if (typeof data.lat === 'number' && typeof data.lng === 'number') {
-      wilaya = findNearestWilaya(data.lat, data.lng)
+    if (countryCode === 'DZ') {
+      if (typeof data.lat === 'number' && typeof data.lng === 'number') {
+        wilaya = findNearestWilaya(data.lat, data.lng)
+      } else if (data.city) {
+        wilaya = resolveWilayaByName(data.city)
+      }
     }
 
-    // Fallback: name match with accent normalization + alias table
-    if (!wilaya && data.city) {
-      wilaya = resolveWilayaByName(data.city)
-    }
-
-    if (!wilaya) return null
-
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('userWilaya', JSON.stringify(wilaya))
-    }
-    return wilaya
+    const location: UserLocation = { wilaya: wilaya ?? null, countryCode, country }
+    localStorage.setItem('userLocation', JSON.stringify(location))
+    return location
   } catch {
     return null
   }
 }
 
-export function clearUserWilaya() {
+// Thin shim kept for any remaining callers
+export async function detectUserWilaya(): Promise<Wilaya | null> {
+  const loc = await detectUserLocation()
+  return loc?.wilaya ?? null
+}
+
+export function clearUserLocation() {
   if (typeof window !== 'undefined') {
-    localStorage.removeItem('userWilaya')
+    localStorage.removeItem('userLocation')
+    localStorage.removeItem('userWilaya') // legacy key
   }
 }

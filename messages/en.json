@@ -109,14 +109,38 @@
       "subtitle": "From creative skills to technical services, everything your project needs.",
       "allCta": "All categories →",
       "cats": {
-        "design":    { "label": "Design & Graphics",    "sub": "Logos, identities, posters" },
-        "web":       { "label": "Web development",      "sub": "Websites, apps, e-commerce" },
-        "video":     { "label": "Video & Animation",    "sub": "Editing, motion design" },
-        "marketing": { "label": "Digital marketing",    "sub": "Meta Ads, TikTok, SEO" },
-        "writing":   { "label": "Writing & Translation","sub": "FR, AR, EN, Darija" },
-        "audio":     { "label": "Audio & Voice-over",   "sub": "Podcasts, dubbing, jingles" },
-        "ebooks":    { "label": "E-books & Courses",    "sub": "Guides, courses, templates" },
-        "templates": { "label": "Templates & Assets",   "sub": "Canva, Notion, UI kits" }
+        "design": {
+          "label": "Design & Graphics",
+          "sub": "Logos, identities, posters"
+        },
+        "web": {
+          "label": "Web development",
+          "sub": "Websites, apps, e-commerce"
+        },
+        "video": {
+          "label": "Video & Animation",
+          "sub": "Editing, motion design"
+        },
+        "marketing": {
+          "label": "Digital marketing",
+          "sub": "Meta Ads, TikTok, SEO"
+        },
+        "writing": {
+          "label": "Writing & Translation",
+          "sub": "FR, AR, EN, Darija"
+        },
+        "audio": {
+          "label": "Audio & Voice-over",
+          "sub": "Podcasts, dubbing, jingles"
+        },
+        "ebooks": {
+          "label": "E-books & Courses",
+          "sub": "Guides, courses, templates"
+        },
+        "templates": {
+          "label": "Templates & Assets",
+          "sub": "Canva, Notion, UI kits"
+        }
       }
     },
     "topFreelancers": {
@@ -247,7 +271,9 @@
         "edit": "Edit this product",
         "manage": "Manage my products"
       },
-      "price": { "label": "Price" },
+      "price": {
+        "label": "Price"
+      },
       "meta": {
         "format": "Format",
         "size": "Size",
@@ -311,13 +337,18 @@
         "count": "{n} revision(s)"
       },
       "delivery": "{n} day(s)",
-      "price": { "label": "Price" },
+      "price": {
+        "label": "Price"
+      },
       "contact": "Contact the seller",
       "contacting": "In progress…"
     }
   },
   "freelances": {
-    "breadcrumb": { "home": "Home", "services": "Services" },
+    "breadcrumb": {
+      "home": "Home",
+      "services": "Services"
+    },
     "hero": {
       "title": "Services",
       "subtitle": "Find the perfect talent for your project",
@@ -374,12 +405,15 @@
       "price_asc": "Price: low to high",
       "price_desc": "Price: high to low",
       "rating": "Top rated",
-      "popular": "Popular"
+      "popular": "Popular",
+      "distance": "Near me"
     },
     "freeOnly": "Free only",
     "priceMin": "Min price",
     "priceMax": "Max price",
-    "unlimited": "Unlimited"
+    "unlimited": "Unlimited",
+    "nearMe": "Near me",
+    "nearCity": "Near {city}"
   },
   "cards": {
     "bestSeller": "Best seller",
@@ -406,7 +440,9 @@
       "title": "Start the conversation",
       "hint": "Send a message to {name}"
     },
-    "context": { "about": "About:" },
+    "context": {
+      "about": "About:"
+    },
     "relativeTime": {
       "now": "Just now",
       "min": "{n} min",
@@ -447,8 +483,12 @@
       "removeFile": "Remove file",
       "download": "Download"
     },
-    "lightbox": { "alt": "Full-screen preview" },
-    "preview": { "alt": "Preview" },
+    "lightbox": {
+      "alt": "Full-screen preview"
+    },
+    "preview": {
+      "alt": "Preview"
+    },
     "error": {
       "storageQuota": "Storage limit reached (50 MB). Used: {n} MB.",
       "upload": "Upload failed: {msg}",

@@ -24,6 +24,9 @@ type ProductCardProduct = {
   seller?: {
     full_name: string | null
     avatar_url: string | null
+    wilaya?: string | null
+    location_city?: string | null
+    location_country?: string | null
   } | null
 }
 
@@ -36,6 +39,10 @@ export default function ProductCard({ product }: { product: ProductCardProduct }
   const fmt = product.format ?? product.file_format ?? null
   const name = product.seller?.full_name ?? t("sellerFallback")
   const initials = name.trim().split(/\s+/).map(n => n[0]).join("").toUpperCase().slice(0, 2) || "?"
+  const { location_city, location_country, wilaya } = product.seller ?? {}
+  const sellerLocation = location_city && location_country
+    ? `${location_city}, ${location_country}`
+    : location_country ?? wilaya ?? null
 
   return (
     <Link
@@ -84,7 +91,12 @@ export default function ProductCard({ product }: { product: ProductCardProduct }
               <span className="text-white text-[9px] font-bold">{initials}</span>
             )}
           </div>
-          <p className="text-[11px] font-semibold text-[var(--ink)] dark:text-[var(--ink)] truncate font-jakarta">{name}</p>
+          <div className="min-w-0">
+            <p className="text-[11px] font-semibold text-[var(--ink)] dark:text-[var(--ink)] truncate font-jakarta">{name}</p>
+            {sellerLocation && (
+              <p className="text-[10px] text-[rgba(26,26,26,0.40)] dark:text-gray-500 truncate">{sellerLocation}</p>
+            )}
+          </div>
         </div>
 
         {/* Title */}

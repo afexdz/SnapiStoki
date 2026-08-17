@@ -109,14 +109,38 @@
       "subtitle": "Des compétences créatives aux services techniques, tout ce dont votre projet a besoin.",
       "allCta": "Toutes les catégories →",
       "cats": {
-        "design":    { "label": "Design & Graphisme",      "sub": "Logos, identités, affiches" },
-        "web":       { "label": "Développement web",       "sub": "Sites, apps, e-commerce" },
-        "video":     { "label": "Vidéo & Animation",       "sub": "Montage, motion design" },
-        "marketing": { "label": "Marketing digital",       "sub": "Meta Ads, TikTok, SEO" },
-        "writing":   { "label": "Rédaction & Traduction",  "sub": "FR, AR, EN, Darija" },
-        "audio":     { "label": "Audio & Voix off",        "sub": "Podcasts, doublage, jingles" },
-        "ebooks":    { "label": "E-books & Formations",    "sub": "Guides, cours, templates" },
-        "templates": { "label": "Templates & Assets",      "sub": "Canva, Notion, UI kits" }
+        "design": {
+          "label": "Design & Graphisme",
+          "sub": "Logos, identités, affiches"
+        },
+        "web": {
+          "label": "Développement web",
+          "sub": "Sites, apps, e-commerce"
+        },
+        "video": {
+          "label": "Vidéo & Animation",
+          "sub": "Montage, motion design"
+        },
+        "marketing": {
+          "label": "Marketing digital",
+          "sub": "Meta Ads, TikTok, SEO"
+        },
+        "writing": {
+          "label": "Rédaction & Traduction",
+          "sub": "FR, AR, EN, Darija"
+        },
+        "audio": {
+          "label": "Audio & Voix off",
+          "sub": "Podcasts, doublage, jingles"
+        },
+        "ebooks": {
+          "label": "E-books & Formations",
+          "sub": "Guides, cours, templates"
+        },
+        "templates": {
+          "label": "Templates & Assets",
+          "sub": "Canva, Notion, UI kits"
+        }
       }
     },
     "topFreelancers": {
@@ -247,7 +271,9 @@
         "edit": "Modifier ce produit",
         "manage": "Gérer mes produits"
       },
-      "price": { "label": "Prix" },
+      "price": {
+        "label": "Prix"
+      },
       "meta": {
         "format": "Format",
         "size": "Taille",
@@ -311,13 +337,18 @@
         "count": "{n} révision(s)"
       },
       "delivery": "{n} jour(s)",
-      "price": { "label": "Prix" },
+      "price": {
+        "label": "Prix"
+      },
       "contact": "Contacter le vendeur",
       "contacting": "En cours…"
     }
   },
   "freelances": {
-    "breadcrumb": { "home": "Accueil", "services": "Services" },
+    "breadcrumb": {
+      "home": "Accueil",
+      "services": "Services"
+    },
     "hero": {
       "title": "Services",
       "subtitle": "Trouvez le talent parfait pour votre projet",
@@ -374,12 +405,15 @@
       "price_asc": "Prix croissant",
       "price_desc": "Prix décroissant",
       "rating": "Mieux notés",
-      "popular": "Populaires"
+      "popular": "Populaires",
+      "distance": "Près de moi"
     },
     "freeOnly": "Gratuits uniquement",
     "priceMin": "Prix min",
     "priceMax": "Prix max",
-    "unlimited": "Illimité"
+    "unlimited": "Illimité",
+    "nearMe": "Près de moi",
+    "nearCity": "Près de {city}"
   },
   "cards": {
     "bestSeller": "Meilleure vente",
@@ -406,7 +440,9 @@
       "title": "Démarrez la conversation",
       "hint": "Envoyez un message à {name}"
     },
-    "context": { "about": "À propos de :" },
+    "context": {
+      "about": "À propos de :"
+    },
     "relativeTime": {
       "now": "À l'instant",
       "min": "{n} min",
@@ -447,8 +483,12 @@
       "removeFile": "Retirer le fichier",
       "download": "Télécharger"
     },
-    "lightbox": { "alt": "Aperçu en plein écran" },
-    "preview": { "alt": "Aperçu" },
+    "lightbox": {
+      "alt": "Aperçu en plein écran"
+    },
+    "preview": {
+      "alt": "Aperçu"
+    },
     "error": {
       "storageQuota": "Limite de stockage atteinte (50 Mo). Utilisé : {n} Mo.",
       "upload": "Upload échoué : {msg}",

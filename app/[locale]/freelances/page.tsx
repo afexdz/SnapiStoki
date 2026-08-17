@@ -6,9 +6,8 @@ import Link from "next/link"
 import { createClient } from "@/lib/supabase/client"
 import { rankItems } from "@/lib/ranking"
 import ServiceCard from "@/components/ServiceCard"
-import { detectUserWilaya } from "@/lib/geolocation"
-import { WILAYAS, type Wilaya } from "@/lib/wilayas"
-import { sortByDistance } from "@/utils/distance"
+import { detectUserLocation, type UserLocation } from "@/lib/geolocation"
+import { sortByProximity } from "@/lib/proximity"
 import Navbar from "@/components/Navbar"
 import Footer from "@/components/Footer"
 
@@ -30,10 +29,10 @@ type Service = {
     full_name: string | null
     avatar_url: string | null
     wilaya: string | null
+    location_city: string | null
+    location_country: string | null
   } | null
 }
-
-type ServiceWithWilaya = Service & { wilaya?: string | null }
 
 const SORT_IDS = ["relevance", "rating", "price_asc", "price_desc", "distance"] as const
 type SortId = typeof SORT_IDS[number]
@@ -169,7 +168,7 @@ export default function FreelancesPage() {
   const [minRating, setMinRating]         = useState(0)
   const [sort, setSort]                   = useState<SortId>("relevance")
   const [nearMeEnabled, setNearMeEnabled] = useState(false)
-  const [userWilaya, setUserWilaya]       = useState<Wilaya | null>(null)
+  const [userLocation, setUserLocation]   = useState<UserLocation | null>(null)
   const [locLoading, setLocLoading]       = useState(false)
   const [sidebarOpen, setSidebarOpen]     = useState(false)
   const [minPrice, setMinPrice]           = useState(0)
@@ -188,15 +187,15 @@ export default function FreelancesPage() {
   }, [])
 
   useEffect(() => {
-    const cached = localStorage.getItem("userWilaya")
-    if (cached) { try { setUserWilaya(JSON.parse(cached)) } catch { /* ignore */ } }
+    const cached = localStorage.getItem("userLocation")
+    if (cached) { try { setUserLocation(JSON.parse(cached)) } catch { /* ignore */ } }
 
     createClient()
       .from("services")
       .select(`
         id, title, category, price, avg_rating, rating, reviews_count, total_orders,
         gallery, images, packages, tags, created_at,
-        seller:profiles!services_seller_id_fkey(full_name, avatar_url, wilaya)
+        seller:profiles!services_seller_id_fkey(full_name, avatar_url, wilaya, location_city, location_country)
       `)
       .eq("is_active", true)
       .limit(100)
@@ -240,11 +239,11 @@ export default function FreelancesPage() {
 
   const handleNearMe = async () => {
     if (nearMeEnabled) { setNearMeEnabled(false); setSort("relevance"); return }
-    if (userWilaya) { setNearMeEnabled(true); setSort("distance"); return }
+    if (userLocation) { setNearMeEnabled(true); setSort("distance"); return }
     setLocLoading(true)
-    const w = await detectUserWilaya()
+    const loc = await detectUserLocation()
     setLocLoading(false)
-    if (w) { setUserWilaya(w); setNearMeEnabled(true); setSort("distance") }
+    if (loc) { setUserLocation(loc); setNearMeEnabled(true); setSort("distance") }
   }
 
   const handleReset = () => {
@@ -270,12 +269,9 @@ export default function FreelancesPage() {
     if (sort === "rating")          list = [...list].sort((a, b) => Number(b.avg_rating ?? b.rating ?? 0) - Number(a.avg_rating ?? a.rating ?? 0))
     else if (sort === "price_asc")  list = [...list].sort((a, b) => a.price - b.price)
     else if (sort === "price_desc") list = [...list].sort((a, b) => b.price - a.price)
-    else if (sort === "distance" && userWilaya) {
-      const withW = list.map(s => ({ ...s, wilaya: s.seller?.wilaya ?? null })) as ServiceWithWilaya[]
-      list = sortByDistance(withW, userWilaya, WILAYAS) as Service[]
-    }
+    else if (sort === "distance" && userLocation) list = sortByProximity(list, userLocation)
     return list
-  }, [allServices, category, minRating, minPrice, maxPrice, sort, userWilaya])
+  }, [allServices, category, minRating, minPrice, maxPrice, sort, userLocation])
 
   const filterPanelProps: FilterPanelProps = {
     categories, category, setCategory,
@@ -353,14 +349,16 @@ export default function FreelancesPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                   </svg>
                 )}
-                {nearMeEnabled && userWilaya ? t("nearCity", { city: userWilaya.name }) : t("nearMe")}
+                {nearMeEnabled && userLocation
+                  ? t("nearCity", { city: userLocation.wilaya?.name ?? userLocation.country ?? "?" })
+                  : t("nearMe")}
               </button>
 
               {/* Sort */}
               <div className="relative">
                 <select
                   value={sort}
-                  onChange={e => { setSort(e.target.value as SortId); if (e.target.value !== "distance") setNearMeEnabled(false) }}
+                  onChange={e => { setSort(e.target.value as SortId); if (e.target.value !== "distance") setNearMeEnabled(false); else if (userLocation) setNearMeEnabled(true) }}
                   className="ps-3 pe-8 py-2 rounded-xl border border-[var(--border-subtle)] dark:border-[var(--border-subtle)] bg-[var(--white)] dark:bg-[var(--color-bg)] text-[var(--ink)] dark:text-[var(--ink)] text-sm outline-none focus:border-[var(--orange)] appearance-none cursor-pointer"
                 >
                   {SORT_IDS.map(id => <option key={id} value={id}>{t(`sort.${id}`)}</option>)}

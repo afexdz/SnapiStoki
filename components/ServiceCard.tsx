@@ -22,6 +22,8 @@ type ServiceCardService = {
     full_name: string | null
     avatar_url: string | null
     wilaya?: string | null
+    location_city?: string | null
+    location_country?: string | null
   } | null
 }
 
@@ -53,6 +55,10 @@ export default function ServiceCard({
   const reviews = service.reviews_count ?? 0
   const name = service.seller?.full_name ?? t("freelanceFallback")
   const initials = name.trim().split(/\s+/).map(n => n[0]).join("").toUpperCase().slice(0, 2) || "?"
+  const { location_city, location_country, wilaya } = service.seller ?? {}
+  const sellerLocation = location_city && location_country
+    ? `${location_city}, ${location_country}`
+    : location_country ?? wilaya ?? null
 
   return (
     <Link
@@ -103,8 +109,8 @@ export default function ServiceCard({
           </div>
           <div className="min-w-0">
             <p className="text-[11px] font-semibold text-[var(--ink)] dark:text-[var(--ink)] truncate font-jakarta">{name}</p>
-            {service.seller?.wilaya && (
-              <p className="text-[10px] text-[rgba(26,26,26,0.40)] dark:text-gray-500 truncate">{service.seller.wilaya}</p>
+            {sellerLocation && (
+              <p className="text-[10px] text-[rgba(26,26,26,0.40)] dark:text-gray-500 truncate">{sellerLocation}</p>
             )}
           </div>
         </div>

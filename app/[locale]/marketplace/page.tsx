@@ -8,6 +8,8 @@ import Link from "next/link"
 import { createClient } from "@/lib/supabase/client"
 import { rankItems } from "@/lib/ranking"
 import ProductCard from "@/components/ProductCard"
+import { detectUserLocation, type UserLocation } from "@/lib/geolocation"
+import { sortByProximity } from "@/lib/proximity"
 
 type Product = {
   id: string
@@ -27,10 +29,16 @@ type Product = {
   license: string | null
   tags: string[] | null
   created_at: string
-  seller?: { full_name: string | null; avatar_url: string | null } | null
+  seller?: {
+    full_name: string | null
+    avatar_url: string | null
+    wilaya: string | null
+    location_city: string | null
+    location_country: string | null
+  } | null
 }
 
-const SORT_IDS = ["relevance", "price_asc", "price_desc", "rating", "popular"] as const
+const SORT_IDS = ["relevance", "price_asc", "price_desc", "rating", "popular", "distance"] as const
 type SortId = typeof SORT_IDS[number]
 
 const SLIDER_MAX = 200_000
@@ -56,6 +64,11 @@ export default function MarketplacePage() {
   const [minInput, setMinInput]             = useState("")
   const [maxInput, setMaxInput]             = useState("")
 
+  // Near-me
+  const [nearMeEnabled, setNearMeEnabled] = useState(false)
+  const [userLocation, setUserLocation]   = useState<UserLocation | null>(null)
+  const [locLoading, setLocLoading]       = useState(false)
+
   // Debounce refs
   const searchTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const minTimer    = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -65,6 +78,11 @@ export default function MarketplacePage() {
     if (searchTimer.current) clearTimeout(searchTimer.current)
     if (minTimer.current)    clearTimeout(minTimer.current)
     if (maxTimer.current)    clearTimeout(maxTimer.current)
+  }, [])
+
+  useEffect(() => {
+    const cached = localStorage.getItem("userLocation")
+    if (cached) { try { setUserLocation(JSON.parse(cached)) } catch { /* ignore */ } }
   }, [])
 
   // Fetch distinct categories once (not affected by filters)
@@ -91,7 +109,7 @@ export default function MarketplacePage() {
         id, title, category, price, is_free, avg_rating, rating, reviews_count,
         sales_count, downloads, preview_urls, preview_images, format, file_format,
         license, tags, created_at,
-        seller:profiles!digital_products_seller_id_fkey(full_name, avatar_url)
+        seller:profiles!digital_products_seller_id_fkey(full_name, avatar_url, wilaya, location_city, location_country)
       `)
       .eq("is_active", true)
 
@@ -130,8 +148,9 @@ export default function MarketplacePage() {
     if (sort === "price_desc") return list.sort((a, b) => b.price - a.price)
     if (sort === "rating")     return list.sort((a, b) => Number(b.avg_rating ?? 0) - Number(a.avg_rating ?? 0))
     if (sort === "popular")    return list.sort((a, b) => (b.sales_count ?? b.downloads ?? 0) - (a.sales_count ?? a.downloads ?? 0))
+    if (sort === "distance" && userLocation) return sortByProximity(list, userLocation)
     return rankItems(list) // "relevance"
-  }, [rawProducts, sort])
+  }, [rawProducts, sort, userLocation])
 
   /* ── Input handlers ─────────────────────────────────────────── */
 
@@ -166,6 +185,15 @@ export default function MarketplacePage() {
       const v = parseInt(raw, 10)
       if (!isNaN(v) && v >= 0) setMaxPrice(v)
     }, 400)
+  }
+
+  const handleNearMe = async () => {
+    if (nearMeEnabled) { setNearMeEnabled(false); setSort("relevance"); return }
+    if (userLocation) { setNearMeEnabled(true); setSort("distance"); return }
+    setLocLoading(true)
+    const loc = await detectUserLocation()
+    setLocLoading(false)
+    if (loc) { setUserLocation(loc); setNearMeEnabled(true); setSort("distance") }
   }
 
   const priceRangeError = minPrice > 0 && maxPrice > 0 && minPrice > maxPrice
@@ -252,11 +280,33 @@ export default function MarketplacePage() {
 
           {/* ── Filter bar ────────────────────────────────────────────── */}
           <div className="flex flex-wrap items-end gap-3 mb-6">
+            {/* Near-me toggle */}
+            <button
+              onClick={handleNearMe}
+              disabled={locLoading}
+              className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium transition-all ${nearMeEnabled ? "bg-[var(--orange)] text-white shadow-md shadow-[var(--orange)]/30" : "border border-[var(--border-subtle)] text-gray-600 dark:text-gray-400 hover:border-[var(--orange)]/40 hover:text-[var(--orange)]"}`}
+            >
+              {locLoading ? (
+                <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                </svg>
+              ) : (
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+              )}
+              {nearMeEnabled && userLocation
+                ? t("nearCity", { city: userLocation.wilaya?.name ?? userLocation.country ?? "?" })
+                : t("nearMe")}
+            </button>
+
             {/* Sort */}
             <div className="relative">
               <select
                 value={sort}
-                onChange={e => setSort(e.target.value as SortId)}
+                onChange={e => { setSort(e.target.value as SortId); if (e.target.value !== "distance") setNearMeEnabled(false); else if (userLocation) setNearMeEnabled(true) }}
                 className="ps-3 pe-8 py-2 rounded-xl border border-[var(--border-subtle)] bg-[var(--white)] dark:bg-[var(--white)] text-[var(--ink)] dark:text-[var(--ink)] text-sm outline-none focus:border-[var(--orange)] appearance-none cursor-pointer"
               >
                 {SORT_IDS.map(id => <option key={id} value={id}>{t(`sort.${id}`)}</option>)}
