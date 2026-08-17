@@ -14,9 +14,9 @@ export async function detectUserWilaya(): Promise<Wilaya | null> {
     const res = await fetch('/api/geo', { signal: AbortSignal.timeout(6000) })
     if (!res.ok) return null
     const data = await res.json()
-    if (!data.wilaya) return null
+    if (!data.city) return null
 
-    const wilaya = getWilayaByName(data.wilaya)
+    const wilaya = getWilayaByName(data.city)
     if (!wilaya) return null
 
     if (typeof window !== 'undefined') {
