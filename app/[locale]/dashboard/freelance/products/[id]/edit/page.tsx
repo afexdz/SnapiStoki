@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl"
 import Link from "next/link"
 import Navbar from "@/components/Navbar"
 import CoverCropModal from "@/components/CoverCropModal"
+import AIWritingPanel from "@/components/AIWritingPanel"
 import { createClient } from "@/lib/supabase/client"
 
 const PRODUCT_TYPES = ["Illustration", "Template", "Icônes", "Police", "Photo", "Document", "Autre"]
@@ -31,7 +32,9 @@ export default function EditProductPage() {
   const router = useRouter()
   const tu = useTranslations("product.upload")
   const t = useTranslations("dashboardSeller")
+  const tai = useTranslations("aiAssistant")
   const [loading, setLoading] = useState(true)
+  const [aiPanelOpen, setAiPanelOpen] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [toast, setToast] = useState<{ msg: string; type: "success" | "error" } | null>(null)
 
@@ -221,6 +224,19 @@ export default function EditProductPage() {
             </div>
           </div>
 
+          {/* AI trigger button */}
+          <button
+            onClick={() => setAiPanelOpen(true)}
+            className="mb-5 flex items-center gap-2 px-4 py-2.5 rounded-xl border border-[var(--orange)]/30 bg-[var(--orange)]/8 text-[var(--orange)] text-sm font-semibold hover:bg-[var(--orange)]/15 transition-all"
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+              />
+            </svg>
+            ✨ {tai("trigger")}
+          </button>
+
           <div className="bg-[var(--white)] rounded-2xl border border-[var(--ink-12)] p-6 shadow-sm space-y-6">
             <div>
               <label className={labelCls}>{t("editProduct.fields.titleLabel")}</label>
@@ -369,6 +385,28 @@ export default function EditProductPage() {
           onCancel={handleCropCancel}
         />
       )}
+
+      <AIWritingPanel
+        isOpen={aiPanelOpen}
+        onClose={() => setAiPanelOpen(false)}
+        currentTags={tags}
+        onApplyTitle={v => setTitle(v.slice(0, 80))}
+        onApplyDescription={v => setDescription(v.slice(0, 800))}
+        onApplyTag={tag => {
+          if (!tags.includes(tag) && tags.length < 8) setTags(p => [...p, tag])
+        }}
+        onApplyAll={({ title: v, description: d, tags: suggestedTags }) => {
+          setTitle(v.slice(0, 80))
+          setDescription(d.slice(0, 800))
+          setTags(prev => {
+            const merged = [...prev]
+            for (const tag of suggestedTags) {
+              if (!merged.includes(tag) && merged.length < 8) merged.push(tag)
+            }
+            return merged
+          })
+        }}
+      />
     </>
   )
 }

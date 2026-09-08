@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 import { useTranslations } from "next-intl"
 import Navbar from "@/components/Navbar"
 import CoverCropModal from "@/components/CoverCropModal"
+import AIWritingPanel from "@/components/AIWritingPanel"
 import { createClient } from "@/lib/supabase/client"
 
 const PRODUCT_TYPES = ["Illustration", "Template", "Icônes", "Police", "Photo", "Document", "Autre"]
@@ -27,10 +28,12 @@ function formatFileSize(bytes: number): string {
 export default function NewProductPage() {
   const router = useRouter()
   const tu = useTranslations("product.upload")
+  const tai = useTranslations("aiAssistant")
   const [authChecked, setAuthChecked] = useState(false)
   const [userId, setUserId]           = useState<string | null>(null)
   const [submitting, setSubmitting]   = useState(false)
   const [toast, setToast]             = useState<{ msg: string; type: "success" | "error" } | null>(null)
+  const [aiPanelOpen, setAiPanelOpen] = useState(false)
 
   const [title, setTitle]             = useState("")
   const [productType, setProductType] = useState("")
@@ -200,6 +203,19 @@ export default function NewProductPage() {
             <h1 className="text-2xl font-bold text-[var(--ink)]">Vendre un produit digital</h1>
             <p className="text-sm text-gray-500 mt-1">Mettez en vente vos créations numériques</p>
           </div>
+
+          {/* AI trigger button */}
+          <button
+            onClick={() => setAiPanelOpen(true)}
+            className="mb-5 flex items-center gap-2 px-4 py-2.5 rounded-xl border border-[var(--orange)]/30 bg-[var(--orange)]/8 text-[var(--orange)] text-sm font-semibold hover:bg-[var(--orange)]/15 transition-all"
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+              />
+            </svg>
+            ✨ {tai("trigger")}
+          </button>
 
           <div className="space-y-6">
             {/* Title */}
@@ -380,6 +396,28 @@ export default function NewProductPage() {
           onCancel={handleCropCancel}
         />
       )}
+
+      <AIWritingPanel
+        isOpen={aiPanelOpen}
+        onClose={() => setAiPanelOpen(false)}
+        currentTags={tags}
+        onApplyTitle={t => setTitle(t.slice(0, 80))}
+        onApplyDescription={d => setDescription(d.slice(0, 800))}
+        onApplyTag={tag => {
+          if (!tags.includes(tag) && tags.length < 8) setTags(p => [...p, tag])
+        }}
+        onApplyAll={({ title: t, description: d, tags: suggestedTags }) => {
+          setTitle(t.slice(0, 80))
+          setDescription(d.slice(0, 800))
+          setTags(prev => {
+            const merged = [...prev]
+            for (const tag of suggestedTags) {
+              if (!merged.includes(tag) && merged.length < 8) merged.push(tag)
+            }
+            return merged
+          })
+        }}
+      />
     </>
   )
 }

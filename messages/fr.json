@@ -897,5 +897,30 @@
       "empty": "Aucune commande trouvée",
       "findFreelancer": "Trouver un freelance →"
     }
+  },
+  "aiAssistant": {
+    "trigger": "Générer avec l'IA",
+    "panel": {
+      "title": "Assistant IA",
+      "subtitle": "Décrivez votre produit, l'IA rédige pour vous",
+      "inputPlaceholder": "Décrivez votre produit en quelques mots...",
+      "inputHint": "Ex : pack de 50 icônes minimalistes pour app mobile",
+      "generate": "Générer",
+      "regenerate": "Régénérer",
+      "applyAll": "Tout appliquer",
+      "close": "Fermer",
+      "idleHint": "Saisissez une description et cliquez sur Générer",
+      "loading": {
+        "title": "Génération en cours...",
+        "subtitle": "L'IA rédige vos suggestions"
+      },
+      "results": {
+        "titlesLabel": "Propositions de titre",
+        "descriptionsLabel": "Propositions de description",
+        "tagsLabel": "Tags suggérés",
+        "use": "Utiliser",
+        "applied": "Appliqué"
+      }
+    }
   }
 }

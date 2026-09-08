@@ -897,5 +897,30 @@
       "empty": "No orders found",
       "findFreelancer": "Find a freelancer →"
     }
+  },
+  "aiAssistant": {
+    "trigger": "Generate with AI",
+    "panel": {
+      "title": "AI Writing Assistant",
+      "subtitle": "Describe your product, AI writes for you",
+      "inputPlaceholder": "Describe your product in a few words...",
+      "inputHint": "e.g. pack of 50 minimalist icons for mobile app",
+      "generate": "Generate",
+      "regenerate": "Regenerate",
+      "applyAll": "Apply All",
+      "close": "Close",
+      "idleHint": "Enter a description and click Generate",
+      "loading": {
+        "title": "Generating...",
+        "subtitle": "AI is writing your suggestions"
+      },
+      "results": {
+        "titlesLabel": "Title suggestions",
+        "descriptionsLabel": "Description suggestions",
+        "tagsLabel": "Suggested tags",
+        "use": "Use",
+        "applied": "Applied"
+      }
+    }
   }
 }
