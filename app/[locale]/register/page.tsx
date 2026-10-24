@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useMemo } from "react"
-import { useTranslations } from "next-intl"
+import { useLocale, useTranslations } from "next-intl"
 import { Link } from "@/i18n/navigation"
 import { createClient } from "@/lib/supabase/client"
 
@@ -26,6 +26,7 @@ function PasswordRule({ met, label }: { met: boolean; label: string }) {
 
 export default function RegisterPage() {
   const t = useTranslations("auth.register")
+  const locale = useLocale()
   const [fullName, setFullName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
@@ -100,7 +101,7 @@ export default function RegisterPage() {
       password,
       options: {
         data: { full_name: fullName, role: accountType },
-        emailRedirectTo: "https://pixraise.com/auth/callback",
+        emailRedirectTo: `${window.location.origin}${locale === "fr" ? "" : `/${locale}`}/dashboard`,
       },
     })
 

@@ -183,7 +183,8 @@
         "emailNotConfirmed": "Veuillez confirmer votre adresse email avant de vous connecter.",
         "tooManyRequests": "Trop de tentatives. Veuillez réessayer dans quelques minutes.",
         "userNotFound": "Aucun compte trouvé avec cet email.",
-        "generic": "Une erreur est survenue. Veuillez réessayer."
+        "generic": "Une erreur est survenue. Veuillez réessayer.",
+        "emailLink": "Ce lien de confirmation est invalide ou expiré. Réessayez de vous inscrire pour recevoir un nouveau lien."
       }
     },
     "register": {
@@ -239,6 +240,32 @@
         "desc": "Un lien de confirmation a été envoyé à {email}. Cliquez dessus pour activer votre compte.",
         "goToLogin": "Aller à la connexion →"
       }
+    },
+    "recovery": {
+      "requestTitle": "Mot de passe oublié ?",
+      "requestDescription": "Indiquez votre adresse e-mail pour recevoir un lien de réinitialisation.",
+      "resetTitle": "Nouveau mot de passe",
+      "resetDescription": "Choisissez un nouveau mot de passe pour votre compte PixRaise.",
+      "email": "Adresse e-mail",
+      "password": "Nouveau mot de passe",
+      "confirm": "Confirmer le mot de passe",
+      "passwordHint": "Au moins 8 caractères.",
+      "mismatch": "Les mots de passe ne correspondent pas.",
+      "send": "Envoyer le lien",
+      "save": "Enregistrer le mot de passe",
+      "working": "Veuillez patienter…",
+      "sentTitle": "Consultez vos e-mails",
+      "sentDescription": "Si un compte correspond à cette adresse, vous recevrez un lien de réinitialisation. Vérifiez aussi les courriers indésirables.",
+      "doneTitle": "Mot de passe mis à jour",
+      "doneDescription": "Vous pouvez maintenant vous connecter avec votre nouveau mot de passe.",
+      "expiredTitle": "Lien invalide ou expiré",
+      "expiredDescription": "Demandez un nouveau lien pour réinitialiser votre mot de passe.",
+      "newLink": "Demander un nouveau lien",
+      "backToLogin": "Retour à la connexion",
+      "sendError": "Impossible d’envoyer le lien. Réessayez dans quelques instants.",
+      "resetError": "Impossible de modifier le mot de passe. Demandez un nouveau lien et réessayez.",
+      "rateLimit": "Trop de demandes. Patientez quelques minutes avant de réessayer.",
+      "samePassword": "Choisissez un mot de passe différent de votre ancien mot de passe."
     }
   },
   "product": {

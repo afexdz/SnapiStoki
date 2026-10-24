@@ -183,7 +183,8 @@
         "emailNotConfirmed": "Please confirm your email address before logging in.",
         "tooManyRequests": "Too many attempts. Please try again in a few minutes.",
         "userNotFound": "No account found with this email.",
-        "generic": "An error occurred. Please try again."
+        "generic": "An error occurred. Please try again.",
+        "emailLink": "This confirmation link is invalid or expired. Try signing up again to receive a new link."
       }
     },
     "register": {
@@ -239,6 +240,32 @@
         "desc": "A confirmation link has been sent to {email}. Click on it to activate your account.",
         "goToLogin": "Go to login →"
       }
+    },
+    "recovery": {
+      "requestTitle": "Forgot your password?",
+      "requestDescription": "Enter your email address to receive a password reset link.",
+      "resetTitle": "New password",
+      "resetDescription": "Choose a new password for your PixRaise account.",
+      "email": "Email address",
+      "password": "New password",
+      "confirm": "Confirm password",
+      "passwordHint": "At least 8 characters.",
+      "mismatch": "The passwords do not match.",
+      "send": "Send reset link",
+      "save": "Save password",
+      "working": "Please wait…",
+      "sentTitle": "Check your email",
+      "sentDescription": "If an account matches this address, you will receive a password reset link. Check your spam folder too.",
+      "doneTitle": "Password updated",
+      "doneDescription": "You can now log in with your new password.",
+      "expiredTitle": "Invalid or expired link",
+      "expiredDescription": "Request a new link to reset your password.",
+      "newLink": "Request a new link",
+      "backToLogin": "Back to log in",
+      "sendError": "Unable to send the link. Please try again shortly.",
+      "resetError": "Unable to update the password. Request a new link and try again.",
+      "rateLimit": "Too many requests. Please wait a few minutes before trying again.",
+      "samePassword": "Choose a password different from your previous password."
     }
   },
   "product": {

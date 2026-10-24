@@ -25,7 +25,7 @@ function LoginForm() {
   const [loading, setLoading] = useState(false)
   const [googleLoading, setGoogleLoading] = useState(false)
   const urlError = searchParams.get("error")
-  const [error, setError] = useState(urlError === "auth" ? t("error.google") : "")
+  const [error, setError] = useState(urlError === "auth" ? t("error.google") : urlError === "email-link" ? t("error.emailLink") : "")
 
   const translateError = (msg: string): string => {
     for (const [key, tKey] of ERROR_KEYS) {
@@ -153,9 +153,9 @@ function LoginForm() {
               <div>
                 <div className="flex items-center justify-between mb-1.5">
                   <label className="block text-sm font-medium text-[var(--ink)]">{t("passwordLabel")}</label>
-                  <a href="#" className="text-xs text-[var(--orange)] hover:text-[var(--orange-dark)] transition-colors">
+                  <Link href="/forgot-password" className="text-xs text-[var(--orange)] hover:text-[var(--orange-dark)] transition-colors">
                     {t("forgotPassword")}
-                  </a>
+                  </Link>
                 </div>
                 <div className="relative">
                   <div className="absolute inset-y-0 start-3.5 flex items-center pointer-events-none text-gray-400">
